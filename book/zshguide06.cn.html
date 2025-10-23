@@ -1,0 +1,790 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter6</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <hr />
+<ul>
+<li><a href="zshguide.html">目录</a></li>
+<li><a href="zshguide05.html">上一章</a></li>
+<li><a href="zshguide07.html">下一章</a></li>
+</ul>
+<hr />
+<p>[]{#comp}[]{#l144}</p>
+<h1 id="第六章补全旧与新"><a class="header" href="#第六章补全旧与新">第六章：补全，旧与新</a></h1>
+<p>命令参数的补全是 zsh 特别擅长的一件事。最简单的情况是，你按 <code>&lt;TAB&gt;</code>，shell 会猜测那里应该是什么并为你填充：</p>
+<pre><code>  % ls
+  myfile  theirfile  yourfile
+  % cat t&lt;TAB&gt;
+</code></pre>
+<p>将命令行展开为</p>
+<pre><code>  % cat theirfile
+</code></pre>
+<p>你只需要输入首字母，然后按 <code>TAB</code>。</p>
+<p>在 C shell 中这个功能刚出现的时候，只能补全文件名；如果名称有歧义，没有任何聪明的技巧可以帮助你，它只是打印出无歧义的部分然后发出哔哔声，让你自己决定下一步该做什么。你也可以列出可能的补全；出于某种原因，这在 csh 中被附加到了 <code>^D</code> 键上，在后来的具有类 Emacs 绑定的 shell 中，这个键也删除下一个字符，所以历史赋予了 zsh，像其他 shell 一样，有点奇怪的组合行为：</p>
+<pre><code>  % cat yx 
+</code></pre>
+<p>现在将光标移回一个字符到 x 上，然后按两次 ^D，你会看到：<code>yourfile</code>。如果你使用类 vi 的绑定，或者，显然，如果你重新绑定了 <code>^D</code>，这就行不通了。</p>
+<p>接下来，补全其他项目如用户名、命令或主机名成为可能。然后 zsh 介入了菜单补全，所以你可以一直盲目地按 <code>&lt;TAB&gt;</code> 直到正确的答案出现，而永远不需要自己输入一个额外的字符。</p>
+<p>下一个发展是 tcsh 的，然后是 zsh 的，可编程补全系统；你可以给 shell 指令，在某些上下文，只应该补全某些项目；例如，在 <code>cd</code> 之后，你只会想要目录。在 tcsh 中，有一个名为 <code>complete</code> 的命令；每个 <code>complete ...</code> 语句定义了特定命令（如 <code>cd</code>）参数的补全；在 zsh 中等价的是 <code>compctl</code>，它受到 <code>complete</code> 的启发，但在几乎所有重要细节上都不同。在 shell 发行版的 <code>Misc</code> 目录中有一个 perl 脚本 <code>lete2ctl</code> 可以帮助你从 tcsh 格式转换为 zsh 格式。你把一整套 <code>compctl</code> 命令放到 <code>.zshrc</code> 中，其他一切都由 shell 完成。</p>
+<p>Zsh 的系统变得越来越复杂，在 3.1.6 版本中出现了一个新的补全系统，它应该为你做所有事情：你只需从一个初始化文件中调用一个函数 <code>compinit</code>，之后 zsh 就知道，例如，<code>gunzip</code> 后面应该跟着以 <code>.gz</code> 结尾的文件。新系统基于 shell 函数，这是一个额外的奖励，因为它们非常灵活，而且你已经知道语法了。然而，考虑到其复杂性，现在开始编写自己的补全相当困难，而且要弄清楚如何按照你喜欢的方式更改设置也足够难了。本章的其余部分应该会有所帮助。</p>
+<p>我将专注于新的补全系统，它似乎最终将完全取代旧的系统，现在 3.1 发布系列已经成为 4.0 产品发布。旧的 <strong>compctl</strong> 命令仍然可用，旧的补全定义在未来的 zsh 版本中将继续工作——事实上，在大多数支持动态链接库的操作系统上，旧的补全系统在一个不同的文件中，shell 在必要时会加载它，所以这几乎没有开销。</p>
+<p>新系统的一大区别是，不是在 shell 启动时一次性设置好所有东西，而是在你按 <code>&lt;TAB&gt;</code> 之后调用各种 shell 代码片段，以便当场生成补全。shell 中有足够多的新东西，所有那些 <code>compctl</code> 的难记选项（<code>-f</code> 用于文件，<code>-v</code> 用于变量等等）都可以被直接产生补全列表的命令所取代；在这种情况下，关键命令叫做 <code>compadd</code>，它被传递这个列表并决定用什么来补全命令行上的单词。所以最简单形式的新补全看起来大致是这样的：</p>
+<pre><code>  # 告诉 shell 函数 mycompletion 可以在被小部件名称 my-completion-widget 调用时进行补全，
+  # 并且它的行为像现有的小部件 complete-word
+  zle -C my-completion-widget .complete-word mycompletion
+  
+  # 定义一个调用补全小部件的键
+  bindkey '^x^i' my-completion-widget
+  
+  # 定义将被调用的函数
+  mycompletion() {
+    # 添加一个补全列表
+    compadd alpha bravo charlie delta
+  }
+</code></pre>
+<p>这大致就是补全系统正在做的事情，除了函数被称为 <code>_main_complete</code> 并且它会根据调用补全的上下文（所有 <code>compctl</code> 过去做的事情）调用许多其他函数来做它的脏活，而小部件只是旧的补全小部件（<code>expand-or-complete</code> 等）被重新定义并仍然绑定到所有原始键。但是，如果你还没猜到，事情远不止于此。</p>
+<p>这是本章各节的计划。</p>
+<ol>
+<li>对补全和展开的广泛描述，同样适用于新旧补全。</li>
+<li>如何使用 shell 选项配置补全。本节的大部分内容也适用于旧补全，尽管我不会明确标记任何差异。在此之后，我将把 <code>compctl</code> 的世界抛在脑后。</li>
+<li>如何启动新的补全。</li>
+<li>新补全系统如何工作的基本原理。</li>
+<li>如何使用新的 <code>zstyle</code> 内建命令来配置它。</li>
+<li>除了通常的补全系统之外，还有一些做其他事情的独立命令，以及一些与补全有关的其他编辑小部件。</li>
+<li>匹配控制，一种强大的方式来决定诸如是否不区分大小写地补全，是否允许在标点符号前插入单词的额外部分，或者是否忽略命令行上单词中的某些字符。</li>
+<li>如何编写自己的补全函数；你不需要对所有前面的内容有太扎实的理解就能做简单的补全，但我会逐渐介绍如何让标签和样式在你自己的函数中工作的全部巴洛克式的辉煌，以及如何让补全完成处理命令参数和选项的工作。</li>
+<li>按照旧的“开头、中间、结尾”原则，优雅地结束本章。</li>
+</ol>
+<p>[]{#l145}</p>
+<h2 id="61-补全和展开"><a class="header" href="#61-补全和展开">6.1: 补全和展开</a></h2>
+<p>当你按 tab 键时，发生的事情不止是补全。zsh 尝试做的第一件事是展开行。展开在上一章已经讲过：基本上那里描述的所有东西都是编辑器内联展开的可能候选项。换句话说，带感叹号的历史替换、使用 <code>$</code> 或反引号的各种展开，以及文件名生成（通配）都可以发生，结果会替换命令行上的内容：</p>
+<pre><code>  % echo $PWD&lt;TAB&gt;
+    -&gt;    echo /home/pws/zsh/projects/zshguide
+  % echo `print $ZSH_VERSION`&lt;TAB&gt;
+    -&gt;    echo 3.1.7
+  % echo !!&lt;TAB&gt;
+    -&gt;    echo echo 3.1.7
+  % echo ~/.z*&lt;TAB&gt;
+    -&gt;    echo /home/pws/.zcompdump /home/pws/.zlogout
+          /home/pws/.zshenv /home/pws/.zshrc                   
+</code></pre>
+<p>请注意，在这种情况下，<code>~</code> 也会被展开。</p>
+<p>这通常是记住“撤销”键 <code>^_</code> 或 <code>^Xu</code> 的好时机；如果你不喜欢结果，输入这个将恢复展开前的内容。许多键盘有一个怪癖，被描述为 <code>^_</code> 的东西应该通过按住 control 和斜杠来输入，你会写成 <code>^/</code>，但不幸的是那会做别的事情；这不是 zsh 的错。还有一个半例外，即文件名生成：像 <code>~/file</code> 这样的路径不会被展开，因为你通常知道它们指的是什么，而且为了补全而保留它们通常很方便。然而，<code>=cmdname</code> 形式确实会被展开，除非你设置了 <code>NO_EQUALS</code>。</p>
+<p>实际上，决定是进行展开还是补全有时可能很棘手，因为如果它们是完整的，会被展开的东西，可能需要先被补全；例如 <code>$PAT</code> 可能应该被补全为 <code>$PATH</code>，但很可能也有一个参数 <code>$PAT</code>。如果你愿意，你可以决定是哪个。首先，命令 <code>expand-word</code>，绑定到 <code>^X*</code>，以及相应的用于列出将被展开的内容的命令 <code>list-expand</code>，绑定到 <code>^Xg</code>，只做展开——所有可能的形式，除了别名展开，包括将 <code>~/file</code> 变成一个完整路径。</p>
+<p>从另一个角度看，你可以使用除了 <code>expand-or-complete</code>（默认绑定到 <code>&lt;TAB&gt;</code> 的那个）之外的命令来只执行补全。这样做的基本命令是 <code>complete-word</code>，默认没有绑定。如果你乐于使用单独的命令进行展开，将它绑定到 <code>^I</code>（即 <code>&lt;TAB&gt;</code>）是相当明智的，即</p>
+<pre><code>  # 现在 tab 只做补全，不做展开
+  bindkey '^i' complete-word
+</code></pre>
+<p>此外，如果你这样做并使用新的补全系统，那么正如我们将看到的，有一种方法可以让补全系统执行展开——请参阅下面对 <code>_expand</code> 补全器的描述。在这种情况下，你对尝试哪些展开形式以及在哪个点尝试有更多的控制，但你必须确保你使用 <code>complete-word</code>，而不是 <code>expand-or-complete</code>，否则标准的展开系统将接管。</p>
+<p><code>expand-or-complete</code> 有一个近亲，<code>expand-or-complete-prefix</code>，默认没有绑定。唯一的区别是，它在补全时会忽略光标下和右边的所有内容。就好像光标所在的位置有一个空格，所有要忽略的东西都向右移动了（猜猜它是如何实现的）。如果你习惯于在其他单词之前在行中输入新单词，并期望它们在输入空格之前就能自己补全或展开，就使用这个。其他一些 shell 一直都是这样工作的。更明确地说：</p>
+<pre><code>  % ls
+  filename1
+  % ls filex
+</code></pre>
+<p>将光标移动到 <code>x</code> 上并按 tab。使用 <code>expand-or-complete</code> 什么也不会发生；它试图补全一个名为 <code>filex</code> 的文件——或者，设置了 <code>COMPLETE_IN_WORD</code> 选项后，它试图找到一个以 <code>file</code> 开头并以 <code>x</code> 结尾的文件。如果你这样做</p>
+<pre><code>  bindkey '^i' expand-or-complete-prefix
+</code></pre>
+<p>并尝试同样的实验，你会发现整个东西被补全为 <code>filename1x</code>，所以 <code>x</code> 被忽略了，但没有被移除。</p>
+<p>一个可能的陷阱是，列表命令，包括 <code>delete-char-or-list</code>（在 emacs 模式下默认绑定到 <code>^D</code>）和 <code>list-options</code>（在 vi 插入模式下默认绑定到 <code>^D</code>，并且是列出补全的基本命令，因为它没有删除字符的行为），不显示可能的展开，所以使用默认绑定，你可以用 <code>^D</code> 来列出，然后按 <code>&lt;TAB&gt;</code>，发现该行已被某个展开完全重写。使用 <code>complete-word</code> 而不是 <code>expand-or-complete</code> 当然可以解决这个问题。如果你知道如何编写新的编辑器小部件（<a href="zshguide04.html#zle">第四章</a>），你可以编写一个函数，先尝试 <code>list-expand</code>，如果失败再尝试 <code>list-options</code>。</p>
+<p>还有四个我还没提到的补全命令：三个是 <code>menu-complete</code>、<code>menu-expand-or-complete</code> 和 <code>reverse-menu-complete</code>，它们执行菜单补全，你可以通过按同一个键来循环浏览所有可能的补全。前两个分别对应于 <code>complete-word</code> 和 <code>expand-or-complete</code>，而第三个没有真正的等价物，因为它带你向后浏览一个补全列表。第三个的效果不能仅仅通过为菜单补全设置选项来达到，所以将它单独绑定是很有用的。我把它绑定到 <code>\M-\C-i</code>，即按住 Meta 键的 tab，但它默认没有绑定。</p>
+<p>第四个是 <code>menu-select</code>，它执行一种增强形式的菜单补全，称为“菜单选择”，我将在下面谈论选项时描述。你需要确保加载了 <code>zsh/complist</code> 模块才能使用这个 zle 命令。如果你使用样式，zsh 应该能够在需要时自动加载这个，只要你有动态加载，你现在可能有了。 []{#l146}</p>
+<h2 id="62-使用-shell-选项配置补全"><a class="header" href="#62-使用-shell-选项配置补全">6.2: 使用 shell 选项配置补全</a></h2>
+<p>在不编写或重写 shell 函数的情况下，改变补全行为主要有两种方法：shell 选项，如<a href="zshguide02.html#init">第二章</a>中介绍的，和样式，如上所述。我将首先讨论 shell 选项，尽管如你所见，其中一些会引用样式机制。设置 shell 选项会影响每一个补全，除非采取了特殊措施（使用相应上下文的样式，或局部设置选项）来避免这种情况。</p>
+<p>除了直接影响补全系统的选项外，补全还对描述 shell 行为的各种其他选项敏感。例如，如果设置了 <code>MAGIC_EQUAL_SUBST</code> 选项，那么所有看起来像 <code>foo=~/file</code> 的命令参数都会像在参数开头一样展开 <code>~</code>，那么对于未特殊处理的命令参数的默认补全将尝试在 <code>=</code> 之后补全文件名。</p>
+<p>不用说，如果你编写补全函数，你需要担心很多其他可能影响 shell 语法的选项。由上下文选择的补全（除了绑定到按键的特定补全命令之外的所有内容）的主要起点是函数 <code>_main_complete</code>，它包含了以下行的效果，以确保至少在补全函数中设置了基本选项：</p>
+<pre><code>  setopt glob bareglobqual nullglob rcexpandparam extendedglob unset
+  unsetopt markdirs globsubst shwordsplit shglob ksharrays cshnullglob
+  unsetopt allexport aliases errexit octalzeroes
+</code></pre>
+<p>但这绝不是全部的可能性。实际上，它不包含那些行：要设置的选项存储在数组 <code>$_comp_options</code> 中，如果它们要被关闭，则前面有 <code>NO_</code>。如果你发现你需要修改这个，你可以修改它（也许也告诉维护者）。</p>
+<p>顺便说一句，如果你想知道是否可以重用函数 <code>_main_complete</code>，通过将其绑定到具有稍微不同补全定义的不同键，请查看下面对 <code>_generic</code> 命令小部件的描述。它只是 <code>_main_complete</code> 的一个前端，允许你有一套不同的有效样式。</p>
+<p>[]{#l147}</p>
+<h3 id="621-模糊补全"><a class="header" href="#621-模糊补全">6.2.1: 模糊补全</a></h3>
+<p>最大的一组选项处理当补全是模糊的，换句话说，有多个可能的补全时会发生什么。七个相关的选项如下，从 FAQ 中复制而来；许多不同的组合是可能的：</p>
+<ul>
+<li>设置 <code>NO_BEEP</code> 后，那烦人的哔哔声就消失了，</li>
+<li>设置 <code>NO_LIST_BEEP</code> 后，哔哔声只对模糊补全关闭，</li>
+<li>设置 <code>AUTO_LIST</code> 后，当补全模糊时，你会得到一个列表，而无需输入 <code>^D</code>，</li>
+<li>设置 <code>BASH_AUTO_LIST</code> 后，列表只在你第二次对一个模糊补全按 tab 时发生，</li>
+<li>设置 <code>LIST_AMBIGUOUS</code> 后，这被修改为如果有一个无歧义的前缀或后缀要插入，则不列出任何内容——这可以与 <code>BASH_AUTO_LIST</code> 结合使用，所以在两者都适用的情况下，你需要按三次 tab 才能列出，</li>
+<li>设置 <code>REC_EXACT</code> 后，如果命令行上的字符串与可能的补全之一完全匹配，它就会被接受，即使还有另一个补全（即该字符串加上其他东西）也匹配，</li>
+<li>设置 <code>MENU_COMPLETE</code> 后，一个补全总是被完全插入，然后当你按 TAB 时，它会变成下一个，依此类推，直到你回到你开始的地方，</li>
+<li>设置 <code>AUTO_MENU</code> 后，你只有在对模糊补全再次按 TAB 时才会得到菜单行为。</li>
+</ul>
+<p>[]{#l148}</p>
+<h3 id="622-always_last_prompt"><a class="header" href="#622-always_last_prompt">6.2.2: <code>ALWAYS_LAST_PROMPT</code></a></h3>
+<p><code>ALWAYS_LAST_PROMPT</code> 选项默认是打开的，并且自 zsh 的一个早期 3.1 版本以来就是如此；在列出补全后，光标会回到它之前的行上，而不是在下面重新打印它。这样做的缺点是，当你执行命令或产生一个不同的列表时，列表会被遮挡，所以你可能想取消设置该选项。<code>ALWAYS_LAST_PROMPT</code> 行为是菜单选择工作所必需的，这就是为什么我现在提到它而不是在下面的杂项中。</p>
+<p>当你编写自己的调用补全的编辑器函数时，你实际上可以用小部件 <code>end-of-list</code> 来取消这个效果，你会调用它为 <code>zle end-of-list</code>（它是一个普通的编辑函数，不是一个补全函数）。你也可以将它绑定到一个键上，用来保留现有的补全列表。另一方面，如果你想在补全函数内部控制行为，即决定补全是否会尝试返回到列表上方的提示符，你可以用 <code>$compstate</code> 关联数组的 <code>last_prompt</code> 元素来操作它，所以例如：</p>
+<pre><code>  compstate[last_prompt]=''
+</code></pre>
+<p>将为正在进行的补全关闭该行为。如果你发现自己想要如此详细地控制补全行为，<code>$compstate</code> 是你应该求助的地方；请参阅 <code>zshcompwid</code> 手册页。</p>
+<p>[]{#l149}</p>
+<h3 id="623-菜单补全和菜单选择"><a class="header" href="#623-菜单补全和菜单选择">6.2.3: 菜单补全和菜单选择</a></h3>
+<p>由上述选项决定的最重要的事情是你是否正在使用菜单补全。如果你不是，当补全有歧义时，你需要明确地输入下一个字符；如果你是，你只需要一直按 tab 直到你想要的补全出现。在第二种情况下，当然，如果可能性不多，这效果最好。使用 <code>AUTO_MENU</code> 或将 <code>menu-complete</code> 小部件绑定到一个单独的按键，可以让你两全其美。</p>
+<p>在 3.1.6 中出现了一种新的菜单补全变体；事实上，它比原始形式更配得上菜单补全这个名字，但由于那个名字已经被占用了，它被称为“菜单选择”。这允许你在补全列表中移动光标来选择一个。它由一个单独的模块 <code>zsh/complist</code> 实现；你可以通过在 <code>.zshrc</code> 中放入 <code>zmodload -i zsh/complist</code> 来确保这个模块被加载，尽管如果你使用下面设置的 <code>menu</code> 样式，它应该会自动加载。为了让它有用，你需要另外两样东西。第一是 <code>ALWAYS_LAST_PROMPT</code> 行为；如果整个补全列表无法在屏幕上显示，这个行为会被抑制，因为屏幕上没有可以返回的行。然而，菜单选择仍然有效，它允许你上下滚动列表。第二件事是，你需要以任何通常的方式启动菜单补全；菜单选择是菜单补全的补充，而不是替代。</p>
+<p>现在你应该设置以下样式：</p>
+<pre><code>  zstyle ':completion:*' menu select=&lt;NUM&gt;
+</code></pre>
+<p>如果一个模糊的补全产生了至少 <code>&lt;NUM&gt;</code> 个可能性，菜单选择就会启动。你最好通过尝试来理解这个。列表中的一个补全，最初是左上角的那个，被高亮显示并插入到行中。通过在明显的方向上移动光标（在边缘处有环绕），你可以改变高亮显示的值和插入到行中的值。当你得到你想要的值时，按回车，这会移除列表并留下插入的值。按 <code>^G</code>（编辑器函数 <code>send-break</code>）会中止菜单选择，移除列表并恢复命令行。</p>
+<p>在内部，zsh 实际上使用参数 <code>$MENUSELECT</code> 来提供数字，从而启动菜单选择。然而，这总是从上面定义的样式中初始化的，所以你不应该直接设置 <code>$MENUSELECT</code>（除非你正在使用 <code>compctl</code>，它会愉快地使用菜单选择）。与其他样式一样，你可以为不同的上下文指定不同的值；如果当前上下文没有为当前标签的样式产生一个值，则会检查 <code>default</code> 标签。请注意，<code>menu</code> 样式也允许你控制是否启动菜单补全，无论是否带选择；换句话说，它是一个对应于 <code>MENU_COMPLETE</code> 选项的样式。</p>
+<p>使用菜单选择时还有一个额外的功能。zle 命令 <code>accept-and-infer-next-history</code> 在这里有不同的含义；它接受一个补全，然后尝试再次使用菜单选择进行补全。这对于目录层次结构非常有用，并且与 <code>undo</code> 结合使用，可以给你一个简单的文件浏览器。你需要在特殊的键映射 <code>menuselect</code> 中绑定它；例如，我使用</p>
+<pre><code>  bindkey -M menuselect '^o' accept-and-infer-next-history
+</code></pre>
+<p>因为这种行为让我想起了在 emacs 模式下通常绑定到 <code>^O</code> 的东西，即 <code>accept-line-and-down-history</code>。这样绑定对普通键映射中的 <code>^O</code> 没有影响。通过在一个包含目录的文件集上进入菜单选择，并在其中一个目录上输入 <code>^O</code> 来尝试它。你应该会立即看到该目录的内容被呈现出来以供下一次选择，而 <code>undo</code> 足够聪明，不仅能移除那个选择，还能返回到对父目录的补全。</p>
+<p>你可以选择补全列表中当前选定值的突出显示方式，使用的机制与为特定类型的匹配指定颜色的机制完全相同；请参阅下面对 <code>list-colors</code> 样式的描述。</p>
+<p>[]{#l149}</p>
+<h3 id="624-改变补全行为的其他方式"><a class="header" href="#624-改变补全行为的其他方式">6.2.4: 改变补全行为的其他方式</a></h3>
+<p><strong><code>COMPLETE_ALIASES</code></strong></p>
+<p>如果你设置了一个别名，比如</p>
+<pre><code>  alias pu=pushd
+</code></pre>
+<p>那么当补全系统寻找命令名称时，别名 <code>pu</code> 将被展开，所以它会找到命令名称 <code>pushd</code>。这对于避免为所有别名定义额外的补全非常有用。然而，你可能想为别名定义一些与它展开的命令不同的东西。在这种情况下，你需要设置 <code>COMPLETE_ALIASES</code>，并为每个不匹配命令名称的别名安排补全。因此，<code>alias zcat="myzcat -dc"</code> 在设置了该选项的情况下会起作用，即使你没有告诉系统关于 <code>myzcat</code> 的信息，而 <code>alias myzcat="gzip -dc"</code> 除非你为 myzcat 定义一个补全，否则不会起作用：这里 <code>compdef _gzip myzcat</code> 可能就足够了。没有设置该选项时，情况会相反：第一个别名没有额外的 <code>compdef</code> 就不会起作用，但第二个会。</p>
+<p><strong><code>AUTO_REMOVE_SLASH</code></strong></p>
+<p>这个选项默认是打开的。如果你补全一个目录名并且添加了一个斜杠——通常是这样，既告诉你你补全了一个目录，也允许你在不手动添加 <code>/</code> 的情况下补全其中的文件——而你输入的下一个东西<em>不是</em>会插入或补全该目录中文件的一部分的东西，那么斜杠就会被移除。因此：</p>
+<pre><code> % rmdir my&lt;TAB&gt;
+   -&gt;  rmdir mydir/
+ % rmdir mydir/&lt;RETURN&gt;
+   -&gt;  `rmdir mydir' executed
+</code></pre>
+<p>这个例子显示了为什么添加这个行为：一些版本的 <code>rmdir</code> 会对目录名后的斜杠感到不满。另一方面，如果你在斜杠后继续输入，或者再次按 tab 在 <code>mydir</code> 内部补全，那么斜杠会保留。</p>
+<p>在大多数情况下，这最多是无害的。然而，如果你不喜欢这种行为，你可以取消设置 <code>AUTO_REMOVE_SLASH</code> 选项。一个可能引起轻微混淆的事情是，虽然它与其他后缀（即自动添加但不是被补全的值的一部分的东西）相同，但如果值是通过菜单补全插入的，斜杠会立即被添加。这可能会让你错误地认为补全已经完成，因此是唯一的，而实际上并非如此。</p>
+<p>请注意，某些形式的补全内置了这种行为，不一定带斜杠，当补全参数列表时。例如，输入 <code>typeset ZSH_V&lt;TAB&gt;</code>，你会看到 <code>ZSH_VERSION=</code> 出现，以防你想给该参数赋一些值；按空格，这不是一个可能的值，会使 <code>=</code> 消失。这不受 <code>AUTO_REMOVE_SLASH</code> 选项的控制，该选项只适用于由标准文件名补全系统插入的目录。</p>
+<p><strong><code>AUTO_PARAM_SLASH</code>, <code>AUTO_PARAM_KEYS</code></strong></p>
+<p>这些选项在补全带参数替换的表达式时生效。如果设置了 <code>AUTO_PARAM_SLASH</code>，那么任何其值为目录名的参数表达式在补全时都会附加一个斜杠，就像值本身被补全系统插入一样。</p>
+<p><code>AUTO_PARAM_KEYS</code> 的行为有点复杂。试试这个：</p>
+<pre><code>  print ${ZSH_V&lt;TAB&gt;
+</code></pre>
+<p>你会发现你得到了完整的单词 <code>${ZSH_VERSION}</code>，带有右花括号，并且（假设没有其他匹配的参数）后面有一个空格。然而，通常在你以这种方式补全一个参数后，你想在它后面立即输入一些东西，比如一个下标。使用 <code>AUTO_PARAM_KEYS</code>，如果你此时输入一些很可能需要放在参数名后面的东西，它会立即被放在那里，而无需你删除中间的字符——例如，用 <code>[</code> 试试。请注意，这只有在参数名和任何额外部分是由补全添加时才会发生；如果你手动输入所有内容，输入 <code>[</code> 不会有这种神奇的效果。</p>
+<p><strong><code>COMPLETE_IN_WORD</code></strong></p>
+<p>如果设置了这个，补全总是在单词中的光标位置进行。例如，如果你输入了 <code>Mafile</code>，回到 <code>f</code> 上，然后按 tab，shell 会补全 <code>Makefile</code>，而不是它通常的行为，即转到单词的末尾并尝试在那里找到一个补全，即匹配 <code>Mafile*</code> 的东西。某些类型的新补全（例如文件名补全）似乎无论选项设置如何都实现了这种行为；其他一些特性（例如下面描述的 <code>_prefix</code> 补全器）需要它，所以设置并习惯它是一件好事，除非你真的只需要在单词的末尾补全。</p>
+<p><strong><code>ALWAYS_TO_END</code></strong></p>
+<p>如果设置了这个，光标在单词被补全后总是移动到单词的末尾，即使补全是在中间进行的。这也发生在菜单补全中。</p>
+<p>[]{#l151}</p>
+<h3 id="625-改变补全的显示方式"><a class="header" href="#625-改变补全的显示方式">6.2.5: 改变补全的显示方式</a></h3>
+<p><strong><code>LIST_TYPES</code></strong></p>
+<p>这就像 <code>ls</code> 的 <code>-F</code> 选项；出现在补全列表中的文件会有一个尾随的 <code>/</code> 表示目录，<code>*</code> 表示当前进程可执行的常规文件，<code>@</code> 表示链接，<code>|</code> 表示命名管道，<code>%</code> 表示字符设备，<code>#</code> 表示块设备。这个选项默认是打开的。</p>
+<p>请注意，标识符只有在补全系统知道该项应该是文件时才会出现。如果使用通常的文件名补全命令，这是自动的。如果你编写自己的补全函数并想告诉 shell 这些值可能是现有文件以应用 <code>LIST_TYPES</code>，<code>compadd</code> 内建命令也有一个 <code>-f</code> 选项（但如果不存在这样的文件也不会造成伤害）。</p>
+<p><strong><code>LIST_PACKED</code>, <code>LIST_ROWS_FIRST</code></strong></p>
+<p>这些影响补全列表的排列。使用 <code>LIST_PACKED</code>，补全列表通过改变列宽来尽可能紧凑，而不是将它们格式化成一个完全规则的网格。使用 <code>LIST_ROWS_FIRST</code>，列表顺序被改变，使得相邻的项目沿行出现而不是下行，有点像 <code>ls</code> 的 <code>-x</code> 选项。</p>
+<p>可以使用 <code>list-packed</code> 和 <code>list-rows-first</code> 样式为特定上下文改变这两者。在这种情况下，样式总是覆盖选项；如果没有找到相应的样式，则使用选项设置。</p>
+<p>还要注意后面关于补全组的讨论：可以让不同类型的补全出现在单独的列表中，然后可以使用这些对标签敏感的样式以不同方式格式化它们。</p>
+<p>[]{#l152}</p>
+<h2 id="63-新补全入门"><a class="header" href="#63-新补全入门">6.3: 新补全入门</a></h2>
+<p>在我详细介绍新补全之前，这里是如何设置它以便你可以尝试一下。如上所述，进行补全的基本对象是 shell 函数。这些都是自动加载的，所以 shell 需要通过 <code>$fpath</code> 数组知道在哪里找到它们。如果 shell 安装正确，并且初始化文件中没有任何东西从 <code>$fpath</code> 中移除了所需的部分，这应该会自动发生。甚至可能你的系统为你设置了补全（Mandrake Linux 6.1 是第一个开箱即用这样做的系统），在这种情况下，输入 <code>which compdef</code>，你应该会看到一个完整的 shell 函数——实际上是那个允许你定义额外补全函数的函数。然后你可以跳过下一段。</p>
+<p>如果你想加载补全，在命令行试试这个：</p>
+<pre><code>  autoload -U compinit
+  compinit
+</code></pre>
+<p>这应该会静默地工作。如果不行，你需要问你的系统管理员补全函数发生了什么，或者自己找到它们，然后将所有需要的目录添加到你的 <code>$fpath</code> 中。它们要么都在一个大目录里，要么在一组子目录里，名字是 <code>AIX</code>、<code>BSD</code>、<code>Base</code>、<code>Debian</code>、<code>Redhat</code>、<code>Unix</code>、<code>X</code> 和 <code>Zsh</code>；在第二种情况下，所有目录都需要在 <code>$fpath</code> 中。当这工作时，你可以将相同的行，包括你需要的任何对 <code>$fpath</code> 的修改，添加到你的 <code>.zshrc</code> 中。</p>
+<p>你现在可以看看它是否真的在工作。输入 <code>cd </code>，然后 <code>^D</code>，你应该会看到一个只有目录的列表，没有常规文件。如果你设置了 <code>$cdpath</code>，你可能会看到 <code>ls</code> 看不到的目录。正如这所暗示的，补全系统为许多常见（以及一些相当深奥的）命令提供了补全。的确，其想法是，对于大多数用户来说，补全在大多数时候都能正常工作，无需干预。如果你认为它应该工作但没有，那可能是个 bug 或疏忽，你应该报告它。</p>
+<p>另一个关于“它就是能工作”主题的例子：</p>
+<pre><code>  tar xzf archive.tar.gz ^D
+</code></pre>
+<p>将查看 gzipped tar 归档文件内部——假设是 GNU 版本的 <code>tar</code>，其中第一组参数中的 <code>z</code> 报告归档文件已用 gzip 压缩——并给你一个可以提取的文件或目录列表。这与普通文件补全的方式非常相似；尽管有差异，你可以在归档文件内补全到任何目录深度。（在这一点上，你应该印象深刻了。）</p>
+<p>补全系统知道的不仅仅是命令及其参数，它还理解一些 shell 语法。例如，有一个名为 <code>$_comps</code> 的关联数组，它将命令名称存储为键，将补全函数的名称存储为相应的值。试试输入：</p>
+<pre><code>  print ${_comps[
+</code></pre>
+<p>然后 <code>^D</code>。你可能会收到一条消息，问你是否真的想看所有可能的补全，即 <code>$_comps</code> 的键；如果你说 <code>y</code>，你会看到一个列表。如果你插入任何那些键，然后关闭花括号，这样你就有了例如 <code>${_comps[mozilla]}</code>，然后按回车，你会看到处理该命令的补全函数；在这种情况下（在撰写本文时）是 <code>_webbrowser</code>。这是找出哪个函数正在处理特定命令的一种方法。如果没有条目——即 <code>print ${_comps[mycmd]}</code> 给你一个空行——那么该命令没有被特殊处理，将只使用为 <code>-default-</code> 上下文定义的任何函数，通常是 <code>_default</code>。通常这只会尝试补全文件名。如果你愿意，你可以自定义 <code>_default</code>。</p>
+<p>除了 <code>-default-</code>，<code>_comps</code> 的一些其他键也看起来像 <code>-this-</code>：它们是特殊上下文，是命令参数之外的地方。我们正在使用名为 <code>-subscript-</code> 的上下文；你会发现这种情况下的函数叫做 <code>_subscript</code>。许多补全函数的名称只是一个下划线后跟命令或上下文名称，减去任何连字符。如果你想尝尝补全函数的样子，试试 <code>which _subscript</code>；你很可能会发现里面有很多你还不知道的其他命令。</p>
+<p>重要的是要记住，以这种方式找到的函数是执行补全的根源。无论你如何摆弄选项或样式——我将在接下来的几节中谈论的东西——都无法改变这一点；如果你想改变基本的补全，你只需要编写自己的函数。</p>
+<p>顺便说一句，你可能有想要混合使用的旧式补全——或者你可能特别不想混合它们，以便你可以确保一切都以新格式工作。默认情况下，新的补全系统会首先尝试找到一个特定的新式补全，如果找不到，它会尝试为所讨论的命令找到一个 <code>compctl</code> 定义的补全。如果所有这些都失败了，它会尝试通常的新式默认补全，可能只是文件名补全。请注意，特定的新式补全优先，这是公平的，因为如果你添加了它们，你几乎肯定不想回到旧的形式。然而，如果你永远不想尝试旧式补全，你可以在你的 <code>.zshrc</code> 中放入以下咒语：</p>
+<pre><code>  zstyle ':completion:*' use-compctl false
+</code></pre>
+<p>目前，这只是黑魔法，但稍后我将更详细地解释“样式”机制，你会看到这与新式补全中关闭东西的正常方式相符。</p>
+<p>[]{#l153}</p>
+<h2 id="64-shell-如何找到正确的补全"><a class="header" href="#64-shell-如何找到正确的补全">6.4: shell 如何找到正确的补全</a></h2>
+<p>[]{#l154}</p>
+<h3 id="641-上下文"><a class="header" href="#641-上下文">6.4.1: 上下文</a></h3>
+<p>上面的例子表明，补全系统是高度上下文敏感的，所以了解这些上下文是如何描述的很重要。这个系统是逐渐演变的，但我所说的一切都适用于所有主版本为 4 的 zsh。</p>
+<p>我们处于补全的哪个状态，是以一种冒号分隔的路径给出的，从最不具体的部分开始。有一个简单的方法可以找出你所在的上下文：在你想要补全的地方，输入 <code>^Xh</code>，它会告诉你。在 <code>$_comps</code> 的例子中，你会发现，</p>
+<pre><code>  :completion::complete:-subscript-::
+</code></pre>
+<p>加上一个所谓的“标签”和补全函数的列表，我稍后会讲到。完整的形式是：</p>
+<pre><code>  :completion:&lt;func&gt;:&lt;completer&gt;:&lt;command&gt;:&lt;argument&gt;:&lt;tag&gt;
+</code></pre>
+<p>其中元素如果未设置可能会丢失，但冒号总是在那里，以便于模式匹配。在 <code>:completion:</code> 部分之后，上下文的各个部分的含义如下，这对于整个补全系统是通用的。</p>
+<p><em><strong><func></strong></em>
+:   是调用补全的函数的名称——如果它是从标准补全系统启动的，则为空白，并且只在一些特殊情况下出现，本章第六节会列出。</p>
+<p><em><strong><completer></strong></em>
+:   在这种情况下被称为 <code>complete</code>：这指的是补全系统能做的不仅仅是简单的补全；例如，它可以做一种更受控制的展开（如我提到的），拼写纠正，以及补全带拼写错误的单词。我稍后会介绍其他的补全器；<code>complete</code> 是最简单的，只做基本的补全。</p>
+<p><em><strong><command></strong></em>
+:   是命令的名称或如上所述的其他类似上下文，这里是 <code>-subscript-</code>。</p>
+<p><em><strong><argument></strong></em>
+:   当 <code>&lt;command&gt;</code> 是一个真实命令的名称时最有用；它描述了我们在该命令的参数中的位置。你稍后会看到它是如何工作的。许多更简单的补全不使用这个；只有那些具有复杂选项和参数组合的才使用。如果你需要知道，你只需要用 <code>^Xh</code> 找出。</p>
+<p><em><strong><tag></strong></em>
+:   描述补全的类型，本质上是一种区分在命令行同一点可以补全的不同事物的方式。</p>
+<p>现在看看一个更正常的命令-参数补全的上下文，例如在 <code>cd</code> 之后；在这里你会看到上下文 <code>:completion::complete:cd::</code>。这里上下文的命令名部分是一个真实的命令。</p>
+<p>对于更复杂的东西，试试在 <code>cvs add</code> 之后（如果你没有 <code>cvs</code> 命令，这没关系）。你会看到一个长而重复的标签列表，用于两种可能的上下文，</p>
+<pre><code>  :completion::complete:cvs:argument-rest:
+  :completion::complete:cvs-add:argument-rest:
+</code></pre>
+<p>你两者都有的原因是，<code>add</code> 不仅是 <code>cvs</code> 的一个参数，如第一个上下文所示，它本身也是一个子命令，有自己的参数，这就是第二个上下文的用途。第一个上下文意味着在 <code>add</code> 及其参数之后可能还有更多与它们完全独立的子命令——尽管实际上 CVS 不是那样工作的，所以那种形式在这里不会给你任何补全。</p>
+<p>在这两者中，<code>argument-rest</code> 表明补全正在寻找另一个参数，<code>rest</code> 表示它是行尾的参数列表；如果位置很重要（请看 <code>cvs import</code> 的例子），上下文会包含 <code>argument-1</code>，或者别的什么。<code>cvs-add</code> 显示了子命令是如何处理的，通过用连字符而不是冒号分隔，以免混淆上下文的不同部分。</p>
+<p>除了命令和子命令的参数，选项的参数是另一个常见的可能性；举个例子，在 <code>dvips -o</code> 之后输入 <code>^Xh</code>，你会看到上下文 <code>:completion::complete:dvips:option-o-1:</code>；这表明你正在补全 <code>dvips</code> 的 <code>-o</code> 选项的第一个参数（它只接受一个参数），恰好是输出文件的名称。</p>
+<p>[]{#l155}</p>
+<h3 id="642-标签"><a class="header" href="#642-标签">6.4.2: 标签</a></h3>
+<p>现在讲到与上下文有关的另一件事，标签。让我们回到 <code>cd</code> 命令后的 <code>^Xh</code> 帮助测试的完整输出：</p>
+<pre><code>  tags in context :completion::complete:cd::
+    local-directories path-directories  (_alternative _cd)
+</code></pre>
+<p>与到目前为止考虑的上下文不同，它们告诉你补全是<em>如何</em>到达它所在的位置的，标签描述了它<em>可以</em>在这里补全的东西。在这种情况下，有三个：<code>directory-stack</code> 指的是像 <code>+1</code> 这样的条目；目录栈是使用 <code>pushd</code> 命令定义的目录集，你可以用 <code>dirs</code> 命令看到。接下来，<code>local-directories</code> 指的是当前工作目录的子目录，而 <code>path-directories</code> 指的是通过搜索 <code>$cdpath</code> 数组找到的任何目录。系统提供的每个可能的补全都属于这些类别之一。</p>
+<p>在括号里，你看到了被调用来生成补全的函数的名称；如果你想改变基本的补全行为，你需要改变或替换这些。调用函数出现在右边，被调用函数出现在左边，所以在这种情况下，函数 <code>_cd</code> 是第一个被调用来处理 <code>cd</code> 命令参数的函数，符合通常的惯例。一些标准的补全函数已经从这个列表中被过滤掉了——知道它经过了 <code>_main_complete</code> 和 <code>_complete</code> 对你没有帮助，例如。</p>
+<p>也许已经很明显，让系统以不同方式对待不同类型的补全是有用的，但这里有一个例子，它让你预览了“样式”机制，稍后会讨论。样式是一种美化的 shell 参数；它们用 <code>zstyle</code> 命令定义，使用一个样式名和可能的值，这些值可以是一个数组；你总是可以把一个样式定义为一个数组，但一些样式可能只是把它当作一个字符串，用空格连接你给它的参数。你也可以用 <code>zstyle</code> 命令，用不同的参数，来检索它们的值，这正是补全系统自己做的；与参数及其值没有实际的重叠，所以它们不会妨碍正常的 shell 编程。</p>
+<p>样式与参数的不同之处在于，它们可以在不同的上下文中取不同的值。<code>zstyle</code> 命令的第一个参数给出一个上下文；当你定义一个样式时，这个参数实际上是一个模式，将与当前上下文匹配以查看样式是否适用。找出适用规则的规则是：精确的字符串匹配优先于模式，较长的模式优先于较短的模式。这里是那个例子：</p>
+<pre><code>  zstyle ':completion:*:cd:*' tag-order local-directories   path-directories
+</code></pre>
+<p>从上面对上下文的讨论中，当 <code>cd</code> 命令的参数被补全时，该模式将匹配。正在设置的样式叫做 <code>tag-order</code>，值是 <code>cd</code> 中对目录有效的两个标签。</p>
+<p><code>tag-order</code> 样式决定了标签被尝试的顺序。上面给出的值意味着首先会补全 <code>local-directories</code>；只有当没有可以补全的时候，才会尝试 <code>path-directories</code>。你可以输入命令并尝试这个；如果你没有设置 <code>$cdpath</code>，你可以赋 <code>cdpath=(~)</code>，这将允许 <code>cd foo</code> 切换到目录 <code>~/foo</code> 并相应地补全目录。转到一个不是 <code>~</code> 的目录；<code>cd</code> 的补全将只显示你所在位置的子目录，而不是 <code>~</code> 的子目录，除非你输入一个字符串，它是 <code>~</code> 下目录的前缀，但不是你当前目录的前缀。例如，</p>
+<pre><code>  % cdpath=(~)
+  % ls -F ~
+  foo/    bar/
+  % ls -F
+  rod/    stick/
+  # 没有那个 tag-order zstyle 命令，你会得到...
+  % cd ^D
+  bar/    foo/    rod/    stick/
+  % zstyle ':completion:*:cd:*' tag-order local-directories   path-directories
+  # 现在你只得到本地目录，如果有的话...
+  % cd ^D
+  rod/    stick/
+</code></pre>
+<p>你可以用 <code>tag-order</code> 样式做更多的事情：如果你把标签放在同一个词里，通过引用，例如 <code>"local-directories path-directories"</code>，那么它们会同时被尝试，在这种情况下，你得到的是默认的效果。事实上，由于要知道每个可能的补全有哪些标签可用工作量太大，当没有合适的 <code>tag-order</code> 时，默认是简单地一次性尝试上下文中所有可用的标签；这当然是最初 <code>cd</code> 之后补全发生的情况。</p>
+<p>即使有 <code>tag-order</code> 规范，任何未指定的标签通常也会在最后一起被尝试，所以你实际上可以从原始例子的末尾省略 <code>path-directories</code>，效果会是一样的。如果你不希望那样发生，你可以在标签列表中指定一个 <code>-</code>，它不被用作标签，而是告诉补全只应该尝试列表中的标签，而不是任何其他可能可用的。此外，如果你不希望显示某个特定的标签，你可以在值中包含 <code>!tagname</code>，除了这个之外的所有其他标签都会被包含。例如，你可能已经注意到，在命令位置补全时，你会看到要设置的参数以及命令等：</p>
+<pre><code>  Completing external command
+  tex             texhash         texi2pdf        text2sf
+  texconfig       texi2dvi        texindex        textmode
+  texdoc          texi2dvi4a2ps   texlinks        texutil
+  texexec         texi2html       texshow         texview
+  Completing parameter
+  TEXINPUTS                               texinputs
+</code></pre>
+<p>（我还没告诉你如何产生那些描述，或者如何让不同标签的补全分开出现，但我会的——请参阅下面对“format”和“group-name”样式的描述。）如果你设置</p>
+<pre><code>  zstyle ':completion:*:-command-:*' tag-order '!parameters'
+</code></pre>
+<p>那么最后两行将从补全中消失。当然，你的补全列表可能看起来与我的完全不同。顺便说一句，关于样式的一个好处是，它们是在补全加载之前还是之后定义都无所谓，因为样式是由 shell 的另一部分存储和检索的。</p>
+<p>要排除多个标签名，你需要将名称包含在同一个词中。例如，要同时排除参数和保留字，值将是 <code>'!parameters reserved-words'</code>，而<em>不是</em> <code>'!parameters' '!reserved-words'</code>，后者会尝试一次排除参数的补全，然后再一次排除保留字的补全。此外，标签实际上可以是模式，或者更准确地说，<code>tag-order</code> 的参数中的任何单词都可能包含一个模式，然后将尝试与所有有效标签进行匹配，看是否匹配。有时甚至使用 <code>*</code> 来匹配所有标签也很有用，如果你正在指定一个标签的特殊形式——也许使用一个标签，如下所述——在同一个词中。请参阅手册，了解所提供函数理解的所有标签名称。</p>
+<p><code>tag-order</code> 样式允许你给标签“标签”，这是一种别名，指示补全系统使用一个不同名称的标签。你通过给出标签后跟一个冒号，再跟上标签来安排这个。标签前面也可以有一个连字符，这意味着在查找标签时，原始标签名应该放在前面；这真的只是一个让名称看起来更整洁的方式。结果是，通过使用带有标签名的上下文，而不是标签名，你可以安排特殊的行为。此外，你可以为带标签的标签给出一个替代的描述；这些会与我下面将描述的 <code>format</code> 样式一起显示（我个人觉得非常有用）。你把描述放在另一个冒号后面，任何空格都要引用。它看起来会是这样：</p>
+<pre><code>  zstyle ':completion:*:aliens:*' tag-order   'frooble:-funny:funny frooble' frooble
+</code></pre>
+<p>这在你为 <code>aliens</code> 命令补全时使用，该命令大概有标记为 <code>frooble</code> 的补全（如果没有，你很奇怪）。然后补全会首先查找该标签的样式，名称为 <code>frooble-funny</code>，如果它使用那些样式找到了补全，它会用 <code>funny frooble</code> 的描述列出它们（如果你正在使用 <code>format</code>）。否则，它会查找该标签的样式，名称为其通常的名称，并再次尝试补全。大概很明显，如果你对标签的两个标签没有不同的样式，你每次都会得到相同的补全。</p>
+<p>与其现在通过给出如何使用标签标签的例子来让你对标签信息过载，我将把这个保留到下面对 <code>ignored-patterns</code> 样式的描述中，那是标签的一个简洁用法。事实上，它就是为此发明的；可能还有很多我们还没想到的其他用法。</p>
+<p>关于 <code>tag-order</code> 的一个重要说明，我可能没有像我应该的那样明确：<em>它不改变在该补全中实际有效的标签</em>。仅仅将一个标签名放入列表并不意味着该标签名将被使用；那完全由特定上下文的补全函数决定。<code>tag-order</code> 样式只是改变了<em>有效</em>的标签被检查的顺序。当你搞不清楚为什么 <code>tag-order</code> 不做你想要的事情时，再回来读一遍这段。</p>
+<p>请注意，测试模式的规则意味着你总是可以通过 <code>zstyle "*" style ...</code> 来指定一个万能的最坏情况，它总是最后被尝试——不仅仅是在补全中，实际上，因为 shell 的其他部分也使用样式机制，并且没有 <code>:completion:</code> 在上下文的开头，这个样式定义也会在那里被拾取。</p>
+<p>像 <code>tag-order</code> 这样的样式是标签单独使用的最重要的情况。在其他情况下，它们可以被添加到上下文的末尾；这对于可以为不同的补全集给出不同结果的样式很有用，特别是决定补全列表如何显示，或者一个补全如何插入到命令行中的样式。标签是最后一个元素，所以后面没有冒号。一个完整的上下文然后看起来像 <code>:completion::complete:cd::path-directories</code>。稍后，你会看到一些可以为不同的标签上下文有用地不同的样式。然而，请记住，上下文的标签部分，像其他部分一样，如果补全系统还没有弄清楚它应该是什么，可能会是空的。</p>
+<p>[]{#l156}</p>
+<h2 id="65-使用样式配置补全"><a class="header" href="#65-使用样式配置补全">6.5: 使用样式配置补全</a></h2>
+<p>你现在知道如何为特定的上下文定义一个样式，使用</p>
+<pre><code>  zstyle &lt;context&gt; &lt;style&gt; &lt;value...&gt;
+</code></pre>
+<p>以及一些它有用的情况。在介绍其他样式之前，这里有一些更详细的信息。我已经说过样式可以接受一个数组值，即 <code>zstyle</code> 命令末尾的一组值，对应于数组元素，你已经看到了一个例子（<code>tag-order</code>），其中这是有用的。然而，许多样式只使用一个值。有一个特别常见的情况，你只是想打开或关闭一个值，即一个布尔值。在这种情况下，你可以使用 <code>true</code>、<code>yes</code>、<code>on</code> 或 <code>1</code> 表示开，<code>false</code>、<code>no</code>、<code>off</code> 或 <code>0</code> 表示关。你以同样的方式定义所有样式；只有当它们被使用时，才决定它们应该是标量、数组还是布尔值，样式名称也不会被检查是否有效，因为 shell 不知道以后可能会查找哪些样式。同样明显地，这也适用于上下文。</p>
+<p>你可以使用 <code>zstyle</code> 或 <code>zstyle -L</code> 来列出现有的样式（不是单独的，只能是完整的列表）。在第二种情况下，它们以 <code>zstyle</code> 命令集的形式输出，这些命令可以重新生成当前定义的样式。这对于 <code>grep</code> 也很有用，因为你可以很容易地检查特定样式的所有可能上下文。</p>
+<p>使用 <code>zstyle</code> 最强大的方式是使用 <code>-e</code> 选项。这表示你提供的单词将被评估，就像作为 <code>eval</code> 的参数一样。这应该将数组 <code>$reply</code> 设置为要使用的单词。所以</p>
+<pre><code>  zstyle '*' days 'Monday Tuesday'
+</code></pre>
+<p>和</p>
+<pre><code>  zstyle -e '*' days 'reply=(Monday Tuesday)'
+</code></pre>
+<p>是等效的——但意图当然是，在第二种情况下，参数每次都可以返回一个不同的值，以便样式可以变化。它通常会在补全的热潮中被评估，因此会获取所有的编辑参数；所以例如</p>
+<pre><code>  zstyle -e ':completion:*' mystyles 'reply=(${NUMERIC:-0})'
+</code></pre>
+<p>如果你为命令输入了一个非零的前缀参数，如<a href="zshguide04.html#zle">第四章</a>中所述，将使样式返回一个非零整数（可能表示 <code>true</code>）。然而，参数可以包含任何 zsh 代码，而不仅仅是一个简单的赋值。记住要引用它，以防止它在 <code>zstyle</code> 命令行运行时变成别的东西。</p>
+<p>最后，你可以通过</p>
+<pre><code>  zstyle -d [ &lt;context-pattern&gt; [ &lt;style&gt; ] ] ...
+</code></pre>
+<p>来删除一个样式或一个样式列表的上下文——注意，虽然第一个参数是一个模式，但在这种情况下，它被精确地处理，所以如果你给出模式 <code>:completion:*:cd:*</code>，只有用<em>完全</em>那个模式给出的值才会被删除，而不是上下文以 <code>:completion:</code> 开头并包含 <code>:cd:</code> 的其他值。在删除时，模式和样式是可选的；如果省略，上下文的所有样式，或任何类型的所有样式，都会被删除。补全系统有自己的默认值，但这些是内置的，所以你指定的任何东西都有优先权。</p>
+<p>顺便说一句，我在<a href="zshguide04.html#zle">第四章</a>中顺便提到了，你可以在普通的 zle 小部件（用 <code>zle -N</code> 创建的那些）中以完全相同的方式使用样式，但你可能马上就忘了。本章关于定义样式和在你自己的函数中使用它们的所有说明都适用于 zle 函数。唯一的区别是，在这种情况下，上下文的约定是，对于执行小部件 <em>widget-name</em>，上下文被设置为 <code>:zle:*widget-name*</code>。</p>
+<p>本节的其余部分描述了一些有用的样式。如果你想让样式的值在不同的地方不同，就由你来试验上下文，或者如果你不在乎，就用 <code>*</code>。</p>
+<p>[]{#l157}</p>
+<h3 id="651-指定补全器及其选项"><a class="header" href="#651-指定补全器及其选项">6.5.1: 指定补全器及其选项</a></h3>
+<p>“补全器”是决定正在进行何种补全的幕后函数。你用 <code>completer</code> 样式来设置使用哪些补全器，它接受一个按顺序尝试的补全器数组。例如，</p>
+<pre><code>  zstyle ':completion:*' completer _complete _correct _approximate
+</code></pre>
+<p>指定首先尝试正常补全（<code>_complete</code>），然后是拼写纠正（<code>_correct</code>），最后是近似补全（<code>_approximate</code>），这本质上是前两者的组合效果，即补全输入的单词但允许拼写错误。所有补全器都设置上下文，所以在 <code>_complete</code> 内部你通常会找到 <code>:completion::complete:...</code>，在纠正内部是 <code>:completion::correct:..</code>，依此类推。</p>
+<p>补全器有一个标签功能，有点像上面描述但没有详细说明的标签功能。你可以像这样在列表中放入一个补全器：</p>
+<pre><code>  zstyle ':completion:*' completer ... _complete:comp-label ...
+</code></pre>
+<p>它调用补全器 <code>_complete</code>，但在样式中查找东西时假装它的名字是 <code>comp-label</code>，所以你可以多次尝试带有不同功能的补全器。就像标签一样，你可以像 <code>_complete:-label</code> 这样写，普通的名字会被前置以得到名字 <code>complete-label</code>——只是一个快捷方式，它没有引入任何新东西。我将推迟一个例子，直到你知道补全器做什么。</p>
+<p>这里是现有补全器的更详细描述；它们都是函数，所以你可以简单地复制和修改一个来制作你自己的补全器。</p>
+<p><strong><code>_complete</code></strong></p>
+<p>这是基本的补全行为，我们到目前为止一直假设是这样。它的主要用途只是检查上下文——这里的意思是我们是在补全一个普通的命令参数还是一个特殊的 <code>-context-</code> 地方——并调用适当的补全函数。通过设置参数 <code>compcontext</code> 来欺骗它是可能的，它将被用来代替自动生成的那个；如果你为特殊情况编写自己的补全命令，这可能很有用。如果你这样做，你应该使该参数对你的函数是局部的。</p>
+<p><strong><code>_approximate</code></strong></p>
+<p>这做近似补全：它实际上是作为 <code>_complete</code> 补全器的包装器编写的，所以它做所有 <code>_complete</code> 做的事情，但它也设置系统以允许带拼写错误的补全。通常，你会想先尝试没有拼写错误的补全，所以这个补全器通常出现在 <code>completers</code> 样式的 <code>_complete</code> 之后。</p>
+<p>主要的控制手段是通过 <code>max-errors</code> 样式。你可以将它设置为允许的最大错误数。一个错误被定义为如近似模式匹配手册中所述：一个缺失的字符，如 <code>rhythm</code> / <code>rhytm</code>，一个额外的字符，如 <code>rhythm</code> / <code>rhythms</code>，一个不正确的字符，如 <code>rhythm</code> / <code>rhxthm</code>，或一对转置的字符，如 <code>rhythm</code> <code>rhyhtm</code>，每个都算作一个错误。近似将首先尝试找到一个带有一个错误的匹配，然后是两个错误，依此类推，直到并包括 <code>max-errors</code> 的值；选择错误数最少的匹配集，所以即使你将 <code>max-errors</code> 设置得很大，错误数较少的匹配总是会被优先选择。设置一个大的 <code>max-errors</code> 的真正问题是它会更慢，并且更有可能产生与你想要的完全不同的匹配——对于打字错误，两三个可能就是你需要的最多。否则，总有 Mavis Beacon。因此：</p>
+<pre><code>  % zstyle ':completion:*' max-errors 2
+  # 只是为了举例...
+  % zstyle ':completion:*' completer _approximate
+  % ls
+  ashes    sackcloth
+  % echo siccl&lt;TAB&gt;
+    -&gt; echo sackcloth
+  % echo zicc&lt;TAB&gt;
+    &lt;Beep.&gt;
+</code></pre>
+<p>因为 <code>s[i/a]c[k]cloth</code> 只有两个错误，而 <code>[z/s][i/a]c[k]cloth</code> 会是三个，所以不补全。</p>
+<p>还有另一种给出最大错误数的方法，使用在 Emacs 模式下用 <code>ESC-&lt;digit&gt;</code> 指定的数字前缀，在 vi 命令模式下直接用数字键，或者用 <code>universal-argument</code>。要启用这个，你必须在 <code>max-errors</code> 的值中包含字符串 <code>numeric</code>——因此这实际上可以是一个数组，例如</p>
+<pre><code>  zstyle ':completion:*:approximate:*' max-errors 2 numeric
+</code></pre>
+<p>自动允许最多两个错误，但你可以通过给补全命令一个前缀来指定一个更高的最大值。所以继续上面的例子，输入新的 <code>zstyle</code> 和：</p>
+<pre><code>  % echo zicc&lt;ESC-3&gt;&lt;TAB&gt;
+    -&gt; echo sackcloth
+</code></pre>
+<p>因为我们允许了三个错误。你可以开始看到允许太多错误的问题：如果你有文件 <code>zucchini</code>，那只有一个错误，它会被找到并插入，而 <code>sackcloth</code> 甚至都不会被考虑。</p>
+<p>请注意，上下文在补全器中立即被检查，所以在这个阶段它只是 <code>:completion::approximate:::</code>；没有更详细的上下文信息可用，所以不可能为不同的命令或标签指定不同的 <code>max-errors</code>。</p>
+<p>作为样式值的最后一种可能性是 <code>not-numeric</code>：那意味着如果给出了任何数字前缀，近似将根本不被执行。在最后一个例子中，补全将不得不找到一个以 <code>zicc</code> 开头的文件。</p>
+<p>其他次要的样式也控制近似。样式 <code>original</code>，如果为 true，意味着原始值总是被视为一个可能的补全，即使它不匹配任何东西，即使没有其他东西匹配。补全原始值和更正使用不同的标签，不具想象力地称为 <code>original</code> 和 <code>corrections</code>，所以你可以用 <code>tag-order</code> 样式来组织这个。</p>
+<p>因为在这种情况下，补全通常与命令行上已有的内容不匹配，并且很可能彼此不匹配，所以会立即进入菜单补全，供你选择一个补全。你可以通过设置布尔样式 <code>insert-unambiguous</code> 来安排如果有一个无歧义的部分可以先插入，则不发生这种情况。</p>
+<p>最后两个样式（<code>original</code> 和 <code>insert-unambiguous</code>）在很早的时候就被查找，当生成更正的上下文被设置时，所以只有到补全器名称的上下文是可用的。补全器名称后面会跟着一个连字符和当前接受的错误数。所以对于尝试一个错误的近似，上下文是 <code>:completion::approximate-1:::</code>；如果那失败了，系统需要寻找带两个错误的补全，上下文将是 <code>:completion::approximate-2:::</code>，依此类推；对于下一个描述的补全器，纠正和 <code>correct-1</code> 等也是如此。</p>
+<p><strong><code>_correct</code></strong></p>
+<p>这与 <code>_approximate</code> 非常相似，只是上下文是 <code>:completion::correct:*</code>（或者在生成更正时是 <code>:completion::correct-&lt;num&gt;:*</code>，如上所述），并且它不会执行补全，只执行拼写纠正，所以补全器必须在行上单词的末尾添加的额外字符现在算作额外的错误，而不是以普通方式补全：<code>zicc</code> 离 <code>sackcloth</code> 差得很远，七个错误，但 <code>ziccloth</code> 只算三个。<code>_correct</code> 补全器的控制方式与 <code>_approximate</code> 完全相同。</p>
+<p>有一个单独的命令只做纠正而不做其他任何事情，通常绑定到 <code>^Xc</code>，所以如果你乐于使用那个，你不需要在补全器列表中包含 <code>_correct</code>。如果你确实包含了它，并且你也有 <code>_approximate</code>，<code>_correct</code> 应该排在前面；<code>_approximate</code> 肯定会生成 <code>_correct</code> 生成的所有匹配，并且可能更多。像其他单独的补全命令一样，它有自己的上下文，这里以 <code>:completion:correct-word:</code> 开头，所以很容易让这个命令的行为与正常的补全器不同。</p>
+<p>老用户会记得 shell 中内置了另一种形式的拼写纠正，用 <code>ESC-$</code> 或 <code>ESC-s</code> 调用。这只纠正文件名，并且不理解任何关于新补全机制的东西；使用它的唯一原因是它可能更快。然而，如果你使用 <code>CORRECT</code> 或 <code>CORRECT_ALL</code> shell 选项，你将使用旧的文件名纠正机制；目前还无法改变这个。</p>
+<p><strong><code>_expand</code></strong></p>
+<p>这实际上执行展开，而不是补全；区别在本章开头已经解释过了。如果你使用它，你应该将 tab 绑定到 <code>complete-word</code>，而不是 <code>expand-or-complete</code>，因为否则在补全机制启动之前就会执行展开。由于展开通常仍然应该在补全之前尝试，这个补全器应该出现在 <code>completers</code> 样式的值列表中的 <code>_complete</code> 及其亲属之前。</p>
+<p>使用这个补全器而不是正常展开的原因是，你可以使用 <code>:completion:*:expand:*</code> 上下文中的样式来控制执行哪些展开。这里是相关的样式：</p>
+<p><strong><code>glob</code></strong>
+:   展开 glob 表达式，换句话说，使用通配符进行文件名生成。</p>
+<p><strong><code>substitute</code></strong>
+:   展开包含活动 <code>$</code> 或反引号的表达式。</p>
+<p>但请记住，在使用此补全器时，你需要</p>
+<pre><code>  bindkey '^i' complete-word
+</code></pre>
+<p>因为否则由正常绑定 <code>expand-or-complete</code> 运行的内置展开机制将接管。</p>
+<p>你也可以控制展开是如何插入的。用于添加展开的标签是 <code>original</code>（大概不言自明），<code>all-expansions</code>，它指的是添加一个包含所有可能展开的单个字符串（默认值，就像编辑器函数 <code>expand-word</code> 一样），和 <code>expansions</code>，它指的是逐个添加的结果。通过改变标签被尝试的顺序，如上面对 <code>tag-order</code> 样式的描述，你可以决定这如何发生。例如，</p>
+<pre><code>  zstyle ':completion:*' completer _expand _complete
+  zstyle ':completion::expand:*' tag-order expansions
+</code></pre>
+<p>设置为通过补全执行 glob 展开，展开结果逐个呈现（通常通过菜单补全，因为没有共同的前缀）。将 <code>expansions</code> 改为 <code>all-expansions</code> 会插入列表，就像正常的展开机制所做的那样，而将其改为 <code>expansions original</code> 会保留逐个条目，但也会将原始字符串作为一个可能性呈现。你甚至可以三者都有，即整个列表作为一个单一的字符串成为可能性集合中的一个。</p>
+<p>还有一个 <code>sort</code> 样式，它决定了生成的展开是否会像补全通常那样被排序，还是保持 shell 从展开中产生的原样（例如，展开一个数组参数会按顺序产生元素）。如果它是 <code>true</code>，它们将总是被排序，如果 <code>false</code> 或未设置则永远不会，如果它是 <code>menu</code>，它们将为 <code>expansions</code> 标签排序，但对于 <code>all-expansions</code> 标签则不会，后者将是原始顺序的值的单个字符串。</p>
+<p>当你只尝试生成 <code>glob</code> 展开，而不使用 <code>substitute</code> 时，有一个轻微的问题。事实上，不难看出，像 <code>$PWD/*.c</code> 这样的表达式如果 <code>substitute</code> 不活动，就没有任何意义；它必须活动才能理解这样的表达式。然而，如果没有匹配，这很烦人：你最终会得到一个带有展开的 <code>$PWD</code> 的补全，但 <code>*.c</code> 仍然附加在末尾，这不是你想要的。如果你主要使用 <code>_expand</code> 进行通配，你可能因此想将样式 <code>subst-globs-only</code> 设置为 true：如果一个补全只是展开了参数，而通配什么也没做，那么展开被拒绝，行保持不变。</p>
+<p><code>_expand</code> 补全器也会使用样式</p>
+<p><strong><code>accept-exact</code></strong>
+:   适用于以 <code>$</code> 或 <code>~</code> 开头的单词。假设有一个参数 <code>$foo</code> 和一个参数 <code>$foobar</code>，并且你在行上有 <code>$foo</code>。通常补全系统会在此时执行补全。然而，设置了 <code>accept-exact</code> 后，<code>$foo</code> 将被展开，因为它匹配一个参数。</p>
+<p><strong><code>add-space</code></strong>
+:   意味着在展开后添加一个空格，就像成功的补全一样——尽管目录会得到一个 <code>/</code>。为了更精细的控制，它可以被设置为单词 <code>file</code>，这意味着只有当展开的单词匹配一个已经存在的文件时才会添加空格（想法是，如果它不存在，你可能想进一步补全）。<code>true</code> 和 <code>file</code> 都可以与 <code>subst</code> 结合使用，这可以防止在展开 <code>${...}</code> 或 <code>$(...)</code> 形式的替换后添加空格。</p>
+<p><strong><code>keep_prefix</code></strong>
+:   也解决了 <code>~</code> 或 <code>$</code> 是否应该被展开的问题。如果设置了，前缀将被保留，所以将 <code>~/f*</code> 展开为 <code>~/foo</code> 不会将 <code>~</code> 变成 <code>/home/pws</code>。默认值是 <code>changed</code>，这是 <code>false</code> 和 <code>true</code> 之间的折中方案：它的意思是，如果单词没有其他变化，即没有找到其他可能的展开，<code>~</code> 或 <code>$</code> 将被展开。如果这个样式的效果是展开与未展开的单词相同，那么在 <code>_expand</code> 之后的列表中的下一个补全器将被尝试。</p>
+<p><strong><code>suffix</code></strong>
+:   与 <code>keep_prefix</code> 类似。所指的“后缀”是在以 <code>~</code> 或 <code>$</code> 开头的表达式之后，不属于该展开的一部分的东西。如果设置了这个样式，并且存在这样的后缀，则不执行展开。所以，例如，<code>~pw&lt;TAB&gt;</code> 可以被展开为 <code>~pws</code>，但 <code>~pw/</code> 不符合展开的条件；同样 <code>$fo</code> 和 <code>$fo/</code> 也是。这个样式默认为 <code>true</code>——所以如果你想让 <code>_expand</code> 总是展开这样的表达式，你需要自己将它设置为 <code>false</code>。</p>
+<p>获得 <code>_expand</code> 补全器提供的那种对展开的控制的一种更简单的方法是使用 <code>_expand_word</code> 函数，通常绑定到 <code>\C-xe</code>，它做所有上面描述的事情，而不会与其他补全器混淆。在这种情况下，上下文字符串以 <code>:completion:expand-word:</code> 开头，所以你可以为这个设置与 <code>_expand</code> 补全器不同的样式。</p>
+<p>为展开设置不同的优先级是补全器标签的一个好用途，例如</p>
+<pre><code>  zstyle ':completion:*' completer _expand:-glob _expand:-subst
+  zstyle ':completion:*:expand-glob:*' glob yes
+  zstyle ':completion:*:expand-subst:*' substitute yes
+</code></pre>
+<p>是使 <code>_expand</code> 尝试 glob 补全，如果失败则进行替换，并将结果作为展开呈现的基本设置。你几乎肯定会想添加细节来帮助这个。</p>
+<p><strong><code>_history</code></strong></p>
+<p>这会从 shell 的历史中补全单词，换句话说，就是你在前几行输入或补全或展开的所有内容。有三个样式会影响它，<code>sort</code> 和 <code>remove-all-dups</code>；它们在下面为命令小部件 <code>_history_complete_word</code> 描述。那个小部件本质上是作为特殊按键执行这个补全器的工作。</p>
+<p><strong><code>_prefix</code></strong></p>
+<p>严格来说，这个补全器本身不做补全，因此应该在下面以 <code>_match</code> 开头的组中。然而，它<em>似乎</em>做补全……让我解释一下。</p>
+<p>许多 shell，包括 zsh，都有只补全光标前单词的功能，zsh 补全行话称之为“前缀”。我上面在谈论 <code>expand-or-complete-prefix</code> 时解释过这个；当你使用那个而不是正常的补全函数时，最终补全的单词看起来像 <code>&lt;prefix&gt;&lt;completion&gt;&lt;suffix&gt;</code>，其中补全将 <code>&lt;prefix&gt;</code> 变成了 <code>&lt;prefix&gt;&lt;completion&gt;</code>，全程忽略了 <code>&lt;suffix&gt;</code>。</p>
+<p><code>_prefix</code> 补全器让你可以在正常补全中做到这一点。发生的情况是，补全器按正常顺序从左到右评估，直到找到一个补全。如果到达 <code>_prefix</code>，则只对前缀尝试补全。所以如果你的补全器是 <code>_complete _prefix</code>，shell 会首先尝试对整个单词，前缀和后缀，进行补全，然后只对前缀进行补全。只使用第一个“真实”的补全器（<code>_complete</code>、<code>_approximate</code>、<code>_correct</code>、<code>_expand</code>、<code>_history</code>）。</p>
+<p>你可以通过在补全器列表中多次包含 <code>_prefix</code> 来多次尝试前缀补全；第二次，它会尝试列表中的第二个“真实”补全器；所以如果它们是 <code>_complete _prefix _correct _prefix</code>，你会得到先是普通补全，然后是只对前缀的相同操作，然后是普通纠正，然后是只对前缀的相同操作。你可以将任一 <code>_prefix</code> 补全器移动到序列中你希望尝试仅前缀版本的位置。</p>
+<p><code>_prefix</code> 补全器会重新查找 <code>completer</code> 样式。这意味着你可以使用一个非默认的补全器集，只用于 <code>_prefix</code>。这里，如手册中所述，是如何强制 <code>_prefix</code> 只作为最后手段使用，并且只与正常补全一起使用：</p>
+<pre><code>  zstyle ':completion:::::' completer _complete   &lt;other-completers&gt; _prefix
+  zstyle ':completion::prefix:::' completer _complete
+</code></pre>
+<p>显示了完整的上下文，只是为了强调形式；像往常一样，如果你不在乎，你可以使用通配符。在这种情况下，你可以<em>只</em>使用 <code>_prefix</code> 作为补全器，而包含后缀的补全将永远不会被尝试；然而，你必须确保你有 <code>prefix</code> 上下文的 <code>completer</code> 样式，否则根本不会进行任何补全。</p>
+<p>补全器标签技巧在这里再次有用：你可以多次调用 <code>_prefix</code>，无论你选择在你的补全器列表中的哪个位置，并强制它每次都在不同的上下文中查找。</p>
+<pre><code>  zstyle ':completion:*' completer _complete _prefix:-complete   _approximate _prefix:-approximate
+  zstyle ':completion:*:prefix-complete:*' completer _complete
+  zstyle ':completion:*:prefix-approximate:*' completer _approximate
+</code></pre>
+<p>这会尝试普通补全，然后是只对前缀的相同操作，然后是近似补全，然后是只对前缀的相同操作。如上一段所述，完全可以省略原始的 <code>_complete</code> 和 <code>_approximate</code> 补全器，只使用带 <code>_prefix</code> 前缀的形式。</p>
+<p>关于 <code>_prefix</code> 补全器的一个陷阱：你必须确保设置了 <code>COMPLETE_IN_WORD</code> 选项。这可能听起来违反直觉：毕竟，<code>_prefix</code> 强制补全<em>不</em>在单词内部进行。关键是，没有那个选项，补全只在单词的末尾尝试，所以当你在 <code>&lt;prefix&gt;&lt;suffix&gt;</code> 的中间按 <code>&lt;TAB&gt;</code> 时，光标会移动到后缀的末尾，然后补全系统才有机会看到那里有什么，因此整个东西被视为一个前缀，没有后缀。</p>
+<p><code>_prefix</code> 还有一个样式：<code>add-space</code>。这使得 <code>_prefix</code> 在补全前缀时添加一个真实的、活生生的空格，而不是仅仅假装那里有一个，从而将补全的单词与原始后缀分开；否则它只会将结果的单词全部连接在一起，就像 <code>expand-or-complete-prefix</code> 通常做的那样。</p>
+<p><strong><code>_ignored</code></strong></p>
+<p>像 <code>_prefix</code> 一样，这是一个混合体，收拾已经被生成的补全的烂摊子。它允许你拥有已经被 <code>ignored-patterns</code> 样式拒绝的补全。我将在下面描述那个，但它的效果非常简单：对于给定的上下文，你指定的模式列表会与可能的补全进行匹配，任何匹配的都会从列表中移除。<code>_ignored</code> 补全器允许你在你的补全器列表的后面检索那些被移除的补全，以防没有其他东西匹配。</p>
+<p>这被 <code>$fignore</code> 机制使用——一个通常不被补全的文件的后缀列表——它实际上是建立在 <code>ignored-patterns</code> 之上的，所以如果你以 zsh 用户熟悉的方式使用它，即如果没有未被忽略的匹配，则显示被忽略的匹配，你需要在你的补全器列表中有 <code>_ignored</code> 补全器。</p>
+<p><code>_ignored</code> 的一个稍微烦人的特性是，如果只有一个可能的补全，它会被无条件地插入。这几乎不令人惊讶，但如果你真的不想要那个选择，可能会很烦人。有一个样式 <code>single-ignored</code>，你可以设置为 <code>show</code>——只显示单个被忽略的匹配，不插入——或者 <code>menu</code>——进入菜单补全，这样 TAB 键就会在你由 <code>_ignored</code> 产生的补全和你最初输入的内容之间循环。后者提供了一种非常自然的处理被忽略文件的方式；它有点像在说“嗯，我找到了这个，但你可能不喜欢，所以如果你想回到你之前的内容，再按一次 tab”。</p>
+<p>我说这像 <code>_prefix</code>，的确，你可以用完全相同的方式指定为 <code>_ignored</code> 补全器调用的补全器，方法是在上下文 <code>:completion:*:ignored:*</code> 中给出 <code>completer</code> 样式。这意味着我的描述有点过于简化了：<code>_ignored</code> 并不真正使用之前被忽略的补全；相反，当它被调用时，它会生成一个可能性列表，其中由 <code>ignore-patterns</code> 匹配的选择——或者内部使用 <code>$fignore</code>——没有被忽略。所以它真的应该被称为 <code>_not_ignored</code>，但它不是。</p>
+<p><strong><code>_match</code></strong></p>
+<p>这个和剩下的补全器都是实用工具，当放入补全列表时会影响上面给出的主要补全器，而不是它们自己进行补全。</p>
+<p><code>_match</code> 补全器应该出现在 <code>_complete</code> <em>之后</em>；它是 <code>GLOB_COMPLETE</code> 选项的一个更灵活的形式。换句话说，如果 <code>_complete</code> 没有成功，它会尝试将行上的单词作为模式，而不仅仅是固定字符串，与可能的补全进行匹配。为了让它像正常补全一样工作，它通常表现得好像在光标位置插入了一个 <code>*</code>，即使单词已经包含通配符。</p>
+<p>你可以用 <code>match-original</code> 样式来控制 <code>*</code> 的添加；如果这个未设置，则发生正常行为。如果它被设置为 <code>only</code>，<code>*</code> 不会被插入，如果它是 <code>true</code>，或者实际上是任何其他字符串，它会先尝试不带 <code>*</code>，然后再带。例如，考虑在使用 <code>_match</code> 补全器的情况下输入 <code>setopt c*ect&lt;TAB&gt;</code>。通常这会产生两个可能性，<code>correct</code> 和 <code>correctall</code>。设置样式后，</p>
+<pre><code>  zstyle ':completion::match:*' original only
+</code></pre>
+<p>在按 <code>TAB</code> 的地方不会插入 <code>*</code>，所以 <code>correct</code> 是唯一可能的匹配。</p>
+<p><code>_match</code> 补全器以与 <code>_approximate</code> 完全相同的方式使用 <code>insert-unambiguous</code> 样式。</p>
+<p><strong><code>_all_matches</code></strong></p>
+<p>这与执行展开而不是补全有类似的效果：所有可能的补全都被插入到命令行上。然而，它使用普通上下文补全的结果来实现这一点。补全系统实现这一点的正常方式是通过影响任何随后被调用的补全器的行为——因此你需要将 <code>_all_matches</code> 放在你希望具有此行为的任何补全器之前的补全器列表中。</p>
+<p>你不太可能想对每种类型的补全都这样做，所以有两种方法可以限制其效果。首先，有 <code>avoid-completer</code> 样式：你可以将其设置为一个<em>不</em>插入所有匹配的补全器列表，它们将被正常处理。</p>
+<p>然后是 <code>old-matches</code> 样式。这强制 <code>_all_matches</code> 使用一个现有的匹配列表，如果存在的话，而不是这次会生成的。你可以将样式设置为 <code>only</code> 而不是 true；在这种情况下，<code>_all_matches</code> 将永远不会应用于这次会生成的补全，它只会使用任何已经存在的补全列表。</p>
+<p>如果应用于正常的补全生成，这可能会很麻烦——通常的列表永远不会被生成，因为 <code>_all_matches</code> 只会插入上次不存在的列表——所以手册推荐了另外两种使用这个补全器和这个样式的方法。首先，你可以给样式的使用添加一个条件：</p>
+<pre><code>  zstyle -e ':completion:*' old-matches 'reply=(${NUMERIC:-false})'
+</code></pre>
+<p>除非有非零的数字参数，否则这返回 false；如果你在补全前在 emacs 模式下输入 <code>&lt;ESC&gt;1</code>，或者在 vi 模式下只输入 <code>1</code>，它将插入由紧接的前一个补全生成的所有值。</p>
+<p>否则，你可以单独绑定 <code>_all_matches</code>。这可能更有用；复制手册条目：</p>
+<pre><code>  zle -C all-matches complete-word _generic
+  bindkey '^Xa' all-matches
+  zstyle ':completion:all-matches:*' completer _all_matches
+  zstyle ':completion:all-matches:*' old-matches only
+</code></pre>
+<p>在这里，我们基于 <code>complete-word</code> 小部件生成了一个新的补全，叫做 <code>all-matches</code>——这个名字是任意的，但很方便。我们把它绑定到按键 <code>^Xa</code>，并给它两个普通补全看不到的特殊样式。对于 <code>completer</code>，我们只设置了 <code>_all_matches</code>，对于 <code>old-matches</code>，我们设置了 <code>only</code>；效果是 <code>^Xa</code> 只会插入由上一个补全生成的所有补全，无论那是什么——它不必是普通的上下文补全，它可能是任何补全小部件的结果。</p>
+<p><strong><code>_list</code></strong></p>
+<p>如果你在补全器列表中有这个（放在开头和任何地方一样好），那么你第一次尝试补全时，你只会得到一个列表；什么也不改变，甚至连一个共同的前缀也不会插入。第二次，补全会像往常一样继续。这就像输入 <code>^D</code>，然后是 tab，但只用一个键。这与通常的 <code>AUTO_LIST</code> 行为不同，因为它完全不考虑补全是否模糊；你总是在第一次得到列表，并且它总是在第二次以通常的方式进行补全。</p>
+<p><code>_list</code> 补全器也使用 <code>condition</code> 样式，它的工作方式有点像 <code>_expand</code> 补全器的样式：它必须被设置为对应于“true”的值之一，<code>_list</code> 的延迟行为才会生效。你可以通过在定义样式时使用 <code>zstyle</code> 的 <code>-e</code> 选项来测试 <code>$NUMERIC</code> 的特定值或任何其他条件。</p>
+<p>最后，布尔样式 <code>word</code> 也是相关的。如果为 false 或未设置，<code>_list</code> 在决定是否已更改并因此应延迟补全直到下一次按键时，会检查整行。如果为 true，它只检查当前单词。请注意，<code>_list</code> 对那些补全调用之间发生的事情一无所知；查看命令行是它唯一的资源。</p>
+<p><strong><code>_menu</code></strong></p>
+<p>这只是在 shell 代码中实现菜单补全；它应该在 <code>completers</code> 样式中的“真实”补全生成器之前。它忽略 <code>MENU_COMPLETION</code> 选项和其他相关选项，并且正常的菜单补全小部件与它工作得不好。然而，你可以复制它并编写自己的补全器。</p>
+<p><strong><code>_oldlist</code></strong></p>
+<p>这个补全器在你习惯于使用特殊的补全函数，即标准补全系统之外的命令时最有用。它能够保留一个旧的补全列表，否则这个列表会被新生成的列表替换。这有两个方面。</p>
+<p>首先，列表。假设你尝试从 shell 历史中补全一些东西，使用绑定到 <code>ESC-/</code> 的命令。例如，我输入了 <code>echo ma&lt;ESC-/&gt;</code> 并得到了 <code>max-errors</code>。在这一点上，你可能想列出可能的补全。不幸的是，如果你输入 <code>^D</code>，它只会列出所有通常的上下文补全——对于 <code>echo</code> 命令，它没有被特殊处理，这些只是文件。所以它不起作用。通过将 <code>_oldlist</code> 补全器放入 <code>completers</code> 样式中，<em>在</em> <code>_complete</code> 之前，它就起作用了，因为旧的匹配列表被保留下来供 <code>^D</code> 使用。</p>
+<p>在这种情况下，你可以通过将 <code>old-list</code> 样式设置为 <code>always</code> 或 <code>never</code> 来强制打开或关闭旧列表；通常它会显示当前补全集的列表，如果那个还没有显示的话，否则它会生成标准的列表。你甚至可以将 <code>old-list</code> 的值设置为一个补全器列表，这些补全器将总是以这种方式保留它们的列表。</p>
+<p><code>_oldlist</code> 有用的另一个地方是在菜单补全中，那里会发生完全相同的问题：如果你从一个特殊的命令生成一个菜单，然后尝试通过按 tab 来循环，补全会寻找正常的上下文匹配。这次有一个解决方法——重复使用特殊的命令键而不是 tab。对于多个键序列，这相当繁琐。同样，<code>_oldlist</code> 解决了这个问题，你同样可以用一个样式 <code>old-menu</code> 来控制行为，它接受一个布尔值（默认是打开的）。正如奥威尔所说，oldlisters unbellyfeel menucomp。</p>
+<p><strong>排序补全器</strong></p>
+<p>我给出了关于补全器应该按什么顺序出现的各种建议，这可能会令人困惑。因此，这里是一个建议的顺序；只需省略你不想使用的任何补全器：</p>
+<pre><code>  _all_matches _list _oldlist _menu _expand _complete _match
+    _ignored _correct _approximate _prefix 
+</code></pre>
+<p>其他顺序当然是可能的，甚至可能有用：例如，<code>_all_matches</code> 补全器适用于所有不在 <code>avoid-completer</code> 样式中列出的后续补全器，所以你可能有充分的理由将它移到列表的更后面。</p>
+<p>这是我上面提到的补全器标签的例子，即补全器可以用不同的名称来查找。</p>
+<pre><code>  zstyle ':completion:*' completer _approximate:-one   _complete:-extended _approximate:-four
+  zstyle ':completion:*:approximate-one:*' max-errors 1
+  zstyle ':completion:*:complete-extended:*'   matcher 'r:|[.,_-]=* r:|=*'
+  zstyle ':completion:*:approximate-four:*' max-errors 4
+</code></pre>
+<p>这按顺序尝试以下内容。</p>
+<ol>
+<li>
+<p>普通的、无修饰的补全。</p>
+</li>
+<li>
+<p>带一个错误的近似，由第二个样式给出。</p>
+</li>
+<li>
+<p>带扩展补全的普通补全，由第三个样式给出。抱歉，在我谈论 <code>matcher</code> 样式之前，这将是一个黑匣子；现在，你只能相信我的话，这个样式允许方括号中的字符前面有一个通配符，所以 <code>a-b</code> 可以补全为 <code>able-baker</code>，等等。</p>
+</li>
+<li>
+<p>最多带四个错误的近似，由最后一个样式给出。</p>
+</li>
+</ol>
+<p>这里有一个相当虚假的例子。你有一个包含以下内容的目录：</p>
+<pre><code>  foobar  fortified-badger  frightfully-barbaric
+</code></pre>
+<p>实际上，它一点也不虚假，因为我刚刚创建了一个。首先试试 <code>echo foo&lt;TAB&gt;</code>；不出所料，你得到 <code>foobar</code>。现在在 <code>echo</code> 之后尝试用 <code>fo-b&lt;TAB&gt;</code> 补全：基本补全失败，它到达 <code>_approximate:-one</code> 并发现它允许一个错误，所以再次接受补全 <code>foobar</code>。现在试试 <code>fort-ba&lt;TAB&gt;</code>。这次直到第三个补全才起作用，它有效地允许它匹配 <code>fort*-ba*&lt;TAB&gt;</code>，所以你看到 <code>fortified-badger</code>（不，我自己也没见过，但你知道，它们是夜行动物）。最后，试试 <code>fortfully-ba&lt;TAB&gt;</code>；最后一个条目，允许最多四个错误，体贴地将 <code>or</code> 纠正为 <code>righ</code>，你得到 <code>frightfully-barbaric</code>。好吧，这个例子有点精神错乱，但我想你可以看到这些功能是有用的。如果这让你感觉好一点，我花了四五次尝试才把这些样式搞对。</p>
+<p>[]{#l158}</p>
+<h3 id="652-改变列表的格式分组等"><a class="header" href="#652-改变列表的格式分组等">6.5.2: 改变列表的格式：分组等。</a></h3>
+<p><strong><code>format</code></strong></p>
+<p>如果你想知道补全列表中的补全来自哪里，你可以使用这个样式。最基本的用法是为任何补全上下文中的 <code>descriptions</code> 标签设置它。它接受一个字符串值，其中应出现 <code>%d</code>；这将被替换为正在补全的内容的描述。例如，我使用：</p>
+<pre><code>  zstyle ':completion:*:descriptions' format 'Completing %d'
+</code></pre>
+<p>如果我输入 <code>cd^D</code>，我会看到一个像这样的列表（直到我定义了 <code>group-name</code> 样式）：</p>
+<pre><code>  Completing external command
+  Completing builtin command
+  Completing shell function
+  cd                cddbsubmit        cdp               cdrecord
+  cdctrl            cdecl             cdparanoia        cdswap
+  cdda2wav          cdmatch           cdparanoia-yaf
+  cddaslave         cdmatch.newer     cdplay
+  cddbslave         cdot              cdplayer_applet
+</code></pre>
+<p>顶部的描述与标签名称相关——通常有一一对应的关系——但形式更易读；要获取标签名称，你需要使用 <code>^Xh</code>。毫无疑问，你会看到一些不同的东西，但重点是列出的补全是外部命令（例如 <code>cdplay</code>）、内建命令（<code>cd</code>）和 shell 函数（<code>cdmatch</code>，恰好是旧式补全的遗留物，显示了我多久清理一次我的函数目录）的混合体，知道你拥有什么通常很方便。</p>
+<p>你可以在描述中使用一些提示符转义，特别是那些打开或关闭突出显示模式（<code>%S</code>、<code>%s</code>）、粗体文本（<code>%B</code>、<code>%b</code>）和下划线文本（<code>%U</code>、<code>%u</code>）的，以使描述从补全列表中脱颖而出。</p>
+<p>你可以为除 <code>descriptions</code> 之外的某个标签设置这个，这样定义的格式将只用于该标签的补全。</p>
+<p><strong><code>group-name</code>, <code>group-order</code></strong></p>
+<p>在上面的 <code>format</code> 例子中，你可能想知道是否可以让不同类型的补全分开显示，并附上描述。你可以使用<em>分组</em>来做到这一点。它们也与标签相关，尽管你可以通过 <code>group-name</code> 样式定义组名，所以可以为任何上下文中的补全给出不同的名称。然而，最开始最简单的是将样式的值给一个空字符串，这意味着组名就是标签的名称。换句话说，</p>
+<pre><code>  zstyle ':completion:*' group-name ''
+</code></pre>
+<p>为每个标签分配一个不同的组名。稍后，如果你决定希望各种标签具有相同的组名，你可以用更具体的模式来微调这个。如果没有定义组名，使用的组被称为 <code>-default-</code>，所以这就是在你发出上面的 <code>zstyle</code> 命令之前发生的情况；所有匹配都在那个组里。</p>
+<p>分组的原因是：同一组中的匹配项一起显示，不同组中的匹配项分开显示。所以上一个例子中的补全列表，在设置了 <code>format</code> 和 <code>group-name</code> 样式后，变成：</p>
+<pre><code>  Completing external command
+  cdctrl            cddbsubmit        cdparanoia        cdrecord
+  cdda2wav          cdecl             cdparanoia-yaf
+  cddaslave         cdot              cdplay
+  cddbslave         cdp               cdplayer_applet
+  Completing builtin command
+  cd
+  Completing shell function
+  cdmatch                 cdmatch.newer           cdswap
+</code></pre>
+<p>你可能会觉得这更有帮助，或者更乱，这取决于我无法控制的深层心理因素。</p>
+<p>如果（且仅当）你正在使用 <code>group-name</code>，你也可以使用 <code>group-order</code>。顾名思义，它决定了不同补全组的显示顺序。它有点像 <code>tag-order</code>，我在第一次介绍标签时描述过：值只是一组组的名称，按你希望看到的顺序排列。手册中的例子与我刚刚展示的列表相关：</p>
+<pre><code>  zstyle ':completion:*:-command-' group-order   builtins functions commands
+</code></pre>
+<p>——记住，当补全命令的名称而不是它们的参数时，会使用 <code>-command-</code> 上下文。毫不奇怪，那个列表现在变成：</p>
+<pre><code>  Completing builtin command
+  cd
+  Completing shell function
+  cdmatch                 cdmatch.newer           cdswap
+  Completing external command
+  cdctrl            cddbsubmit        cdparanoia        cdrecord
+  cdda2wav          cdecl             cdparanoia-yaf
+  cddaslave         cdot              cdplay
+  cddbslave         cdp               cdplayer_applet
+</code></pre>
+<p>如果你用 <code>^Xh</code> 调查可用的标签，你会看到还有其他的，比如别名，我们没有定义它们的顺序。这些会出现在你定义了顺序的那些之后，并以生成匹配的函数决定的某种顺序出现。</p>
+<p><strong><code>tag-order</code></strong></p>
+<p>正如我已经说过的，我已经描述过这个了，但为了完整起见，这里再次提及。</p>
+<p><strong><code>verbose</code>, <code>auto-description</code></strong></p>
+<p>这些是 <code>format</code> 的亲戚，因为它们向列表中添加有用的消息。如果 <code>verbose</code> 为 true，生成匹配的函数可以自行决定显示更多关于它们的信息。最常见的情况是描述选项时；处理大量选项描述的标准函数 <code>_describe</code> 会测试 <code>verbose</code> 样式，并将打印有关它正在补全的选项的信息。</p>
+<p>你也可以设置字符串样式 <code>auto-description</code>；它对于选项也很有用，在它们没有特殊描述，但确实有一个紧随其后的单个参数，补全已经知道的情况下。然后，用于详细打印的参数的描述将作为 <code>%d</code> 在 <code>auto-describe</code> 中可用，所以像手册推荐的 <code>specify: %d</code> 这样的东西将记录选项本身。所以如果一个命令接受 <code>-o &lt;output-file&gt;</code> 并且参数有描述 <code>output file</code>，那么 <code>-o</code>，当它作为可能的补全出现时，如果没有自己的描述，将有描述 <code>specify: output file</code>。事实上，大多数被标准补全函数识别的选项已经提供了自己的描述，这比大多数人可能需要的要微妙得多。</p>
+<p><strong><code>list-colors</code></strong></p>
+<p>这用于根据文件类型以不同颜色显示文件匹配列表。它基于 GNU 版本 <code>ls</code> 使用的 <code>$LS_COLORS</code> 环境变量的语法。你需要一个能够显示颜色的终端，比如彩色 xterm，并且应该确保加载了 <code>zsh/complist</code> 库（如果你使用 <code>menu</code> 样式设置的菜单选择，或者如果你使用这个样式，它应该会自动加载）。但你可以明确地确保：</p>
+<pre><code>  zmodload -i zsh/complist
+</code></pre>
+<p><code>-i</code> 会在模块已经加载时保持安静。要安装一套标准的默认颜色，你可以使用：</p>
+<pre><code>  zstyle ':completion:*' list-colors ''
+</code></pre>
+<p>——注意使用了 <code>default</code> 标签——因为空字符串将值设置为默认值。</p>
+<p>如果那对你还不够好，这里有一些更详细的说明。参数 <code>$ZLS_COLORS</code> 是 <code>zsh/complist</code> 使用的系统的最低层部分。有一个简单的内置默认值，而将样式设置为空字符串等同于：</p>
+<pre><code>  ZLS_COLORS="no=00:fi=00:di=01;34:ln=01;36:  pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:  ex=01;32:lc=\e[:rm=m:tc=00:sp=00:ma=07:hi=00:du=00
+</code></pre>
+<p>它的格式与 <code>$LS_COLORS</code> 基本相同，实际上你可以通过使用 <code>ls</code> 附带的 <code>dircolors</code> 命令来获得更有用的值集：</p>
+<pre><code>  ZLS_COLORS="no=00:fi=00:di=01;34:ln=01;36:  pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:  or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:  *.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:  *.z=01;31:*.Z=01;31:*.gz=01;31:*.deb=01;31:  *.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.ppm=01;35:  *.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:  *.mpg=01;37:*.avi=01;37:*.gl=01;37:*.dl=01;37:"
+</code></pre>
+<p>你应该查看 <code>zsh/complist</code> 模块的手册以获取详细信息，但请特别注意添加了 <code>ma</code> 类型，它指定了菜单选择中当前匹配的显示方式。其默认值是使用突出显示模式——与提示中的序列 <code>%S</code> 效果相同，你可以用 <code>print -P %Sfoo</code> 显示。</p>
+<p>然而，你需要直接定义样式，因为补全总是使用它来设置 <code>$ZLS_COLORS</code>；否则它不知道它找到的值是来自用户还是来自某个样式的先前值。那采用这种格式：</p>
+<pre><code>  zstyle ':completion:*' list-colors "no=00" "fi=00" ...
+</code></pre>
+<p>你可以使用一个已经定义的 <code>$LS_COLORS</code>：</p>
+<pre><code>  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+</code></pre>
+<p>（它将参数按冒号分割成一个数组）因为 <code>$LS_COLORS</code> 对于 <code>ls</code> 仍然有用，即使直接设置 <code>$ZLS_COLORS</code> 没有价值。这应该意味着 GNU ls 和 zsh 产生看起来相似的列表。</p>
+<p>允许一些特殊效果。你可以使用模式来告诉文件名如何匹配：实际上，这是默认行为的一部分，例如 '<code>*.tar=01;31</code>' 强制 tar 文件为红色。在这种情况下，你仅限于 <code>*</code> 后跟一个字符串。然而，有一种方法可以为任何匹配指定颜色，而不仅仅是文件，以及任何模式：使用 <code>=&lt;pat&gt;=&lt;col&gt;</code>。这里有两种让 <code>kill</code> 的进程列表中的作业变红的方法。</p>
+<pre><code>  zstyle ':completion:*:*:kill:*' list-colors '=%*=01;31'
+</code></pre>
+<p>这使用了刚刚描述的方法；作业以 <code>%</code> 开头。</p>
+<pre><code>  zstyle ':completion:*:*:kill:*:jobs' list-colors 'no=01;31'
+</code></pre>
+<p>这使用标签，而不是模式，来匹配作业行。它有各种优点。因为你正在使用标签，所以为所有使用作业的命令改变这个要容易得多，而不仅仅是 kill——只需从字符串中去掉 <code>kill</code>。用另一种方法那是不切实际的，因为它会匹配太多你不想匹配的其他东西。你也不依赖于使用特定的模式。最后，如果你用 <code>format</code> 描述来尝试它，你会看到那也得到了颜色，因为它匹配了正确的标签。注意使用 <code>no</code> 来指定这适用于正常匹配；其他用于文件类型的两个字母代码在这里没有用。</p>
+<p>然而，对于通用模式形式，你还可以使用一个更特殊的效果。通过在模式内部用 <code>(#b)</code> 打开“反向引用”，括号就变得活跃，它们匹配的部分可以被单独着色。你通过扩展颜色列表来做到这一点，每个代码前面都有一个 <code>=</code> 符号，额外的元素将用于为括号匹配的内容着色。这里是 <code>kill</code> 的另一个例子，它将进程号变成红色，但其余部分保持不变。</p>
+<pre><code>  zstyle ':completion:*:*:kill:*:processes' list-colors   '=(#b) #([0-9]#)*=0=01;31'
+</code></pre>
+<p>这些象形文字是扩展的 glob 模式。你应该注意，<code>EXTENDED_GLOB</code> 选项在样式内部总是打开的——这是 <code>#b</code> 生效所必需的。特别是，<code>#</code> 意味着“前一个模式部分重复零次或多次”，带有扩展的 glob 模式；有关完整细节，请参阅 globbing 手册页。</p>
+<p><strong><code>ignored-patterns</code></strong></p>
+<p>许多 shell，包括 zsh，都有一个参数 <code>$fignore</code>，它给出一个后缀列表；以这些后缀结尾的文件名通常不用于补全。一个典型的值是：</p>
+<pre><code>  fignore=(.o ~ .dvi)
+</code></pre>
+<p>所以正常的文件补全不会产生对象文件、EMACS 备份文件或 TeX DVI 文件。</p>
+<p><code>ignored-patterns</code> 样式是这个的扩展。它接受一个数组值，像 <code>fignore</code> 一样，但有各种不同之处。首先，这些值是应该匹配<em>整个</em>要补全的值的模式，包括前缀（例如文件名的目录部分）和后缀。其次，它们适用于<em>所有</em>补全，而不仅仅是文件，因为你可以使用样式机制来调整它以适用于你想要的任何地方，直到特定的标签。</p>
+<p>因此，你可以用以下内容替换上面 <code>$fignore</code> 的用法：</p>
+<pre><code>  zstyle ':completion:*:files' ignored-patterns '*?.o' '*?~' '*?.dvi'
+</code></pre>
+<p>用于标签 <code>files</code> 正在使用的补全上下文。额外的 <code>?</code> 是因为 <code>$fignore</code> 小心地只应用于真正的后缀，即前面有东西的字符串，而 <code>?</code> 强制至少有一个字符存在。</p>
+<p>实际上，这与 <code>$fignore</code> 不完全相同，因为除了 <code>files</code> 之外还有其他文件标签；除了你已经见过的目录标签，还有 <code>globbed-files</code> 和 <code>all-files</code>。前者用于补全函数指定了模式的情况，例如 <code>*.dvi</code> 用于 <code>dvips</code> 命令名之后的文件。这些不使用这个样式，因为模式已经被充分指定了。这遵循了旧补全系统中 <code>$fignore</code> 的行为。另一个轻微的区别是，正如我上面在讨论 <code>_ignored</code> 补全器时所说，你可以选择是否希望在正常补全失败时看到那些被忽略的文件，方法是在补全器列表中有 <code>_ignored</code>。</p>
+<p>另一个标签，<code>all-files</code>，在 <code>globbed-files</code> 标签失败时应用，并表示在这种情况下任何旧文件都足够好；你可以用 <code>tag-order</code> 样式来安排这如何发生。在这个例子中，</p>
+<pre><code>  zstyle ':completion:*:*:dvips:argument*'   tag-order globbed-files all-files
+</code></pre>
+<p>足以说明，如果模式没有产生任何文件，即目录中没有 <code>*.dvi</code> 文件，你希望看到所有文件。最后这个漫谈的要点是：由于 <code>all-files</code> 标签与 <code>files</code> 标签是分开的，在这种情况下，你真的会看到所有文件（除了像往常一样以 <code>.</code> 开头的文件）。你可能会发现这很有用，但你可以很容易地让 <code>all-files</code> 标签的行为与 <code>files</code> 相同：</p>
+<pre><code>  zstyle ':completion:*:(all-|)files' ignored-patterns ...</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="zshguide05.cn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="zshguide07.cn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="zshguide05.cn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="zshguide07.cn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

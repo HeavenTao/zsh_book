@@ -1,0 +1,883 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <hr />
+<ul>
+<li><a href="zshguide.html">目录</a></li>
+<li><a href="zshguide02.html">上一章</a></li>
+<li><a href="zshguide04.html">下一章</a></li>
+</ul>
+<hr />
+<p>[]{#syntax}[]{#l29}</p>
+<h1 id="第三章处理基本-shell-语法"><a class="header" href="#第三章处理基本-shell-语法">第三章：处理基本 shell 语法</a></h1>
+<p>本章是对<a href="zshguide02.html#init">第二章</a>中出现的大部分内容的更深入的审视；更具体地说，我假设你正坐在你的终端前，准备使用你刚刚在初始化文件中设置的功能，并想知道足够多的知识来让它们运行起来。实际上，你可能会花大部分时间编辑命令行，特别是补全命令——这两个活动都将在后面的章节中介绍。现在我将讨论命令以及使用它们所伴随的语法。这将让你能够编写 shell 函数和脚本来为你做更多的工作。</p>
+<p>在下文中，经常会有几个连续的段落是关于相当次要的功能的。如果你发现你第一次就通读了所有内容，也许你需要多出去走走。大多数人可能会发现，最好是粗略地浏览一下以了解主题是什么，然后在以后发现他们想更多地了解 shell 命令和语法的某个特定方面时再回来。</p>
+<p>语法的一个方面留给了<a href="zshguide05.html#subst">第五章</a>：它的内容太多了，如果你知道得足够多以正确使用它，它会非常有用，以至于不能全部塞在这里。主题是展开，涵盖了诸如参数展开、通配符匹配和历史展开等多种内容。你已经在<a href="zshguide02.html#init">第二章</a>中遇到了这些的基础知识；但如果你想知道如何用通配符表达式精确地挑选一个特定的文件，或者如何让一个单一的参数展开将一个长表达式简化为你需要的单词，你应该阅读那一章；它或多或少是独立的，所以你不必知道本章的所有内容。</p>
+<p>我们从任何命令行解释器中最基本的问题开始，即运行命令。如你所知，你只需输入用空格分隔的单词，其中第一个单词是命令，其余的是它的参数。区分命令的类型很重要。</p>
+<p>[]{#l30}</p>
+<h2 id="31-外部命令"><a class="header" href="#31-外部命令">3.1: 外部命令</a></h2>
+<p>外部命令是最简单的，因为它们与 shell 的交互最少——shell 本身提供的许多命令，将在下一节中描述，被内置到 shell 中正是为了避免这种困难。</p>
+<p>因此，唯一的主要问题是如何找到它们。这是通过参数 <code>$path</code> 和 <code>$PATH</code> 来完成的，正如我在<a href="zshguide02.html#init">第二章</a>中描述的，它们是绑在一起的，因为虽然前者在 shell 内部更有用——作为一个数组，它的各个部分可以被分开操作——但后者是 shell 调用的其他命令使用的；用行话来说，<code>$PATH</code> 被“导出到环境中”，这正意味着 shell 调用的其他命令可以看到它的值。</p>
+<p>所以假设你的 <code>$path</code> 包含</p>
+<pre><code>  /home/pws/bin /usr/local/bin /bin /usr/bin
+</code></pre>
+<p>然后你尝试运行 <code>ls</code>。shell 首先在 <code>/home/pws/bin</code> 中寻找一个名为 <code>ls</code> 的命令，然后在 <code>/usr/local/bin</code> 中，然后在 <code>/bin</code> 中，它在那里找到了，所以它执行 <code>/bin/ls</code>。实际上，如果你以正确的方式执行一个命令，操作系统本身也知道路径，所以 shell 严格来说并不需要这样做。</p>
+<p>这里有一个微妙之处。shell 会尝试记住命令在哪里，以便下次能再次找到它们。它把它们保存在一个所谓的“哈希表”中，你会在文档中到处看到“hash”这个词：它只意味着一种快速找到某个值的方法，给定一个特定的键。在这种情况下，给定一个命令的名称，shell 可以快速找到它的路径。你可以通过输入 <code>hash</code> 来看到这个表，形式为 <code>*key*</code>=<code>*value*</code>。</p>
+<p>事实上，只有当 <code>HASH_CMDS</code> 选项被设置时，shell 才会这样做，默认情况下是设置的。正如你可能预期的，当它找到包含它正在寻找的命令的目录时，它会停止搜索。<code>HASH_ALL</code> 选项中还有一个额外的优化，默认也是设置的：当 shell 扫描一个目录以寻找一个命令时，它会将该目录中的所有其他命令添加到哈希表中。这是合理的，因为在大多数类 UNIX 操作系统上，读取同一目录中的一大堆文件是相当快的。</p>
+<p>命令的存储方式还有其他后果。特别是，如果 zsh 已经知道在哪里找到一个命令，它就不会去寻找一个新的命令。如果在上面的例子中，我在 <code>/usr/local/bin</code> 中放了一个新的 <code>ls</code> 命令，zsh 将继续使用 <code>/bin/ls</code>（假设它已经被找到了）。要解决这个问题，有一个 <code>rehash</code> 命令，它实际上会清空命令哈希表，这样寻找命令就会从头开始。csh 的用户可能记得在使用新命令时需要经常输入 <code>rehash</code>：在 zsh 中情况没那么糟，因为如果没有命令已经被哈希，或者现有的命令消失了，zsh 会自动再次扫描路径；此外，如果 <code>$path</code> 被改变，zsh 会自行执行一次 <code>rehash</code>。所以，在 <code>$path</code> 的头部某处添加一个新的重复命令是需要 <code>rehash</code> 的主要原因。</p>
+<p>如果 zsh 没有填满它的命令哈希表，因此不知道所有的外部命令，可能会发生一件事，那就是 <code>AUTO_CD</code> 选项，在上一章提到过，下面还会再次提到，可能会认为你正在尝试切换到一个与命令同名的特定目录。这是 <code>AUTO_CD</code> 的缺点之一。</p>
+<p>说得更技术化一点，实际上命令哈希是否需要并不那么明显；许多现代操作系统可以在没有它的情况下快速找到命令。在 zsh 的情况下，关键在于同一个哈希表对于命令补全也是必需的，这是一个非常常用的功能。如果你输入 <code>compr&lt;TAB&gt;</code>，shell 会将其补全为 <code>compress</code>。只有当它有一个要补全的命令列表时，它才能这样做，而这个列表就是哈希表。（在这种情况下，它不需要知道在哪里找到命令，只需要它的名字，但多存储一点东西也只是多一点工作而已。）如果你关注了前面的段落，你会意识到 zsh 在你按 <code>TAB</code> 的时候不一定知道<em>所有</em>可能的命令，因为它只在需要的时候才去查找。为此，有另一个选项，<code>HASH_LIST_ALL</code>，默认也是设置的，它会确保在你尝试补全一个命令时命令哈希表是满的。它只需要这样做一次（除非你改变 <code>$path</code>），但这确实意味着第一次命令补全会很慢。如果 <code>HASH_LIST_ALL</code> 没有设置，命令补全就不可用：shell 可以被重写为每次你尝试补全一个命令名时都费力地搜索路径，但这似乎不值得。</p>
+<p><code>$PATH</code> 从 shell 传递给从它调用的命令（严格来说只有当变量被标记为导出时，通常是这样——这在下面用 <code>typeset</code> 系列内建命令更详细地描述）这一事实也有后果。一些命令使用 <code>$PATH</code> 调用它们自己的子命令。如果你把它设置成一些不寻常的东西，以至于一些标准命令找不到，可能会发生一个<em>被找到</em>的命令仍然不能正常运行，因为它在传递给它的路径中找不到它正在寻找的东西。这可能导致一些奇怪和令人困惑的错误消息。</p>
+<p>关于外部命令，要记住的一件重要事情是，当它们运行时，shell 继续存在；它只是闲着什么也不做，等待作业完成（尽管你可以告诉它不要等，我们稍后会看到）。命令被给予一个全新的环境来运行；那里的变化不会影响 shell，它只是在命令运行后从它离开的地方重新开始。所以如果你需要做一些改变 shell 状态的事情，一个外部命令是不够的。这就引出了内建命令。</p>
+<p>[]{#l31}</p>
+<h2 id="32-内建命令"><a class="header" href="#32-内建命令">3.2: 内建命令</a></h2>
+<p>内建命令，或简称内建，是 shell 本身的一部分的命令。由于内建对于控制 shell 自身的行为是必需的，介绍它们实际上也作为对 shell 中正在发生的大部分事情的介绍。所以，本应出现在本章后面的相当一部分内容，以某种方式在这里累积起来了。这确实使事情在某些地方有点棘手；数数我用了多少次“微妙”的词，然后留给你的孙子孙女看。</p>
+<p>我刚刚描述了内建的一个原因，但还有一个更简单的原因：速度。如果你只想在屏幕上打印一条消息，那么经历在开始时为命令设置一个全新的环境，在这个命令和计算机上正在运行的任何其他东西之间切换，然后在结束时再次销毁它的整个过程，是相当过度的。所以有用于这类事情的内建。</p>
+<p>[]{#l32}</p>
+<h3 id="321-用于打印的内建命令"><a class="header" href="#321-用于打印的内建命令">3.2.1: 用于打印的内建命令</a></h3>
+<p>命令 <code>echo</code> 和 <code>print</code> 是 shell 内建；它们只是显示你输入的内容，在 shell 移除了所有引用之后。两者之间的区别实际上是历史性的：<code>echo</code> 先出现，只处理一些简单的选项；ksh 提供了 <code>print</code>，它有更复杂的选项，因此成了一个不同的命令。zsh 中的这两个命令之间的区别仍然存在；如果你想要古怪的效果，你应该看看 <code>print</code>。请注意，通常还有一个名为 <code>echo</code> 的外部命令，它可能与 zsh 的不完全相同；没有标准的名为 <code>print</code> 的外部命令，但如果有人在你的系统上安装了一个，它很可能是把东西发送到打印机，而不是屏幕。</p>
+<p>一个特殊效果是 <code>print -z</code> 将参数放到编辑缓冲区堆栈上，这是 shell 维护的一个你将要编辑的东西的列表。试试：</p>
+<pre><code>  print -z print -z print 这是一个行
+</code></pre>
+<p>（看起来好像有什么需要引用的，但实际上不需要）然后按三次 return。第一次导致第一个 <code>print -z</code> 之后的所有内容出现让你编辑，依此类推。</p>
+<p>对于更有用的东西，你可以编写函数来给你一行来编辑：</p>
+<pre><code>  fn() { print -z print 现在的时间是 $(date); }
+</code></pre>
+<p>现在当你输入 <code>fn</code> 时，带有日期的那一行会出现在命令行上让你编辑。选项 <code>-s</code> 有点类似；该行出现在历史列表中，所以如果你使用向上箭头，你会看到它，但它不会自动重新出现。</p>
+<p>一些其他有用的选项，其中一些你已经见过，是</p>
+<p><strong><code>-r</code></strong>
+:   不解释像 <code>\n</code> 这样的特殊字符序列</p>
+<p><strong><code>-P</code></strong>
+:   像在提示符中一样使用 <code>%</code></p>
+<p><strong><code>-n</code></strong>
+:   在末尾不加换行符，以防后面还有输出</p>
+<p><strong><code>-c</code></strong>
+:   以列的形式打印输出——这意味着 <code>print -c *</code> 的效果有点像一个穷人版的 <code>ls</code>，只是更快</p>
+<p><strong><code>-l</code></strong>
+:   每个参数占一行而不是一列，这有时对于将列表放入文件，以及计算数组参数的每个元素中有什么很有用。</p>
+<p>如果你不使用 <code>-r</code> 选项，有一大堆特殊字符序列。其中许多你可能从 C 语言中很熟悉。</p>
+<p><strong><code>\n</code></strong>
+:   换行</p>
+<p><strong><code>\t</code></strong>
+:   制表符</p>
+<p><strong><code>\e</code> 或 <code>\E</code></strong>
+:   转义字符</p>
+<p><strong><code>\a</code></strong>
+:   响铃（警报），通常是可怕的哔哔声的委婉说法</p>
+<p><strong><code>\b</code></strong>
+:   后退一个字符。</p>
+<p><strong><code>\c</code></strong>
+:   不打印换行符——像 <code>-n</code> 选项，但嵌入在字符串中。这个替代方案来自伯克利 UNIX。</p>
+<p><strong><code>\f</code></strong>
+:   换页，从终端被称为电传打字机的时代开始，表示“前进到下一页”的短语，你可能更熟悉的是 <code>^L</code></p>
+<p><strong><code>\r</code></strong>
+:   回车——打印时，是你在 DOS 文件中得到的烦人的 <code>^M</code>，但实际上与 <code>print</code> 一起使用相当有用，因为它会擦除到行首的所有内容。<code>-n</code> 选项和打印字符串开头的 <code>\r</code> 的组合可以给人一种连续变化的状态行的错觉。</p>
+<p><strong><code>\v</code></strong>
+:   垂直制表符，我个人从未使用过（我刚才试了一下，它的行为像换行符，只是没有假设回车，但这取决于你的终端）。</p>
+<p>实际上，你可以得到所有 255 个可能的字符，尽管你的终端可能不喜欢 127 以上的某些或所有字符，方法是在反斜杠后指定一个数字。通常这由三个八进制字符组成，但你也可以在 <code>\x</code> 后使用两个十六进制字符——所以 <code>\n</code>、<code>\012</code> 和 <code>\x0a</code> 都是换行符。<code>\</code> 本身会转义任何其他字符，即它们会以自身的形式出现，即使它们通常不会。</p>
+<p>两点说明：首先，不要因为 <code>n</code> 是字母表的第十四个字母而感到困惑；打印 <code>\016</code>（八进制的十四）对你没有任何好处。补救措施是，在你发现你的文本不可读之后（对于像 xterm 这样的 VT100 类终端），打印 <code>\017</code>。</p>
+<p>其次，那些反斜杠会让你陷入真正的引用困境。通常命令行上的反斜杠会转义下一个字符——这是与 <code>print</code> 的转义<em>不同</em>的形式——所以</p>
+<pre><code>  print \n
+</code></pre>
+<p>不会产生换行符，它只是打印出一个 <code>n</code>。所以你需要引用它。这意味着</p>
+<pre><code>  print \\n
+</code></pre>
+<p>传递一个反斜杠给引用，以及</p>
+<pre><code>  print \\n
+</code></pre>
+<p>或</p>
+<pre><code>  print '\n'
+</code></pre>
+<p>打印一个换行符（后面跟着通常会有的那个额外的换行符）。因此，要打印一个真正的反斜杠，你需要</p>
+<pre><code>  print \\\
+</code></pre>
+<p>实际上，如果后面没有其他东西，你可以用两个——<code>print</code> 只是耸耸肩，输出它被给予的东西——但这不是一个好习惯。还有其他方法可以做到这一点：因为单引号引用任何东西，包括反斜杠（它们是使反斜杠表现得像普通字符的唯一方法），并且因为 <code>-r</code> 选项使 print 正常处理字符，</p>
+<pre><code>  print -r '\'
+</code></pre>
+<p>有同样的效果。但你需要记住反斜杠的两级引用。引号对 <code>print</code> 来说不是特殊的，所以</p>
+<pre><code>  print '
+</code></pre>
+<p>对于打印一个引号来说已经足够了。</p>
+<p><strong><code>echotc</code></strong>\</p>
+<p>有一个叫做 <code>echotc</code> 的怪东西，它以 <code>termcap</code> 功能作为其参数。它现在存在于自己的模块 <code>zsh/termcap</code> 中。</p>
+<p>Termcap 是一种现在相当老式的方式，用于给出在终端上执行各种标准操作所需的命令：移动光标、清除到行尾、打开突出显示模式等等。它现在几乎在所有地方都被 <code>terminfo</code> 取代了，这是一种完全不同的指定功能的方式，以及 <code>curses</code>，一个更高级的用于在字符终端上操作对象的系统。这意味着你需要给 <code>echotc</code> 的参数可能相当难找；试试 <code>termcap</code> 手册页；如果有两个，可能是第五节中的那个给出了代码，即 <code>man 5 zsh</code> 或在 Solaris 上的 <code>man -s 5 zsh</code>。否则你就得在网上搜索了。<code>zsh</code> 手册没有给出列表的原因是，shell 只使用少数几个众所周知的序列，还有很多其他的序列可以与 <code>echotc</code> 一起工作，因为这些序列是由终端解释的，而不是 shell。</p>
+<p>这段代码给你一个感觉：</p>
+<pre><code>  zmodload -i zsh/termcap
+  echotc md
+  echo -n bold
+  echotc mr
+  echo -n reverse
+  echotc me
+  echo
+</code></pre>
+<p>首先我们确保模块被加载到 shell 中；在一些旧的操作系统上，这只有在 zsh 安装时被编译进去才行。<code>zmodload</code> 的 <code>-i</code> 选项阻止 shell 在模块已经加载时抱怨。这是在 shell 函数中确保你有正确设施可用的明智方法，因为加载一个模块会使其可用，直到它被明确卸载。</p>
+<p>你应该看到 <code>bold</code> 是粗体字符，<code>reverse</code> 是粗体反白视频。<code>md</code> 功能打开粗体模式；<code>mr</code> 打开反白视频；<code>me</code> 关闭两种模式。一个更典型的 zsh 做法是：</p>
+<pre><code>  print -P '%Bbold%Sreverse%b%s'
+</code></pre>
+<p>这应该显示同样的东西，但使用提示符转义——提示符是特殊字体的最常见用途。<code>%S</code> 是因为 zsh 称反白为“突出显示”模式，因为它就是这样。（在彩色 xterm 上，你可能会发现“粗体”被解释为“蓝色”。）</p>
+<p>如果你真的尝试，你可以用 <code>echotc</code> 做更多的事情。shell 刚刚获得了一种打印 terminfo 序列的方法，可预见地称为 <code>echoti</code>，尽管它只在 zsh 需要 terminfo 来编译的系统上可用——这发生在 termcap 代码实际上是 terminfo 的一部分时。关于这个的好消息是，terminfo 往往有更好的文档，所以你很有可能从 <code>terminfo</code> 手册页中找到你想要的功能。<code>echoti</code> 命令存在于另一个可预见地命名的模块 <code>zsh/terminfo</code> 中。</p>
+<p>[]{#l33}</p>
+<h3 id="322-其他仅为速度而设的内建命令"><a class="header" href="#322-其他仅为速度而设的内建命令">3.2.2: 其他仅为速度而设的内建命令</a></h3>
+<p>只有少数其他内建命令只是为了让事情变得更快。严格来说，测试可以归入这一类，但正如我在上一章中解释的，以以下形式进行测试是很有用的</p>
+<pre><code>  if [[ $var1 = $var2 ]]; then
+    print doing something
+  fi
+</code></pre>
+<p>被 shell 视为一种特殊语法，以防 <code>$var1</code> 或 <code>$var2</code> 扩展为空，否则会使其混淆。这个例子包含了下面描述的两个特性：测试本身，在双方括号之间，如果两个替换后的值是相同的字符串，则为真；以及 <code>if</code> 结构，如果该测试为真，则运行中间的命令（这里只是 <code>print</code>）。</p>
+<p>内建命令 <code>true</code> 和 <code>false</code> 什么也不做，除了分别返回命令状态零或一。它们只是用作占位符：要永远运行一个循环——<code>while</code> 稍后也会更详细地解释——你使用</p>
+<pre><code>  while true; do
+    print doing something over and over
+  done
+</code></pre>
+<p>因为测试总是成功。</p>
+<p><code>true</code> 的一个同义词是 <code>;</code>；它经常以这种形式用于给出有副作用但又不应该被使用的参数——有点像</p>
+<pre><code>  : ${param:=value}
+</code></pre>
+<p>这是所有 Bourne shell 衍生物中的一个常见用法。在参数扩展中，如果 <code>$param</code> 之前是空的，它会被赋予 <code>value</code> 的值，否则保持不变。因为那是参数扩展的唯一原因，你使用 <code>:</code> 来忽略参数。实际上，shell 愉快地构建命令行——冒号，后面跟着 <code>$param</code> 的任何值，无论赋值是否发生——然后执行命令；只是恰好 <code>;</code> 不理会它被给予的参数。如果你是从 ksh 转换过来的，你可能会期望某些像这样的同义词是别名，而不是内建命令本身，但在 zsh 中它们实际上是内建命令；shell 没有预定义任何别名。（你仍然可以使用 <code>disable</code> 来摆脱它们，如下所述。）</p>
+<p>[]{#l34}</p>
+<h3 id="323-改变-shell-状态的内建命令"><a class="header" href="#323-改变-shell-状态的内建命令">3.2.3: 改变 shell 状态的内建命令</a></h3>
+<p>内建命令更常见的用途是它们改变 shell 内部的某些东西，或者报告 shell 中正在发生的事情的信息。关于外部命令，有一件至关重要的事情要记住。它也适用于我们将会遇到的其他情况，即 shell “分叉”（fork），字面上是把自己分成两部分，其中分叉出来的部分行为就像一个外部命令。在这两种情况下，命令都在一个不同的<em>进程</em>中，这是 UNIX 运行事物的基本单位。（事实上，即使是 Windows 现在也知道进程，尽管它们之间的交互方式略有不同。）</p>
+<p>至关重要的事情是，由 shell 启动的独立进程中的任何更改都不会影响 shell 本身。最常见的情况是当前目录——每个进程都有自己的当前目录。你可以通过启动一个新的 zsh 来看到这一点：</p>
+<pre><code>  % pwd               # 显示当前目录
+  ~
+  % zsh               # 启动一个新 shell，它
+                      # 是一个独立的进程
+  % cd tmp
+  % pwd               # 现在我在一个不同的
+                      # 目录...
+  ~/tmp
+  % exit              # 离开新 shell...
+  % pwd               # 现在我回到了我原来的地方...
+  ~
+</code></pre>
+<p>因此 <code>cd</code> 命令必须是一个 shell 内建，否则每次运行它都会发生这种情况。</p>
+<p>这里有一个更有用的例子。将命令放在括号中会要求 shell 为它启动一个不同的进程。当你特别<em>不</em>希望效果传播回来时，这很有用：</p>
+<pre><code>  (cd some-other-dir; run-some-command)
+</code></pre>
+<p>运行该命令，但不会改变“真实” shell 所在的目录，只改变其分叉出来的“子 shell”。因此，</p>
+<pre><code>  % pwd
+  ~
+  % (cd /; pwd)
+  /
+  % pwd
+  ~
+</code></pre>
+<p>还有一个更微妙的情况：</p>
+<pre><code>  cd some-other-dir | print Hello
+</code></pre>
+<p>记住，<code>|</code>（“管道”）将第一个命令的输出连接到下一个命令的输入——尽管实际上在这个例子中没有信息以这种方式传递。在 zsh 中，除了管道的最后一部分之外，所有部分都在不同的进程中运行。因此 <code>cd</code> 不会影响主 shell。我将称之为主 shell，这是 UNIX 对进程的标准语言；当你启动另一个命令或分叉一个子 shell 时，你正在创建“子进程”（无意冒犯，在这种情况下，子进程通常先死）。因此，正如你所猜测的，</p>
+<pre><code>  print Hello | cd some-other-dir
+</code></pre>
+<p><em>确实</em>有改变目录的效果。请注意，其他 shell 的做法不同；在 zsh 中总是保证这样工作，因为许多人依赖它来设置参数，但许多 shell 的管道的<em>左侧</em>是在父 shell 中运行的部分。如果管道符号的两侧都是某种外部命令，那么两者当然都会在子进程中运行。</p>
+<p>还有其他改变 shell 状态的方法，例如通过声明特定类型的参数，或者通过告诉它如何解释某些命令，或者，当然，通过改变选项。这里是最有用的，以一种模糊的逻辑方式分组。</p>
+<p>[]{#l35}</p>
+<h3 id="324-cd-和它的朋友们"><a class="header" href="#324-cd-和它的朋友们">3.2.4: cd 和它的朋友们</a></h3>
+<p>你现在不会惊讶地知道 <code>cd</code> 命令会改变目录。有一个同义词，<code>chdir</code>，据我所知，从来没有人用过。（它与系统调用的名称相同，所以如果你一直在用 C 或 Perl 编程，然后忘了你现在正在使用 shell，你可能会用 <code>chdir</code>。但这似乎有点牵强。）</p>
+<p><code>cd</code> 和 <code>chdir</code> 中内置了各种额外的功能。首先，如果你省略了要切换到的目录，你将被带到你的主目录，尽管 <code>cd ~</code> 并不难输入。</p>
+<p>其次，命令 <code>cd -</code> 是特殊的：它会带你到你上一个所在的目录。如果你执行一系列 <code>cd</code> 命令，只有紧邻的前一个目录会被记住；它们不会被堆叠起来。</p>
+<p>第三，有一个在相似名称的目录之间切换的快捷方式。如果你输入 <code>cd &lt;old&gt; &lt;new&gt;</code>，那么 shell 会在当前目录中寻找字符串 <code>&lt;old&gt;</code> 的第一次出现，并尝试用 <code>&lt;new&gt;</code> 替换它。例如，</p>
+<pre><code>  % pwd
+  ~/src/zsh-3.0.8/Src
+  % cd 0.8 1.9
+  ~/src/zsh-3.1.9/Src
+</code></pre>
+<p><code>cd</code> 命令实际上报告了新目录，就像它通常在不完全清楚它带你去了哪里时所做的那样。</p>
+<p>请注意，只取 <code>&lt;old&gt;</code> 的<em>第一次</em>匹配。认为你可以用 <code>cd 1 2</code> 从 <code>/home/export1/pws/mydir1/something</code> 切换到 <code>/home/export1/pws/mydir2/something</code> 是一个容易犯的错误，但第一个 <code>1</code> 把它搞砸了。可以说 shell 在这里可以更聪明一些。当然，在这种情况下 <code>cd r1 r2</code> 会起作用。</p>
+<p><code>cd</code> 的朋友 <code>pwd</code>（打印工作目录）告诉你当前的工作目录是什么；这个信息在 shell 参数 <code>$PWD</code> 中也可用，它是特殊的，当目录改变时会自动更新。稍后，当你了解了所有关于展开的知识后，你会发现你可以用它来玩一些花样来引用其他目录。例如，<code>${PWD/old/new}</code> 使用参数替换机制来引用一个不同的目录，其中 <code>old</code> 被 <code>new</code> 替换——而这一次 <code>old</code> 可以是一个模式，即包含通配符匹配的东西。所以如果你在上面的 <code>zsh-3.0.8/Src</code> 目录中，想从 <code>zsh-3.1.9/Src</code> 目录复制一个文件，你有一个简写：</p>
+<pre><code>  cp ${PWD/0.8/1.9}/myfile.c .
+</code></pre>
+<p><strong>符号链接</strong>\</p>
+<p>Zsh 尝试跨符号链接跟踪目录。如果你不熟悉这些，你可以把它们想象成一个行为像指向另一个文件的指针的文件名（有点像 Windows 的快捷方式，尽管 UNIX 拥有它们的时间要长得多，而且它们工作得更好）。你可以这样创建它们（<code>ln</code> 不是一个内建命令，但它用来创建符号链接的用法如今非常标准）：</p>
+<pre><code>  ln -s existing-file-name name-of-link
+</code></pre>
+<p>例如</p>
+<pre><code>  ln -s /usr/bin/ln ln
+</code></pre>
+<p>在当前目录中创建一个名为 <code>ln</code> 的文件，它除了指向文件 <code>/usr/bin/ln</code> 之外什么也不做。符号链接在表现得像原始文件方面非常出色，就像你通常希望的那样；例如，你可以运行你刚刚创建的 <code>ln</code> 链接，就好像它是 <code>/usr/bin/ln</code> 一样。它们在用 <code>ls -l</code> 进行长文件列表时显示得不同，最后一列显示它们指向的文件。</p>
+<p>你可以让它们指向任何类型的文件，包括目录，这就是为什么在这里提到它们。假设你从你的主目录创建了一个到根目录的符号链接，并切换到它：</p>
+<pre><code>  ln -s / ~/mylink
+  cd ~/mylink
+</code></pre>
+<p>如果你不知道它是一个链接，你会期望能够通过执行 <code>cd ..</code> 来切换到父目录。然而，操作系统——它只有一套从 <code>/</code> 开始向下的目录，并且在跟随符号链接后会忽略它们，它们真的只是指针——认为你在根目录 <code>/</code>。这可能会令人困惑。因此，zsh 试图跟踪<em>你</em>可能认为你在哪里，而不是系统认为你在哪里。如果你输入 <code>pwd</code>，你会看到 <code>/home/you/mylink</code>（无论你的主目录在哪里），而不是 <code>/</code>；如果你输入 <code>cd ..</code>，你会发现自己回到了你的主目录。</p>
+<p>你可以通过设置 <code>CHASE_LINKS</code> 选项来关闭所有这些猜测；然后 <code>cd ~/mydir; pwd</code> 会显示你在 <code>/</code>，在那里切换到父目录没有效果；根目录的父目录是根目录，除非在某些稍微迷幻的网络文件系统上。这确实有优点：例如，<code>cd ~/mydir; ls ..</code> 总是列出根目录，而不是你的主目录，无论选项设置如何，因为 <code>ls</code> 不知道你跟随的链接，只有 zsh 知道，它将 <code>..</code> 视为引用根目录。设置 <code>CHASE_LINKS</code> 允许 <code>pwd</code> 警告你系统认为你在哪里。</p>
+<p>给非 UNIX 专家的旁注（据上次统计，占世界人口的 99.9% 以上）：我说“符号链接”而不是仅仅“链接”，因为还有其他叫做“硬链接”的。这就是如果你不使用 <code>-s</code> 选项时 <code>ln</code> 创建的。硬链接与其说是一个指向文件的指针，不如说是文件的一个替代名称。如果你这样做</p>
+<pre><code>  ln myfile othername
+  ls -l
+</code></pre>
+<p>其中 <code>myfile</code> 已经存在，你无法分辨 <code>myfile</code> 和 <code>othername</code> 哪个是原始的——事实上，系统也不在乎。你可以删除任何一个，另一个作为文件的名称会完全没问题。这几乎就是重命名文件的工作方式，只是在这种情况下，创建硬链接是为你完成的。硬链接有限制——你不能链接到目录，或者链接到另一个磁盘分区上的文件（如果你不知道什么是磁盘分区，你会看到那会是多大的限制）。此外，你通常想知道哪个是原始的，哪个是链接——所以对于大多数用户来说，创建符号链接更有用。唯一的缺点是跟随指针会慢一点点；如果你认为你能注意到区别，你肯定应该慢下来一点。</p>
+<p>符号链接的目标，与硬链接不同，实际上不必存在，并且在尝试使用链接之前不会执行任何检查。最好的做法是在创建链接时运行 <code>ls -lL</code>；<code>-L</code> 部分告诉 <code>ls</code> 跟随链接，如果它工作了，你应该看到你的链接显示为与它指向的文件具有完全相同的特性。如果它仍然显示为链接，则没有这样的文件。</p>
+<p>关于符号链接，我应该指出一个轻微的怪癖：被链接的文件名（第一个名字），如果它不是一个绝对路径（在任何 <code>~</code> 扩展后以 <code>/</code> 开头），则被视为相对于链接创建的目录——而不是你运行 <code>ln</code> 时的当前目录。这里：</p>
+<pre><code>  ln -s ../mydir ~/links/otherdir
+</code></pre>
+<p>链接 <code>otherdir</code> 将引用<em>其自身</em>父目录中的 <code>mydir</code>，即 <code>~/links</code>——而不是，你可能认为的，你运行命令时所在的目录的父目录。更糟糕的是，第二个词，如果不是绝对路径，<em>是</em>相对于你运行命令的目录来解释的。</p>
+<p><strong>$cdpath 和 AUTO_CD</strong>\</p>
+<p>我们离用目录做的魔法还差得远呢（而且，事实上，我甚至还没讲到 zsh 特有的部分）。下一个技巧是 <code>$cdpath</code> 和 <code>$CDPATH</code>。它们看起来很像你在上一章遇到的 <code>$path</code> 和 <code>$PATH</code>，我在上一章的那个上下文中简要地提到了它们：<code>$cdpath</code> 是一个目录数组，而 <code>$CDPATH</code> 是一个冒号分隔的列表，行为上像一个标量变量。它们给出了一个目录列表，你可能想切换到它们的子目录。如果你使用一个普通的 cd 命令（即形式为 <code>cd *dirname*</code>，并且 <em>dirname</em> 不以 <code>/</code> 或 <code>~</code> 开头），shell 会在 <code>$cdpath</code> 的目录中查找，以找到一个包含子目录 <em>dirname</em> 的目录。如果 <code>$cdpath</code> 没有设置，如你所料，它只使用当前目录。</p>
+<p>请注意，<code>$cdpath</code> 总是按顺序搜索，你可以在其中放一个 <code>.</code> 来代表当前目录。如果你这样做，当前目录将总是在<em>那个点</em>被搜索，不一定是第一个，这可能不是你所期望的。例如，让我们设置一些目录：</p>
+<pre><code>  mkdir ~/crick ~/crick/dna
+  mkdir ~/watson ~/watson/dna
+  cdpath=(~/crick .)
+  cd ~/watson
+  cd dna
+</code></pre>
+<p>所以我已经移动到目录 <code>~/watson</code>，它包含子目录 <code>dna</code>，并执行了 <code>cd dna</code>。但由于 <code>$cdpath</code>，shell 会首先在 <code>~/crick</code> 中查找，并在那里找到 <code>dna</code>，然后带你到那个自我复制目录的副本，而不是 <code>~/watson</code> 中的那个。大多数人因此在他们的 <code>cdpath</code> 的开头都有 <code>.</code>。然而，至少 <code>cd</code> 会警告你——如果你试过，你会看到它在这种情况下会打印出它选择的目录的名称。</p>
+<p>事实上，如果你的目录中根本没有 <code>.</code>，shell 总是会先在那里查找；没有办法让 <code>cd</code> 永远不切换到当前目录的子目录，除非把 <code>cd</code> 变成一个函数。有些 shell 不这样做；它们使用 <code>$cdpath</code> 中的目录，而且只使用那些。</p>
+<p>还有一个更简便的方法，这是 zsh 特有的：我在上一章提到的 <code>AUTO_CD</code> 选项。那样，一个没有任何参数的命令，如果它实际上是一个目录，就会带你到那个目录。通常这是完美的——否则你只会得到一个“命令未找到”的消息，你还不如利用这个选项。然而，偶尔，一个目录的名称会与一个命令、内建命令或外部命令，或一个 shell 函数的名称冲突，然后可能会有一些混淆：只要 zsh 知道它，它总是会选择命令，但有些情况下它不知道，正如我上面描述的。</p>
+<p>我在上一章没有说的是，<code>AUTO_CD</code> 尊重 <code>$cdpath</code>；事实上，它的实现方式是让 <code>*dirname*</code> 本身的行为尽可能地像 <code>cd *dirname*</code>，而不会把 shell 的内部搞得一团糟。</p>
+<p><strong>目录栈</strong>\</p>
+<p>Zsh 从 C-shell 家族继承的一个非常有用的功能是目录栈（传统的 Korn shell 没有这个功能）。这是你最近访问过的目录的列表。如果你使用 <code>pushd</code> 命令而不是 <code>cd</code>，例如 <code>pushd *dirname*</code>，那么你所在的目录会被保存在这个列表中，然后你会被带到 <em>dirname</em>，使用 <code>$CDPATH</code> 就像 <code>cd</code> 一样。然后当你输入 <code>popd</code> 时，你会被带回到你原来的地方。这个列表可以任意长；你可以 <code>pushd</code> 任意数量的目录，每个 <code>popd</code> 都会带你回到列表中的前一个（这就是“栈”，或者更准确地说，是“后进先出”栈在计算机行话中通常的操作方式，因此得名“目录栈”）。</p>
+<p>你可以用 <code>dirs</code> 命令看到这个列表——它总是以当前目录开始。所以，例如：</p>
+<pre><code>  cd ~
+  pushd ~/src
+  pushd ~/zsh
+  dirs
+</code></pre>
+<p>显示</p>
+<pre><code>  ~/zsh ~/src ~
+</code></pre>
+<p>下一个 <code>popd</code> 会带你回到 <code>~/src</code>。如果你这样做，你会看到 <code>pushd</code> 在进行时会自动报告 <code>dirs</code> 给出的列表；你可以用 <code>PUSHD_SILENT</code> 选项关闭这个功能，那时你就必须依赖明确输入 <code>dirs</code> 了。</p>
+<p>实际上，这个功能的很多用途并非来自简单的 <code>pushd</code> 和 <code>popd</code> 组合，而是来自另外两个特性。首先，单独的 <code>pushd</code> 会交换栈顶的两个目录。其次，<code>pushd</code> 带有以 <code>+</code> 或 <code>-</code> 开头的数字参数，可以带你到列表中的其他目录之一。命令 <code>dirs -v</code> 会告诉你需要的数字；<code>0</code> 是当前目录。所以如果你得到，</p>
+<pre><code>  0       ~/zsh
+  1       ~/src
+  2       ~
+</code></pre>
+<p>那么 <code>pushd +2</code> 会带你到 <code>~</code>。（这里需要一点点悬念，我没有直接用 <code>AUTO_CD</code> 然后输入 <code>..</code>。）如果你用 <code>-</code>，它会从列表的另一端开始计数；<code>-0</code>（向数学家们道歉）是最后一项，在这种情况下与 <code>~</code> 相同。有些人习惯于让 <code>-</code> 和 <code>+</code> 参数反过来工作；<code>PUSHD_MINUS</code> 选项就是为此存在的。</p>
+<p>除了 <code>PUSHD_SILENT</code> 和 <code>PUSHD_MINUS</code>，还有一些其他相关的选项。设置 <code>PUSHD_IGNORE_DUPS</code> 意味着如果你 <code>pushd</code> 到一个已经在列表中的目录，重复的条目将被静默删除。这对大多数人类操作来说很有用——然而，如果你在函数或脚本中使用 <code>pushd</code> 来为将来的匹配 <code>popd</code> 记住以前的目录，这可能很危险，你可能想在函数内部局部地关闭它。</p>
+<p><code>AUTO_PUSHD</code> 意味着任何改变目录的命令，包括自动 cd，都被视为一个带有目标目录作为参数的 <code>pushd</code> 命令。使用这个可能会让目录栈变得很长，有一个参数 <code>$DIRSTACKSIZE</code> 你可以设置来指定一个最大长度。当超过这个长度时，最旧的条目（<code>dirs -v</code> 列表中的最高数字）会自动被删除。除非明确设置，否则没有限制。</p>
+<p>最后一个 <code>pushd</code> 选项是 <code>PUSHD_TO_HOME</code>。这使得单独的 <code>pushd</code> 行为像单独的 <code>cd</code> 一样，即它带你到你的主目录，而不是交换栈顶的两个目录。通常一系列的 <code>pushd</code> 命令的工作方式很像一系列的 <code>cd -</code> 命令，总是带你到你之前的目录，明显的区别是 <code>cd -</code> 不会查询目录栈，它只是自动记住前一个目录，因此如果你只用 <code>cd -</code>，它可能会让 <code>pushd</code> 感到困惑。</p>
+<p>关于 <code>pushd</code> 还有一个最后的微妙之处，那就是当你用类似 <code>pushd +2</code> 的命令将一个特定的目录带到前面时，列表的其余部分会发生什么。通常列表只是简单地循环，所以之前是 +3 和 +4 的目录现在就在列表的新头部后面，而之前在它前面的两个目录被移到了末尾。如果之前的列表是：</p>
+<pre><code>  dir1  dir2  dir3  dir4
+</code></pre>
+<p>那么在 <code>pushd +2</code> 之后你得到</p>
+<pre><code>  dir3  dir4  dir1 dir2
+</code></pre>
+<p>这种行为在 zsh 的生命周期中改变了，我们中的一些人更喜欢旧的行为，即那个目录被拉到前面，其余的只是填补了空缺：</p>
+<pre><code>  # 旧行为
+  dir3  dir1  dir2  dir4
+</code></pre>
+<p>这样过了一段时间，你就会在列表的前面得到一个“热门精选”组。如果你也喜欢这种行为（我觉得我需要写过群论的论文才能喜欢新的行为），源代码中提供了一个 <code>pushd</code> 函数，尽管它足够短，可以在这里重复——这是 zsh 风格的自动加载形式：</p>
+<pre><code>  # pushd 函数以模拟旧的 zsh 行为。
+  # 有了它，pushd +/-n 会将选定的元素
+  # 提升到栈顶，而不是循环
+  # 栈。
+
+  emulate -R zsh
+  setopt localoptions
+
+  if [[ ARGC -eq 1 &amp;&amp; "$1" == [+-]&lt;-&gt; ]] then
+          setopt pushdignoredups
+          builtin pushd ~$1
+  else
+          builtin pushd "$@"
+  fi
+</code></pre>
+<p><code>&amp;&amp;</code> 是一个逻辑“与”，要求两个测试都为真。测试是函数只有一个参数，并且它的形式是 <code>+</code> 或 <code>-</code> 后跟任意数字（<code>&lt;-&gt;</code> 是一个特殊的 zsh 模式，用于匹配任意数字，是像 <code>&lt;1-100&gt;</code> 这样的形式的扩展，后者匹配 1 到 100 范围内的任意数字，包括两端）。</p>
+<p><strong>引用其他目录</strong>\</p>
+<p>Zsh 有两种方法可以让你引用特定的目录。它们的共同点是都以 <code>~</code> 开头（在非常旧的 zsh 版本中，第二种形式实际上使用了一个 <code>=</code>，但现在的方式更合乎逻辑）。</p>
+<p>你肯定知道，因为我已经大量使用了，一个单独的 <code>~</code> 或后面跟着一个 <code>/</code> 指的是你自己的主目录。这个的扩展——同样来自 C-shell，尽管 Korn shell 在这种情况下也有——是 <code>~name</code> 可以引用系统上任何用户的主目录。所以如果你的用户名是 <code>pws</code>，那么 <code>~</code> 和 <code>~pws</code> 是同一个目录。</p>
+<p>Zsh 对此有一个扩展；你实际上可以命名你自己的目录。这在<a href="zshguide02.html#init">第二章</a>中已经描述过了，关于提示符，因为那是主要用途：</p>
+<pre><code>  host% PS1='%~? '
+  ~? cd zsh/Src
+  ~/zsh/Src? zsrc=$PWD
+  ~/zsh/Src? echo ~zsrc
+  /home/pws/zsh/Src
+  ~zsrc?
+</code></pre>
+<p>请查阅那一章，了解强制一个参数被识别为命名目录的方法。</p>
+<p>有一个稍微更复杂的方法可以直接做到这一点：</p>
+<pre><code>  hash -d zsrc=~/zsh/Src
+</code></pre>
+<p>使得 <code>~zsrc</code> 像以前一样出现在提示符中，并且在这种情况下没有参数 <code>$zsrc</code>。这是纯粹主义者的方式（尽管很少有 zsh 用户是纯粹主义者）。你可以猜到 <code>unhash -d zsrc</code> 是做什么的；这也适用于通过参数命名的目录，但会保留参数本身。</p>
+<p>可能会有一个与用户名同名的命名目录。在这种情况下，<code>~name</code> 指的是你明确命名的目录，没有简单的方法可以得到 <code>name</code> 的主目录，除非删除你定义的名称。</p>
+<p>如果你正在使用命名目录和 <code>cd</code> 类的命令或 <code>AUTO_CD</code>，你可以设置 <code>CDABLEVARS</code> 选项，它允许你省略开头的 <code>~</code>；使用这个选项的 <code>cd zsrc</code> 会带你到 <code>~zsrc</code>。这个名字是一个历史遗留物，现在是一个用词不当；它实际上是命名目录，而不是参数（即变量）被使用。</p>
+<p>用 <code>~</code> 引用目录的第二种方法是使用数字而不是名称：数字引用目录栈中的目录。所以如果 <code>dirs -v</code> 给你</p>
+<pre><code>  0       ~zsf
+  1       ~src
+</code></pre>
+<p>那么 <code>~+1</code> 和 <code>~-0</code>（不太数学，但如果你仔细想想很合逻辑）都指的是 <code>~src</code>。在这种情况下，与 pushd 参数不同，你可以省略 <code>+</code> 并使用 <code>~1</code>。<code>PUSHD_MINUS</code> 选项是被尊重的。你会看到这在上面的 <code>pushd</code> 函数中被使用了：诀窍是 <code>~+3</code>，例如，指的是与 <code>pushd +3</code> 相同的元素，因此 <code>pushd ~+3</code> 将那个目录推到了列表的前面。然而，我们设置了 <code>PUSHD_IGNORE_DUPS</code>，所以旧位置的值也被移除了，给了我们我们想要的效果，即简单地将目录拉到前面，没有棘手的循环。</p>
+<p>[]{#l36}</p>
+<h3 id="325-命令控制和信息命令"><a class="header" href="#325-命令控制和信息命令">3.2.5: 命令控制和信息命令</a></h3>
+<p>存在各种内建命令，它们控制你如何访问命令，并显示可以运行的命令的信息。</p>
+<p>前两个严格来说是“前置命令修饰符”而不是命令：这意味着它们放在命令行之前并修改其行为，而不是它们本身就是命令。如果你在命令行前放上 <code>command</code>，命令词（下一个词）将被视为外部命令的名称，无论它通常如何被解释；同样，如果你在前面放上 <code>builtin</code>，shell 将尝试将该命令作为内建命令运行。通常，shell 函数优先于内建命令，内建命令优先于外部命令。所以，例如，如果你的打印机控制系统有 <code>enable</code> 命令（许多 System V 版本都有），它与我将要谈论的一个内建命令冲突，你可以运行 <code>command enable lp</code> 来启用一个打印机；否则，内建的 enable 将被运行。同样，如果你已经将 <code>cd</code> 定义为一个函数，但这次想调用正常的内建 <code>cd</code>，你可以说 <code>builtin cd mydir</code>。</p>
+<p><code>command</code> 的一个常见用途是在同名的 shell 函数内部。有时你想通过在普通命令周围添加一些额外的东西来增强它，然后调用那个命令，所以你编写一个同名的 shell 函数。要在 shell 函数内部调用命令本身，你使用 <code>command</code>。以下代码可以工作，尽管它显然不那么有用：</p>
+<pre><code>  ls() {
+    command ls "$[@]"
+  }
+</code></pre>
+<p>所以当你运行 <code>ls</code> 时，它会调用函数，函数会调用真正的 <code>ls</code> 命令，并传递你给它的参数。</p>
+<p>你可以用 <code>disable</code> 和 <code>enable</code> 命令对 shell 将运行的命令进行更持久的控制。前者通常接受内建参数；每个这样的内建命令在 shell 中都不会被识别，直到你为它发出一个 <code>enable</code> 命令。所以如果你想能够运行外部的 <code>enable</code> 命令，并且不特别关心内建版本，<code>disable enable</code>（抱歉如果这令人困惑）就能做到。哈，你在想，你不能运行 <code>enable enable</code>。没错：在遥远的过去，<code>builtin enable enable</code> 可能会起作用，但目前不行；如果我记得改的话，这可能会改变。你可以只用 <code>disable</code> 本身来列出所有被禁用的内建命令——大多数做这类操作的内建命令都像那样工作。</p>
+<p>你可以通过给出不同的选项来用 <code>disable</code> 和 <code>enable</code> 操作其他命令集：用 <code>-a</code> 选项操作别名，用 <code>-f</code> 选项操作函数，用 <code>-r</code> 选项操作保留字。前两个你可能已经知道了，我稍后也会讲到，但“保留字”需要描述一下。它们本质上是对 shell 有一些特殊语法意义的内建命令，包括一些符号，如 <code>{</code> 和 <code>[[</code>。它们优先于除别名之外的所有东西——事实上，由于它们在语法上是特殊的，shell 需要很早就知道它找到了一个保留字，等到它尝试执行一个命令时就太晚了。例如，如果 shell 找到 <code>[[</code>，它需要知道直到 <code>]]</code> 的所有内容都必须被视为一个测试，而不是普通的命令参数。因此，你不会经常想禁用一个保留字，因为 shell 将无法正常工作。你可能这样做的最明显的原因是为了与某个没有该保留字的其他 shell 兼容。你可以用以下命令得到一个完整的列表：</p>
+<pre><code>  whence -wm '*' | grep reserved
+</code></pre>
+<p>我将在下面解释，因为我马上就要讲到 <code>whence</code>。</p>
+<p>此外，我倾向于发现，如果我想摆脱别名或函数，我使用 <code>unalias</code> 和 <code>unfunction</code> 命令来永久地摆脱它们，因为我总是在某个地方存储了原始定义，所以这两个选项可能也不是那么有用。禁用内建命令绝对是 <code>disable</code> 的四种可能性中最有用的。</p>
+<p>外部命令必须以不同的方式操作。上面给出的类型由 shell 内部处理，所以它需要做的就是记住要调用什么代码。对于外部命令，问题在于如何找到它们。我上面提到了 <code>rehash</code>，但没有告诉你 <code>hash</code> 命令，你已经见过它的 <code>-d</code> 选项，可以用来告诉 shell 如何找到一个外部命令：</p>
+<pre><code>  hash foo=/path/to/foo
+</code></pre>
+<p>使得 <code>foo</code> 使用显示的路径执行命令（它甚至不必以 <code>foo</code> 结尾）。这有点像一个别名——大多数人可能会用别名来做这个，事实上——尽管速度快一点，但你不太可能注意到区别。你可以用 <code>unhash</code> 来移除这个。这里有一个陷阱是，如果路径被重新哈希，无论是通过调用 <code>rehash</code> 还是当你改变 <code>$path</code> 时，整个哈希表都会被清空，包括你以这种方式放入的任何东西；所以它不是特别有用。</p>
+<p>在所有这些之中，能够找出 shell 认为一个特定的命令名是做什么的，是很有用的。命令 <code>whence</code> 告诉你这个；它也以 <code>where</code>、<code>which</code> 和 <code>type</code> 的名称存在，选项略有不同，主要是为了提供与其他 shell 的兼容性。我只讲 <code>whence</code>。</p>
+<p>它的标准输出实际上并不特别有趣。如果它是一个 shell 内部以某种方式知道的命令，它会被回显回来，如果是别名，别名会被展开；如果它是一个外部命令，它会以完整路径打印出来，显示它来自哪里；如果它不为人知，命令返回状态 1 并且不打印任何东西。</p>
+<p>你可以用 <code>-v</code> 或 <code>-c</code> 选项让它更有用，它们更详细；前者打印一条信息消息，而后者打印出它被问及的任何函数的定义（这也是使用 <code>which</code> 而不是 <code>whence</code> 的效果）。一个非常有用的选项是 <code>-m</code>，它将任何参数作为使用通常的 zsh 模式格式的模式，换句话说，与用于匹配文件的格式相同。因此</p>
+<pre><code>  whence -vm "*"
+</code></pre>
+<p>打印出 shell 知道的每个命令，以及它对它的看法。</p>
+<p>注意 <code>*</code> 周围的引号——你必须在任何模式不用于在命令行上生成文件名，而是需要传递给命令以供解释的地方记住这些。如果这看起来是一个相当微妙的区别，想想如果你在一个有文件 <code>foo</code> 和（猜猜看）<code>bar</code> 的目录中运行</p>
+<pre><code>  # 糟糕。最好不要在家里尝试这个。
+  # （甚至更好，也不要在工作中这样做。）
+  whence -vm *
+</code></pre>
+<p>会发生什么。当 shell 第一次看命令行时，它还没有决定要运行哪个命令；它只是看到 <code>*</code> 并将该行扩展为</p>
+<pre><code>  whence -vm foo bar
+</code></pre>
+<p>这不是你想要的。</p>
+<p>还有几个值得一提的技巧：<code>-p</code> 使 shell 在你的路径中搜索它们，即使该名称被匹配为其他东西（比如说，一个 shell 函数）。所以如果你将 <code>ls</code> 定义为一个函数，</p>
+<pre><code>  which -p ls
+</code></pre>
+<p>仍然会告诉你 <code>command ls</code> 会找到什么。此外，选项 <code>-a</code> 搜索所有命令；在同一个例子中，这会向你显示 <code>ls</code> 命令和 <code>ls</code> 函数，而 <code>whence</code> 通常只会显示函数，因为那是将被运行的那个。<code>-a</code> 选项还会显示它是否在你的路径中找到了多个外部命令。</p>
+<p>最后，选项 <code>-w</code> 很有用，因为它用一个单词标识命令的类型：<code>alias</code>、<code>builtin</code>、<code>command</code>、<code>function</code>、<code>hashed</code>、<code>reserved</code> 或 <code>none</code>。其中大多数是显而易见的，<code>command</code> 是一个普通的外部命令；<code>hashed</code> 是一个用 <code>hash</code> 内建命令明确给定了路径的外部命令，<code>none</code> 意味着它根本没有被识别为命令。现在你知道我们上面是如何提取保留字的了。</p>
+<p><code>whence</code> 的一个近亲是 <code>functions</code>，它当然适用于 shell 函数；它通常列出作为参数给出的所有函数的定义，但它的亲戚（其中 <code>autoload</code> 是一个）执行各种其他技巧，将在下面关于 shell 函数的部分描述。小心 <code>function</code>，没有 <code>s</code>，它完全不同，不像 <code>command</code> 或 <code>builtin</code>——它实际上是用于<em>定义</em>函数的关键字。</p>
+<p>[]{#l37}</p>
+<h3 id="326-参数控制"><a class="header" href="#326-参数控制">3.2.6: 参数控制</a></h3>
+<p>有各种用于控制 shell 参数的内建命令。你已经知道如何设置和使用参数，但当你查看细节时，它要复杂得多。</p>
+<p><strong>局部参数</strong>\</p>
+<p>操作参数行为的主要命令是 <code>typeset</code>。它最简单的用法是声明一个参数；你只需给它一个参数名列表，这些参数名被创建为标量参数。你可以通过赋值来创建参数，但 <code>typeset</code> 的主要作用是，如果一个参数以这种方式在函数内部创建，该参数将在函数结束时恢复其原始值，或者如果它以前不存在则被移除——换句话说，它具有“局部作用域”，就像你在大多数普通编程语言中声明的变量一样。事实上，用行话来说，它具有“动态”而非“语法”作用域，这意味着同一个参数在当前函数内调用的任何函数中都是可见的；这与 C 或 FORTRAN 不同，在 C 或 FORTRAN 中，任何被调用的函数或子程序都看不到父函数中声明的任何变量。</p>
+<p>以下内容使这一点更具体。</p>
+<pre><code>  var='原始值'
+  subfn() {
+    print $var
+  }
+  fn() {
+    print $var
+    typeset var='函数中的值'
+    print $var
+    subfn
+  }
+  fn
+  print $var
+</code></pre>
+<p>这段代码打印出</p>
+<pre><code>  原始值
+  函数中的值
+  函数中的值
+  原始值
+</code></pre>
+<p>代码的前三块只是定义了参数 <code>$var</code> 和两个函数 <code>subfn</code> 和 <code>fn</code>。然后我们调用 <code>fn</code>。它做的第一件事是打印出 <code>$var</code>，得到 <code>原始值</code>，因为我们没有改变原始定义。然而，接下来的 <code>typeset</code> 改变了它；如你所见，我们可以在 typeset 期间给参数赋值。因此，当我们再次打印出 <code>$var</code> 时，我们得到 <code>函数中的值</code>。然后调用 <code>subfn</code>，它打印出与 <code>fn</code> 中相同的值，因为我们没有改变它——这就是 C 或 FORTRAN 会有所不同的地方，它们不会识别这个变量，因为它没有在那个函数中声明。最后，<code>fn</code> 退出，原始值被恢复，并由最后的 <code>print</code> 打印出来。</p>
+<p>注意值改变了两次：一次在 <code>typeset</code>，另一次在 <code>fn</code> 的末尾。<code>$var</code> 在任何时候的值都将是这两个值之一。</p>
+<p>虽然你可以在 <code>typeset</code> 语句中进行赋值，但你不能给数组赋值（我在上一章已经说过了）：</p>
+<pre><code>  typeset var=(这不起作用！)
+</code></pre>
+<p>因为带括号的语法是特殊的；它只在行只包含赋值时才起作用。然而，如果你尝试将一个数组赋给一个标量，或者反过来，shell 不会抱怨；它只是默默地转换类型：</p>
+<pre><code>  typeset var='标量值'
+  var=(数组值)
+</code></pre>
+<p>我在 typeset 语句中加入了赋值，以强调它创建标量，但实际上在函数中设置数组的通常方法是</p>
+<pre><code>  typeset var
+  var=()
+</code></pre>
+<p>它创建一个空的标量，然后将其转换为空的数组。最近版本的 shell 有 <code>typeset -a var</code> 来一步完成——但你<em>仍然</em>不能在同一个语句中给它赋值。</p>
+<p><code>typeset</code> 及其亲属只是带有普通参数集的普通命令，这一事实还带来了其他问题。考虑这个：</p>
+<pre><code>  % typeset var=`echo 两个 词`
+  % print $var
+  两个
+</code></pre>
+<p>“词”去哪儿了？答案是，反引号替换，下面会讨论，在未被引用时会分割单词。所以 <code>typeset</code> 语句等同于</p>
+<pre><code>  % typeset var=两个 词
+</code></pre>
+<p>有两种方法可以解决这个问题；首先，使用普通赋值：</p>
+<pre><code>  % typeset var
+  % var=`echo 两个 词`
+</code></pre>
+<p>它可以判断出是标量赋值，因此知道不要分割单词，或者引用反引号，</p>
+<pre><code>  % typeset var="`echo 两个 词`"
+</code></pre>
+<p>我们还没有谈到三种重要的类型；这两种都只能用 <code>typeset</code> 或我稍后会列出的类似内建命令之一来创建。它们是整数类型、浮点类型和关联数组类型。</p>
+<p><strong>数值参数</strong>\</p>
+<p>整数是用 <code>typeset -i</code> 创建的，或者 <code>integer</code>，这是另一种说法。它们用于算术，shell 可以这样做：</p>
+<pre><code>  integer i
+  (( i = 3 * 2 + 1 ))
+</code></pre>
+<p>双括号包围一个完整的算术表达式：它的行为就像被引用了一样。里面的表达式可以是你可能在其他编程语言的算术中习惯的几乎任何东西。一个重要的注意事项是，参数前面不需要有 `$``，即使它们的值正在被取用：</p>
+<pre><code>  integer i j=12
+  (( i = 3 * ( j + 4 ) ** 2 ))
+</code></pre>
+<p>在这里，<code>j</code> 将被替换为 12，<code>$i</code> 得到值 768（十六的平方乘以三）。你可能不认识的一个东西是 <code>**</code>，这是 FORTRAN 和 Perl 中出现的“乘方”运算符。请注意，在双括号内有括号是没问题的——实际上，你甚至可以这样做</p>
+<pre><code>  (( i = (3 * ( j + 4 )) ** 2 ))
+</code></pre>
+<p>而且 shell 不会感到困惑，因为它知道里面的任何括号都必须是成对的（直到你用你的有 bug 的代码故意迷惑它）。</p>
+<p>你通常会用 <code>print $i</code> 来看看 <code>$i</code> 被赋予了什么值，当然，它会以十进制数的形式打印出来。然而，<code>typeset</code> 允许你指定另一个基数来打印。如果你这样做</p>
+<pre><code>  typeset -i 16 i
+  print $i
+</code></pre>
+<p>在上次计算之后，你应该会看到 <code>16#900</code>，这意味着以 16 为基数（十六进制）的 900。这就是选项 <code>-i 16</code> 对 <code>$i</code> 的唯一影响——你可以像平常一样给它赋值并在算术表达式中使用它，但当你打印它时，它会以这种形式出现。你也可以用这种基数表示法来输入数字：</p>
+<pre><code>  (( i = 16#ff * 2#10 ))
+</code></pre>
+<p>这意味着 255（十六进制的 <code>ff</code>）乘以 2（二进制的 <code>10</code>）。shell 也理解 C 的表示法，所以 <code>16#ff</code> 可以表示为 <code>0xff</code>。</p>
+<p>浮点变量非常相似。你可以用 <code>typeset -F</code> 或 <code>typeset -E</code> 来声明它们。两者唯一的区别，同样，是在输出上；<code>-F</code> 使用定点表示法，而 <code>-E</code> 使用科学（助记：指数）表示法。内建命令 <code>float</code> 等同于 <code>typeset -E</code>（因为 Korn shell 就是这么做的，所以就这样）。浮点表达式也以你可能习惯的方式工作：</p>
+<pre><code>  typeset -E e
+  typeset -F f
+  (( e = 32/3, f = 32.0/3.0 ))
+  print $e $f
+</code></pre>
+<p>打印</p>
+<pre><code>  1.000000000e+01 10.6666666667
+</code></pre>
+<p>几点说明：<code>,</code> 可以分隔不同的表达式，就像在 C 中一样，所以 <code>e</code> 和 <code>f</code> 的赋值是分开执行的。<code>e</code> 的赋值实际上是一个整数除法，因为 32 和 3 都不是浮点数，浮点数必须包含一个点。这意味着进行了一个整数除法，产生 10，然后在最后才转换为浮点数。同样，这就像成熟的语言的工作方式，所以咒骂是没用的。<code>f</code> 的赋值是一个完整的浮点运算。浮点参数在 <code>3.1.7</code> 版本之前是不可用的。</p>
+<p>虽然这实际上是后面章节的内容，但有一个浮点函数库你可以加载（实际上它只是链接系统数学库的一种方式）。通常的咒语是 <code>zmodload zsh/mathfunc</code>；你的系统上可能没有库的“动态加载”，这可能意味着那不起作用。如果可以，你可以做类似的事情</p>
+<pre><code>  (( pi = 4.0 * atan(1.0) ))
+</code></pre>
+<p>广义上说，大多数系统数学库中出现的所有函数（参见 <code>math</code> 的手册页）在 zsh 中都可用。</p>
+<p>像所有其他用 <code>typeset</code> 或其亲属之一创建的参数一样，整数和浮点参数是函数局部的。你可能想知道如何创建一个具有整数或浮点值的全局参数（即在函数外部和内部都有效的参数）。shell 最近增加了一个功能（在 3.1.6 版本中）允许这样做：在 typeset 中使用 <code>-g</code> 标志以及任何其他标志。例如，</p>
+<pre><code>  fn() {
+    typeset -Fg f
+    (( f = 42.75 ))
+  }
+  fn
+  print $f
+</code></pre>
+<p>如果你试试，你会看到 <code>$f</code> 的值在函数之外仍然存在。<code>g</code> 代表全局，显然，尽管它不完全那么简单：</p>
+<pre><code>  fn() {
+    typeset -Fg f
+  }
+  outerfn() {
+    typeset f='标量值'
+    fn
+    print $f
+  }
+  outerfn
+</code></pre>
+<p>函数 <code>outerfn</code> 为 <code>f</code> 创建一个局部标量值；这就是 <code>fn</code> 所看到的。所以它实际上不是在操作一个“全局”值，它只是没有为 <code>fn</code> 的作用域创建一个新的。错误消息是因为它试图在改变其类型的同时保留 <code>$f</code> 的值，而该值不是一个正确的浮点表达式。错误消息，</p>
+<pre><code>  fn: bad math expression: operator expected at `value'
+</code></pre>
+<p>是因为对数字参数赋值总是执行算术求值。在操作 <code>scalar value</code> 时，它找到了 <code>scalar</code> 并假设这是一个参数，然后寻找一个像 <code>+</code> 这样的运算符；但它找到了 <code>value</code>。如果你想实验，把字符串改成 <code>scalar + value</code> 并设置 <code>value=42</code>，或者别的什么，然后再试一次。这有点令人困惑（这是说它让我困惑的委婉说法），但与 zsh 通常对待参数的方式是一致的。</p>
+<p>实际上，在某种程度上你不需要使用整数和浮点参数。任何时候 zsh 需要一个数字表达式，它都会强制一个标量到正确的值，任何时候它产生一个数字表达式并将其赋给一个标量，它都会将结果转换为字符串。所以</p>
+<pre><code>  typeset num=3            # 这是*字符串* `3'。
+  (( num = num + 1 ))      # 但这无论如何都有效
+                           # ($num 仍然是一个字符串)。
+</code></pre>
+<p>如果你有一个参数有时是数字，有时是字符串，这可能很有用，因为 zsh 为你做了所有的转换工作。然而，如果你总是想要一个数字，这也可能令人困惑，因为 zsh 无法为你猜测；另外，不来回转换效率更高一些；另外，当你这样做时会失去精度，因为如果数字作为字符串而不是内部数字表示存储，你说的就是你得到的（尽管 zsh 在隐式转换为字符串时倾向于给你很多小数位）。无论如何，我建议如果你知道一个参数必须是整数或浮点值，你应该这样声明它。</p>
+<p>有一个名为 <code>let</code> 的内建命令来处理数学表达式，但是因为</p>
+<pre><code>  let "num = num + 1"
+</code></pre>
+<p>等同于</p>
+<pre><code>  (( num = num + 1 ))
+</code></pre>
+<p>而且第二种形式更容易、更难忘，你可能不需要使用它。如果你确实使用它，请记住（与 BASIC 不同）每个数学表达式都应该作为引号中的一个参数出现。</p>
+<p><strong>关联数组</strong>\</p>
+<p>剩下的一种主要参数类型是关联数组；如果你使用 Perl，你可能会称之为“哈希”，但我们倾向于不这样做，因为那实际上是对它如何实现的描述，而不是它做什么。（好吧，它做的是哈希。现在闭嘴。）</p>
+<p>这些必须用 typeset 语句声明——没有别的办法。有一些相当不拘一格的内建命令会为你生成一个填充好的关联数组，但告诉 zsh 你想要你自己的关联数组的唯一方法是</p>
+<pre><code>  typeset -A assoc
+</code></pre>
+<p>来创建 <code>$assoc</code>。至于它做什么，最好用例子来展示：</p>
+<pre><code>  typeset -A assoc
+  assoc=(one eins two zwei three drei)
+  print ${assoc[two]}
+</code></pre>
+<p>它打印 <code>zwei</code>。所以它的工作方式有点像一个普通数组，但普通数组中会出现在方括号内的数字<em>下标</em>被字符串<em>键</em>取代了，在这种情况下是 <code>two</code>。数组赋值有点欺骗性；“值”实际上是成对的，<code>one</code> 是值 <code>eins</code> 的键，依此类推。如果这样的列表中有奇数个元素，shell 会抱怨。这可能也让你想起了 Perl。你可以一次赋一个值：</p>
+<pre><code>  assoc[four]=vier
+</code></pre>
+<p>也可以取消设置一个键/值对：</p>
+<pre><code>  unset 'assoc[one]'
+</code></pre>
+<p>这里的引号阻止了方括号在命令行上被解释为模式。</p>
+<p>展开被推迟了，但你可能想知道如何取回你放进去的东西。如果你这样做</p>
+<pre><code>  print $assoc
+</code></pre>
+<p>你只会看到值——这与普通数组完全相同，其中下标 1、2、3 等不显示。注意它们的顺序是随机的——这是与普通数组的另一个主要区别；关联数组没有顺序的概念，除非你明确地对它们进行排序。</p>
+<p>但在这里，键可能同样有趣。所以有：</p>
+<pre><code>  print ${(k)assoc}
+  print ${(kv)assoc}
+</code></pre>
+<p>得到（如果你已经执行了上面所有的命令）：</p>
+<pre><code>  four two three
+  four vier two zwei three drei
+</code></pre>
+<p>它打印出键而不是值，以及你输入的键和值对。你可以看到，虽然对的顺序不明显，但每次都是一样的。从这个例子中你可以得出如何将一个关联数组复制到另一个：</p>
+<pre><code>  typeset -A newass
+  newass=(${(kv)assoc})
+</code></pre>
+<p>其中 <code>(kv)</code> 很重要——就像赋值前的 <code>typeset</code> 一样，否则 <code>$newass</code> 会是一个糟糕的普通数组。你也可以证明 <code>${(v)assoc}</code> 做了你可能期望的事情。还有很多其他的技巧，但它们大多与聪明的参数展开类型有关，将在<a href="zshguide05.html#subst">第五章</a>中描述。</p>
+<p><strong>其他 typeset 和类型技巧</strong>\</p>
+<p><code>typeset</code> 有变体，上面零星提到了一些。没有任何一个能做 <code>typeset</code> 做不到的事情——情况并非总是如此；我们试图改进选项的正交性。它们在默认设置的选项和允许的附加选项上有所不同。这里有一个列表：<code>declare</code>、<code>export</code>、<code>float</code>、<code>integer</code>、<code>local</code>、<code>readonly</code>。我不会通过详细描述所有这些来迷惑你；请参阅手册。</p>
+<p>如果有一个例外，那就是 <code>export</code>，它不仅标记一个参数以便导出，而且默认情况下打开了 <code>-g</code> 标志，因此该参数不是函数局部的；换句话说，它等同于 <code>typeset -gx</code>。然而，一个从选项不那么合乎逻辑的时代遗留下来的问题是，<code>typeset -x</code> 的行为像 <code>export</code>，换句话说，<code>-g</code> 标志默认是打开的。你可以通过取消设置 <code>GLOBAL_EXPORT</code> 选项来解决这个问题——该选项只为兼容性而存在；逻辑上它应该总是被取消设置。这部分是因为在过去你不能导出局部参数，所以 <code>typeset -x</code> 要么必须打开 <code>-g</code>，要么关闭 <code>-x</code>；这在 3.1.9 版本中得到了修复，并且（例如）<code>local -x</code> 创建一个导出到环境的局部参数；参数本身和环境中的值都将在函数退出时恢复。内建命令 <code>local</code> 本质上是 <code>typeset</code> 的一种形式，它放弃了 <code>-g</code> 标志及其所有功能。</p>
+<p>另一个已经消失的旧限制是，你不能让特殊参数，特别是 <code>$PATH</code>，成为函数局部；你只是修改了原始参数。现在如果你说 <code>typeset PATH</code>，事情会像你可能期望的那样发生，<code>$PATH</code> 具有其通常的效果，并在函数退出时恢复其旧值。然而，由于 <code>$PATH</code> 仍然是特殊的，你应该确保在函数中调用外部命令之前给它赋一些值，否则它将为空，并且找不到任何命令。可能你特别不希望你创建的某个局部参数具有特殊属性；3.1.7 及更高版本允许 typeset 标志 <code>-h</code> 来隐藏该参数的特殊性，所以在 <code>typeset -h PATH</code> 中，<code>PATH</code> 在封闭函数期间将是一个普通变量。在内部，之前设置的相同值将继续用于查找命令，但它不会被导出。</p>
+<p>我在上一章提到了另一个特殊的 typeset 选项：</p>
+<pre><code>  typeset -T TEXINPUTS texinputs
+</code></pre>
+<p>以与 <code>$PATH</code> 和 <code>$path</code> 工作相同的方式将标量 <code>$TEXINPUTS</code> 和数组 <code>$texinputs</code> 绑定在一起。这是一次性的；这是 <code>typeset</code> 在命令行上只接受两个参数名的唯一一次。所有其他 <code>typeset</code> 的用法都接受一个参数列表，任何给定的标志都应用于这些参数。有关其余标志，请参阅手册，尽管大多数更有趣的已经讨论过了。</p>
+<p>关于标志，你需要知道的另一件事是，你用 <code>+</code> 符号来关闭相应的属性。所以</p>
+<pre><code>  typeset +r msg
+</code></pre>
+<p>允许你再次设置 <code>$msg</code>。从 <code>4.1</code> 版本开始，你将无法关闭特殊参数的只读属性；那是因为有太多的混淆空间，包括试图在代码中设置常量字符串。例如，<code>$ZSH_VERSION</code> 总是打印一个固定的字符串；试图改变那是徒劳的。</p>
+<p><code>typeset</code> 的最后一个用途是列出参数。如果你只输入 <code>typeset</code>，你会得到一个完整的参数及其值的列表。从 3.1.7 开始，你可以为一个参数打开 <code>-H</code> 标志，这意味着在这样做时隐藏它的值。这对于一些更庞大的参数可能很有用，特别是我将在<a href="zshguide07.html#ragbag">第七章</a>关于模块的部分谈论的特殊参数，它们往往会淹没 <code>typeset</code> 产生的显示。</p>
+<p>你也可以列出特定类型的参数，方法是列出你想知道的标志。例如，</p>
+<pre><code>  typeset -r
+</code></pre>
+<p>列出所有只读参数。你可能会期望 <code>typeset +r</code> 列出<em>没有</em>该属性的参数，但实际上它列出相同的参数，但不显示它们的值。<code>typeset +</code> 以这种方式列出所有参数。</p>
+<p>了解参数的另一种好方法是使用特殊扩展 <code>${(t)*param*}</code>，例如</p>
+<pre><code>  print ${(t)PATH}
+</code></pre>
+<p>打印 <code>scalar-export-special</code>：<code>$PATH</code> 是一个标量参数，设置了 <code>-x</code> 标志，并且对 shell 有特殊含义。实际上，“特殊”的含义比那多一点：它意味着获取和设置参数的内部代码的行为方式对参数本身或 shell 的其他地方有副作用。还有其他参数，比如 <code>$HISTFILE</code>，被 shell 使用，但以正常方式获取和设置——它们只是特殊在 shell 会查看其值；毕竟，任何旧的 shell 函数也可以做到这一点。与此形成对比的是 <code>$PATH</code>，它在设置时需要处理所有关于哈希命令的繁琐事务，正如我上面讨论的，我希望你能看到区别。</p>
+<p><strong>读入参数</strong>\</p>
+<p>内建命令 <code>read</code>，顾名思义，是 <code>print</code> 的反面（shell 中没有 <code>write</code> 命令，尽管通常有一个同名的外部命令用于向另一个用户发送消息），但读取与打印不同，需要 shell 中的某些东西改变以接受值，所以与 <code>print</code> 不同，<code>read</code> 被迫成为一个内建命令。不可避免地，值被读入一个参数。通常它们从标准输入中获取，通常是终端（即使你正在运行一个脚本，除非你重定向了输入）。所以最简单的情况就是</p>
+<pre><code>  read param
+</code></pre>
+<p>如果你输入一行，然后按回车，它将被放入 <code>$param</code>，不带最后的换行符。</p>
+<p><code>read</code> 内建命令实际上对输入做了一些处理。它通常会从读入的行中剥离任何初始或末尾的空白（空格或制表符），但中间的任何空白都会被保留。你可以通过列出要赋值的参数来读取一组由空白分隔的值；最后一个参数会得到该行的所有剩余部分，而不会被分割。通常最简单的方法是直接读入一个数组：</p>
+<pre><code>  % read -A array
+        this is a line typed in now, \ 
+      by me,    in this   space
+  % print ${array[1]} ${array[12]}
+  this space
+</code></pre>
+<p>（我假设你正在使用原生的 zsh 数组格式，而不是用 <code>KSH_ARRAYS</code> 设置的那个，并且将继续假设这一点。）</p>
+<p>当你想要读取某些东西时，能够打印一个提示符是很有用的。你可以用 <code>print -n</code> 来做到这一点，但有一个简写：</p>
+<pre><code>  % read line'?请输入一行： '
+  请输入一行： some words
+  % print $line
+  some words
+</code></pre>
+<p>注意引号包围了 <code>?</code> 以防止它在命令行上被当作模式的一部分。如果你喜欢，你可以从 <code>line</code> 的开头引用整个表达式；我只是那样写，因为我知道参数名不需要引用，因为它们不能有奇怪的字符。这几乎是合乎逻辑的。</p>
+<p><code>read</code> 的另一个有用技巧是读取单个字符；<code>-k</code> 选项可以做到这一点，实际上你可以在 <code>k</code> 后面紧跟一个数字，指定要读取的数量。更容易的是，<code>-q</code> 选项读取单个字符，如果是 <code>y</code> 或 <code>Y</code> 则返回状态 0，否则返回状态 1；因此你可以读取是/否问题的答案，而根本不使用参数。但是请注意，如果你不提供参数，回复无论如何都会被赋给 <code>$REPLY</code>（如果它是标量——就像 <code>-q</code> 的情况）或 <code>$reply</code>（如果它是数组——即如果你指定了 <code>-A</code>，但没有参数名）。这些是 shell 使用的非特殊参数的更多例子——它设置 <code>$REPLY</code> 或 <code>$reply</code>，但方式与你设置它们的方式相同；没有副作用。</p>
+<p>像 <code>print</code> 一样，<code>read</code> 有一个用于原始模式的 <code>-r</code> 标志。然而，这对 <code>read</code> 只有一个效果：没有它，行尾的 <code>\</code> 指定下一行是当前行的延续（你可以在终端输入时这样做）。有了它，<code>\</code> 不被特殊对待。</p>
+<p>最后，一个关于分词的更复杂的说明。我说过，当你读取多个参数或一个数组时，单词会在空白处被分割。实际上，shell 会在 <code>$IFS</code>（代表“输入字段分隔符”）参数中找到的任何字符处分割单词，这个参数是真正特殊的，因为它影响 shell 的内部。默认情况下——并且在绝大多数用途中——它包含空格、制表符、换行符和一个空字符（字符零：如果你知道这些通常用于标记字符串的结尾，你可能会惊讶于 shell 将这些作为普通字符处理，但它确实如此，尽管打印它们通常不显示任何东西）。然而，你可以将它设置为任何字符串：输入</p>
+<pre><code>  fn() {
+    local IFS=:
+    read -A array
+    print -l $array
+  }
+  fn
+</code></pre>
+<p>然后输入</p>
+<pre><code>one word:two words:three words:four
+</code></pre>
+<p>Shell 会向你显示它读入的数组中的内容，每行一个“单词”：</p>
+<pre><code>  one word
+  two words
+  three words
+  four
+</code></pre>
+<p>你会看到香蕉，呃，单词（三十岁以上的人的笑话）被视为由冒号分隔，而不是由空白分隔。在旧版本的 zsh 中，将 <code>$IFS</code> 设为局部变量不起作用，与其他特殊变量一样；你必须保存它并恢复它。</p>
+<p>Zsh 中的 <code>read</code> 命令不允许你进行行编辑，而一些 shell 可以。为此，你应该使用 <code>vared</code> 命令，它运行行编辑器来编辑一个参数，使用 <code>-c</code> 选项，它允许 <code>vared</code> 创建一个新参数。它还接受 <code>-p</code> 选项来指定一个提示符，所以上面的一个例子可以重写为</p>
+<pre><code>  vared -c -p '请输入一行： ' line
+</code></pre>
+<p>它的工作方式很像 read，但有完整的编辑支持。如果你给出 <code>-h</code>（历史）选项，你甚至可以从以前的命令行中检索值。然而，它没有 read 的所有格式化选项，尽管在读取数组时（如果创建新数组，请与 <code>-c</code> 一起使用 <code>-a</code> 选项）它会执行分割。</p>
+<p><strong>其他控制参数的内建命令</strong>\</p>
+<p>其余处理参数的内建命令可以更快地处理。</p>
+<p>内建命令 <code>set</code> 只是设置作为参数传递给函数或脚本的特殊参数，你可以通过 <code>$*</code> 或 <code>$@</code>，或 <code>$&lt;number&gt;</code>（Bourne-like 格式），或通过 <code>$argv</code>（csh-like 格式）来访问，无论你如何设置它们，它们都被称为“位置参数”：</p>
+<pre><code>  % set a whole load of words
+  % print $1
+  a
+  % print $*
+  a whole load of words
+  % print $argv[2,-2]
+  whole load of
+</code></pre>
+<p>这完全就像你在一个函数中，并且用参数 <code>a whole load of words</code> 调用了该函数。实际上，set 也可以用来设置 shell 选项，无论是作为标志，例如 <code>set -x</code>，还是在 <code>-o</code> 之后的单词，例如 <code>set -o xtrace</code> 与前一个例子做同样的事情。通常使用 <code>setopt</code> 更容易，结果是，当你以这种方式设置参数时，你需要小心，以防它们以 <code>-</code> 开头。在真实参数前放上 <code>--</code> 可以解决这个问题。</p>
+<p><code>set</code> 的另一个用途是通过</p>
+<pre><code>  set -A any_array words to assign to any_array
+</code></pre>
+<p>来设置任何数组，这等同于（并且是标准的 Korn shell 版本）</p>
+<pre><code>  any_array=(words to assign to any_array)
+</code></pre>
+<p><code>set</code> 版本更有用的一个情况是，如果一个数组的名称本身来自一个参数：</p>
+<pre><code>  arrname=myarray
+  set -A $arrname words to assign
+</code></pre>
+<p>在另一种形式中没有简单的等价物；普通赋值的左侧不会扩展一个参数：</p>
+<pre><code>  # 不起作用；语法错误
+  $arrname=(words to assign)
+</code></pre>
+<p>这在旧版本的 zsh 中是可行的，但那是在非标准方面。<code>eval</code> 命令，下面会描述，提供了另一种解决这个问题的方法。</p>
+<p>接下来是 <code>shift</code>，它只是将一个数组向上移动一个元素，删除原来的第一个元素。没有数组名时，它作用于位置参数。你也可以在数组名前给它一个要移动的数字，而不是一。</p>
+<pre><code>  shift array
+</code></pre>
+<p>等同于</p>
+<pre><code>  array=(${array[2,-1]})
+</code></pre>
+<p>（几乎——我将把这里的微妙之处留给关于展开的章节）它选取数组的第二个到最后一个元素，并将它们赋回给原始数组。再次注意，<code>shift</code> 使用数组的<em>名称</em>而不是<em>值</em>来操作，所以前面不应该出现 <code>$</code>，否则你会得到类似于我为 <code>set -A</code> 展示的技巧。</p>
+<p>最后，<code>unset</code> 取消设置一个参数，我已经展示了你可以取消设置一个关联数组的键/值对。这里有一个需要提到的微妙之处。通常，<code>unset</code> 只是让命名的参数从地球上消失。然而，如果你在函数中调用 <code>unset</code>，它的幽灵会以这样的方式存在：你在同名中创建的任何参数都将具有与原始参数相同的作用域。因此：</p>
+<pre><code>  var='全局值'
+  fn() {
+    typeset var='局部值'
+    unset var
+    var='这个怎么样？'
+  }
+  fn
+  print $var
+</code></pre>
+<p>最后的语句打印 <code>全局值</code>：即使 <code>$var</code> 的局部副本被取消设置，shell 也会记住它是局部的，所以函数中的第二个 <code>$var</code> 也是局部的，它的值在函数结束时消失。</p>
+<p>[]{#l38}</p>
+<h3 id="327-历史控制命令"><a class="header" href="#327-历史控制命令">3.2.7: 历史控制命令</a></h3>
+<p>访问 shell 命令历史最简单的方法是直接编辑它。第二简单的方法是使用 <code>!</code>-历史机制。其他操作它的方法都基于 <code>fc</code> 内建命令，它可能曾经代表什么（根据 Oliver Kiddle 的说法，是“修复命令”，这和任何东西一样好）。我在上一章已经谈了很多，真的没有什么要补充的了。只需注意，另外两个基于它的命令是 <code>history</code> 和 <code>r</code>。</p>
+<p>[]{#l39}</p>
+<h3 id="328-作业控制和进程控制"><a class="header" href="#328-作业控制和进程控制">3.2.8: 作业控制和进程控制</a></h3>
+<p>C-shell 的主要贡献之一是作业控制。你需要了解前台和后台任务，我在上一章连同控制它们的选项一起介绍了这些。这里是对相关内建命令的介绍。</p>
+<p>你用两种方式启动一个后台作业。首先，直接地，通过在它后面放一个 <code>&amp;</code>：</p>
+<pre><code>  sleep 10 &amp;
+</code></pre>
+<p>其次，通过以正常方式启动它（即在前台），然后输入 <code>^Z</code>，并使用 <code>bg</code> 命令将其放入后台。在输入 <code>^Z</code> 和 <code>bg</code> 之间，作业仍然存在，但没有运行；它被“挂起”或“停止”（系统对同一件事有不同的描述），等待你决定如何处理它。在任何一种情况下，作业然后继续，而 shell 不等待它。如果那是你启动它的方式，它仍然会尝试从终端读取或写入；如果你想改变这一点，你需要在作业已经启动后就无能为力了，你需要在开始时就使用 shell 的重定向功能。</p>
+<p>顺便说句，<code>sleep</code> 不是一个内建命令。奇怪的是，你可以用 <code>^Z</code> 挂起一个内建命令或命令序列（比如 shell 函数），尽管由于 shell 必须继续执行你的命令以及被挂起，它只能做它能做的事——分叉，这样你挂起的命令就被放入后台。可能你很少会对内建命令这样做。据我所知，没有其他 shell 有这个功能。</p>
+<p>如果一个作业需要从终端读取，它会停止。你会看到一条像这样的消息：</p>
+<pre><code>  [1]  + 1348 suspended (tty input)  jobname and arguments
+</code></pre>
+<p>这意味着作业被挂起了，很像你刚刚输入了 <code>^Z</code>。你需要把作业带到前台，如下所述，这样你就可以给它输入一些东西。</p>
+<p>顺便说句，用于挂起命令的键可能不是 <code>^Z</code>；通常是，但这可以改变。运行 <code>stty -a</code> 并查找 <code>susp =</code> 后面列出的内容——可能是，但不一定是 <code>^Z</code>。所以如果你想使用另一个字符——它必须是单个字符；这是在终端接口深处处理的，而不是在 shell 中——你可以运行</p>
+<pre><code>  stty susp '^]'
+</code></pre>
+<p>或者别的什么。你会从 <code>stty</code> 的输出中注意到，各种其他的作业控制字符也可以类似地改变。<code>stty</code> 命令是外部的，它的输出和输入格式在不同系统之间可能会有很大差异。</p>
+<p>除了将命令放入后台，你还可以用 <code>fg</code> 将其再次带回前台。这对于暂时停止你正在做的事情以便你可以做别的事情很有用。如今你可能会在另一个窗口中这样做；在过去，当人们从简单的终端登录时，这更有用。一个典型的例子是</p>
+<pre><code>  more file                        # 查看文件
+  ^Z                               # 挂起
+  [1] + 8592 suspended  more file  # 打印的消息
+  ...                              # 做别的事情
+  fg %1                            # 恢复 `more`
+</code></pre>
+<p><code>%</code> 是引用作业的常用方式。它后面的数字是出现在挂起消息的方括号中的数字；我不知道为什么 shell 在那里也不用 <code>%</code> 表示法。你也会在将某物放入后台时的“继续”消息中看到它，以及在后台作业完成时告诉你它已完成的“完成”消息中再次看到它。<code>%</code> 可以有其他形式；最常见的是在它后面跟一个命令的名称，比如在这种情况下是 <code>%more</code>。形式 <code>%+</code> 和 <code>%-</code> 指的是最近和次近的作业——挂起消息中的 <code>+</code> 告诉你 <code>more</code> 作业可以那样被引用。</p>
+<p>大多数作业控制命令实际上会假设你是在谈论 <code>%+</code>，如果你不给参数的话，所以假设我没有在后台启动任何其他命令，我本可以在上面的命令序列的末尾只放一个 <code>fg</code>。这实际上是双向的：<code>fg</code> 是对用 <code>%</code> 表示法引用的作业的默认操作，所以只输入 <code>%1</code> 而没有命令名也会起作用。</p>
+<p>你可以用 <code>jobs</code> 命令来提醒自己正在发生什么。它看起来像一系列以方括号中的数字开头的消息；通常作业要么是“正在运行”要么是“已挂起”。这会告诉你需要的数字。</p>
+<p>你可以对一个作业做的另一件有用的事是告诉 shell 忘记它。这只有在它已经在后台运行时才真正有用；然后你可以用作业标识符运行 <code>disown</code>。这对于你想在注销后继续运行的作业，以及那些有自己的窗口因此你可以直接控制的作业很有用。对于被 disown 的作业，shell 在你注销时不会警告你它们还在那里。你实际上可以在启动后台作业时通过在行尾放上 <code>&amp;|</code> 或 <code>&amp;!</code> 而不是简单的 <code>&amp;</code> 来 disown 它。请注意，如果作业在你 disown 它时被挂起，它将保持被 disown 的状态；这几乎没有意义，所以你可能应该先对它运行 <code>bg</code>。</p>
+<p>你最可能想对一个作业做的下一件事是杀死它，或者当它已经在后台并且你不能只输入 <code>^Z</code> 时挂起它。这就是 <code>kill</code> 内建命令的用武之地。这比上面提到的内建命令要复杂得多。首先，你可以对不是从当前 shell 启动的其他进程使用 <code>kill</code>。在这种情况下，你会用一个数字来标识它，没有 <code>%</code>——这就是为什么在其他情况下有 <code>%</code> 的原因。当然，你需要找出这个数字；通常的方法是用 <code>ps</code> 命令，它不是一个内建命令，但出现在所有类 UNIX 系统上。作为一个愚蠢的例子，这里我启动一个做很少事情的被 disown 的进程，寻找它，然后杀死它：</p>
+<pre><code>  % sleep 60 &amp;|
+  % ps -f
+  UID        PID  PPID  C STIME TTY          TIME CMD
+  pws        623   614  0 22:12 pts/0    00:00:00 zsh
+  pws       8613   623  0 23:12 pts/0    00:00:00 sleep 60
+  pws       8615   623  0 23:12 pts/0    00:00:00 ps -f
+  % kill 8613
+  % ps -f
+  UID        PID  PPID  C STIME TTY          TIME CMD
+  pws        623   614  0 22:12 pts/0    00:00:00 zsh
+  pws       8616   623  0 23:12 pts/0    00:00:00 ps -f
+</code></pre>
+<p>第二次我看时，进程已经消失了。注意，以通常的 UNIX 沉闷方式，shell 没有费心告诉你进程已经被杀死；然而，如果它发送信号失败，它会报告一个错误。发送信号是 shell 关心的全部；如果进程决定在被告知时不想死，shell 不会警告你，所以最好还是检查一下。</p>
+<p>有时你想等待一个进程退出；<code>wait</code> 内建命令可以做到这一点，并且像 <code>kill</code> 一样，可以接受一个进程号以及一个作业号。然而，这有点欺骗性——你实际上不能等待一个不是直接从 shell 启动的进程。的确，等待的机制与 UNIX 处理进程的方式紧密相连；除非它的父进程等待它，否则一个进程会变成一个“僵尸”并徘徊，直到系统的养父，即“init”进程（总是进程号 1）等待它。这有点巴洛克风格，但对于 shell 用户来说，wait 只是意味着你可以坚持到你启动的某个东西完成。的确，这就是前台进程的工作方式：shell 实际上使用 <code>wait</code> 的内部版本来等待作业退出。（嗯，实际上那是个谎言；系统会从它正在做的任何事情中唤醒它，告诉它一个子进程已经完成，所以它所要做的就是打盹等待。）</p>
+<p>此外，即使作业控制没有运行，你也可以等待一个进程。作业控制，基本上任何涉及那些 <code>%</code> 的东西，只有当你在终端上摆弄命令时才有用；当你运行脚本时，它不起作用。那时 shell 在如何控制其作业方面有更少的自由，但它仍然可以等待一个后台进程，并且如果它知道它的号码，它仍然可以对一个进程使用 <code>kill</code>。为此，shell 将最后一个在后台启动的进程的 ID 存储在参数 <code>$!</code> 中；<code>!</code> 可能有一个很好的理由，但我不知道是什么。无论作业控制如何，这都会发生。</p>
+<p><strong>信号</strong>\</p>
+<p><code>kill</code> 命令能做的远不止杀死一个进程。那是默认操作，这就是为什么该命令有那个名字。但它真正做的是向一个进程发送一个“信号”。信号是与另一个进程通信的最简单方式；事实上，如果你没有为进程从你这里读取消息做特殊安排，它们是大约唯一的简单方式。信号名称写成 <code>SIGINT</code>、<code>SIGTSTP</code>、<code>SIGKILL</code>；要向一个进程发送一个特定的信号，你去掉 <code>SIG</code>，在前面加一个连字符，并将其用作 <code>kill</code> 的第一个参数，例如：</p>
+<pre><code>  kill -KILL 8613
+</code></pre>
+<p>你已经知道的一些事情实际上就是这样做的。当你输入 <code>^C</code> 来停止一个进程时，你实际上是在向它发送一个 <code>SIGINT</code>，代表“中断”，就好像你做了</p>
+<pre><code>  kill -INT 8613
+</code></pre>
+<p><code>kill</code> 通常发送的信号不是，你可能猜到的，<code>SIGKILL</code>，而是 <code>SIGTERM</code>，代表“终止”；<code>SIGKILL</code> 更强，因为进程不能阻塞那个信号，而它可以对许多信号这样做（我们稍后会看到 shell 如何做到这一点）。它很熟悉</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="zshguide02.cn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="zshguide04.cn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="zshguide02.cn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="zshguide04.cn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

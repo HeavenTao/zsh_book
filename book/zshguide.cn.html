@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Summary</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <hr />
+<h1 id="z-shell-用户指南"><a class="header" href="#z-shell-用户指南">Z-Shell 用户指南</a></h1>
+<h2 id="peter-stephenson"><a class="header" href="#peter-stephenson">Peter Stephenson</a></h2>
+<h2 id="20030323"><a class="header" href="#20030323">2003/03/23</a></h2>
+<h1 id="目录"><a class="header" href="#目录">目录</a></h1>
+<h2 id="第一章简短介绍"><a class="header" href="#第一章简短介绍"><a href="zshguide01.html#l1">第一章：简短介绍</a></a></h2>
+<h3 id="11-其他-shell-和其他指南"><a class="header" href="#11-其他-shell-和其他指南"><a href="zshguide01.html#l2">1.1: 其他 shell 和其他指南</a></a></h3>
+<h3 id="12-zsh-的版本"><a class="header" href="#12-zsh-的版本"><a href="zshguide01.html#l3">1.2: zsh 的版本</a></a></h3>
+<h3 id="13-约定"><a class="header" href="#13-约定"><a href="zshguide01.html#l4">1.3: 约定</a></a></h3>
+<h3 id="14-致谢"><a class="header" href="#14-致谢"><a href="zshguide01.html#l5">1.4: 致谢</a></a></h3>
+<h2 id="第二章启动文件中要放些什么"><a class="header" href="#第二章启动文件中要放些什么"><a href="zshguide02.html#l6">第二章：启动文件中要放些什么</a></a></h2>
+<h3 id="21-shell-类型交互式和登录-shell"><a class="header" href="#21-shell-类型交互式和登录-shell"><a href="zshguide02.html#l7">2.1: Shell 类型：交互式和登录 shell</a></a></h3>
+<p><a href="zshguide02.html#l8">2.1.1: 什么是登录 shell？简单测试</a></p>
+<h3 id="22-所有的启动文件"><a class="header" href="#22-所有的启动文件"><a href="zshguide02.html#l9">2.2: 所有的启动文件</a></a></h3>
+<h3 id="23-选项"><a class="header" href="#23-选项"><a href="zshguide02.html#l10">2.3: 选项</a></a></h3>
+<h3 id="24-参数"><a class="header" href="#24-参数"><a href="zshguide02.html#l11">2.4: 参数</a></a></h3>
+<p><a href="zshguide02.html#l12">2.4.1: 数组</a></p>
+<h3 id="25-启动文件中要放些什么"><a class="header" href="#25-启动文件中要放些什么"><a href="zshguide02.html#l13">2.5: 启动文件中要放些什么</a></a></h3>
+<p><a href="zshguide02.html#l14">2.5.1: 兼容性选项：<code>SH_WORD_SPLIT</code> 及其他</a></p>
+<p><a href="zshguide02.html#l15">2.5.2: 为 csh 爱好者准备的选项</a></p>
+<p><a href="zshguide02.html#l16">2.5.3: 历史记录机制：历史记录的类型</a></p>
+<p><a href="zshguide02.html#l17">2.5.4: 设置历史记录</a></p>
+<p><a href="zshguide02.html#l18">2.5.5: 历史记录选项</a></p>
+<p><a href="zshguide02.html#l19">2.5.6: 提示符</a></p>
+<p><a href="zshguide02.html#l20">2.5.7: 命名目录</a></p>
+<p><a href="zshguide02.html#l21">2.5.8: 为高级用户准备的“加速”选项</a></p>
+<p><a href="zshguide02.html#l22">2.5.9: 别名</a></p>
+<p><a href="zshguide02.html#l23">2.5.10: 环境变量</a></p>
+<p><a href="zshguide02.html#l24">2.5.11: 路径</a></p>
+<p><a href="zshguide02.html#l25">2.5.12: 邮件</a></p>
+<p><a href="zshguide02.html#l26">2.5.13: 其他类似路径的东西</a></p>
+<p><a href="zshguide02.html#l27">2.5.14: 特定版本的东西</a></p>
+<p><a href="zshguide02.html#l28">2.5.15: 其他所有东西</a></p>
+<h2 id="第三章处理基本-shell-语法"><a class="header" href="#第三章处理基本-shell-语法"><a href="zshguide03.html#l29">第三章：处理基本 shell 语法</a></a></h2>
+<h3 id="31-外部命令"><a class="header" href="#31-外部命令"><a href="zshguide03.html#l30">3.1: 外部命令</a></a></h3>
+<h3 id="32-内建命令"><a class="header" href="#32-内建命令"><a href="zshguide03.html#l31">3.2: 内建命令</a></a></h3>
+<p><a href="zshguide03.html#l32">3.2.1: 用于打印的内建命令</a></p>
+<p><a href="zshguide03.html#l33">3.2.2: 其他仅为速度而设的内建命令</a></p>
+<p><a href="zshguide03.html#l34">3.2.3: 改变 shell 状态的内建命令</a></p>
+<p><a href="zshguide03.html#l35">3.2.4: cd 和它的朋友们</a></p>
+<p><a href="zshguide03.html#l36">3.2.5: 命令控制和信息命令</a></p>
+<p><a href="zshguide03.html#l37">3.2.6: 参数控制</a></p>
+<p><a href="zshguide03.html#l38">3.2.7: 历史记录控制命令</a></p>
+<p><a href="zshguide03.html#l39">3.2.8: 作业控制和进程控制</a></p>
+<p><a href="zshguide03.html#l40">3.2.9: 终端、用户等</a></p>
+<p><a href="zshguide03.html#l41">3.2.10: 语法零碎</a></p>
+<p><a href="zshguide03.html#l42">3.2.11: 更多的前置命令修饰符：<code>exec</code>、<code>noglob</code></a></p>
+<p><a href="zshguide03.html#l43">3.2.12: 测试事物</a></p>
+<p><a href="zshguide03.html#l44">3.2.13: 处理函数和脚本的选项</a></p>
+<p><a href="zshguide03.html#l45">3.2.14: 随机文件控制相关</a></p>
+<p><a href="zshguide03.html#l46">3.2.15: 不要看这里，看别处</a></p>
+<p><a href="zshguide03.html#l47">3.2.16: 以及其他</a></p>
+<h3 id="33-函数"><a class="header" href="#33-函数"><a href="zshguide03.html#l48">3.3: 函数</a></a></h3>
+<p><a href="zshguide03.html#l49">3.3.1: 加载函数</a></p>
+<p><a href="zshguide03.html#l50">3.3.2: 函数参数</a></p>
+<p><a href="zshguide03.html#l51">3.3.3: 编译函数</a></p>
+<h3 id="34-别名"><a class="header" href="#34-别名"><a href="zshguide03.html#l52">3.4: 别名</a></a></h3>
+<h3 id="35-命令摘要"><a class="header" href="#35-命令摘要"><a href="zshguide03.html#l53">3.5: 命令摘要</a></a></h3>
+<h3 id="36-展开和引用"><a class="header" href="#36-展开和引用"><a href="zshguide03.html#l54">3.6: 展开和引用</a></a></h3>
+<p><a href="zshguide03.html#l55">3.6.1: 历史展开</a></p>
+<p><a href="zshguide03.html#l56">3.6.2: 别名展开</a></p>
+<p><a href="zshguide03.html#l57">3.6.3: 进程、参数、命令、算术和花括号展开</a></p>
+<p><a href="zshguide03.html#l58">3.6.4: 文件名展开</a></p>
+<p><a href="zshguide03.html#l59">3.6.5: 文件名生成</a></p>
+<h3 id="37-重定向大于号和小于号"><a class="header" href="#37-重定向大于号和小于号"><a href="zshguide03.html#l60">3.7: 重定向：大于号和小于号</a></a></h3>
+<p><a href="zshguide03.html#l61">3.7.1: Clobber（覆盖）</a></p>
+<p><a href="zshguide03.html#l62">3.7.2: 文件描述符</a></p>
+<p><a href="zshguide03.html#l63">3.7.3: 追加、here-document、here-string、读写</a></p>
+<p><a href="zshguide03.html#l64">3.7.4: 巧妙的技巧：exec 和其他文件描述符</a></p>
+<p><a href="zshguide03.html#l65">3.7.5: Multios（多路输入输出）</a></p>
+<h3 id="38-shell-语法循环子shell-等"><a class="header" href="#38-shell-语法循环子shell-等"><a href="zshguide03.html#l66">3.8: Shell 语法：循环、(子)shell 等</a></a></h3>
+<p><a href="zshguide03.html#l67">3.8.1: 逻辑命令连接符</a></p>
+<p><a href="zshguide03.html#l68">3.8.2: 结构</a></p>
+<p><a href="zshguide03.html#l69">3.8.3: 子 shell 和当前 shell 结构</a></p>
+<p><a href="zshguide03.html#l70">3.8.4: 子 shell 和当前 shell</a></p>
+<h3 id="39-仿真和可移植性"><a class="header" href="#39-仿真和可移植性"><a href="zshguide03.html#l71">3.9: 仿真和可移植性</a></a></h3>
+<p><a href="zshguide03.html#l72">3.9.1: 细节差异</a></p>
+<p><a href="zshguide03.html#l73">3.9.2: 使你自己的脚本和函数可移植</a></p>
+<h3 id="310-运行脚本"><a class="header" href="#310-运行脚本"><a href="zshguide03.html#l74">3.10: 运行脚本</a></a></h3>
+<h2 id="第四章z-shell-行编辑器"><a class="header" href="#第四章z-shell-行编辑器"><a href="zshguide04.html#l75">第四章：Z-Shell 行编辑器</a></a></h2>
+<h3 id="41-zle-介绍"><a class="header" href="#41-zle-介绍"><a href="zshguide04.html#l76">4.1: zle 介绍</a></a></h3>
+<p><a href="zshguide04.html#l77">4.1.1: 简单事实</a></p>
+<p><a href="zshguide04.html#l78">4.1.2: Vi 模式</a></p>
+<h3 id="42-基本编辑"><a class="header" href="#42-基本编辑"><a href="zshguide04.html#l79">4.2: 基本编辑</a></a></h3>
+<p><a href="zshguide04.html#l80">4.2.1: 移动</a></p>
+<p><a href="zshguide04.html#l81">4.2.2: 删除</a></p>
+<p><a href="zshguide04.html#l82">4.2.3: 更多删除操作</a></p>
+<h3 id="43-更高级的编辑"><a class="header" href="#43-更高级的编辑"><a href="zshguide04.html#l83">4.3: 更高级的编辑</a></a></h3>
+<p><a href="zshguide04.html#l84">4.3.1: 控制 zle 的选项</a></p>
+<p><a href="zshguide04.html#l85">4.3.2: minibuffer 和扩展命令</a></p>
+<p><a href="zshguide04.html#l86">4.3.3: 前缀（数字）参数</a></p>
+<p><a href="zshguide04.html#l87">4.3.4: 单词、区域和标记</a></p>
+<p><a href="zshguide04.html#l88">4.3.5: 区域和标记</a></p>
+<h3 id="44-历史记录和搜索"><a class="header" href="#44-历史记录和搜索"><a href="zshguide04.html#l89">4.4: 历史记录和搜索</a></a></h3>
+<p><a href="zshguide04.html#l90">4.4.1: 在历史记录中移动</a></p>
+<p><a href="zshguide04.html#l91">4.4.2: 搜索历史记录</a></p>
+<p><a href="zshguide04.html#l92">4.4.3: 从历史记录中提取单词</a></p>
+<h3 id="45-绑定按键和处理键位映射"><a class="header" href="#45-绑定按键和处理键位映射"><a href="zshguide04.html#l93">4.5: 绑定按键和处理键位映射</a></a></h3>
+<p><a href="zshguide04.html#l94">4.5.1: 简单按键绑定</a></p>
+<p><a href="zshguide04.html#l95">4.5.2: 移除按键绑定</a></p>
+<p><a href="zshguide04.html#l96">4.5.3: 功能键等</a></p>
+<p><a href="zshguide04.html#l97">4.5.4: 绑定字符串而非命令</a></p>
+<p><a href="zshguide04.html#l98">4.5.5: 键位映射</a></p>
+<h3 id="46-高级编辑"><a class="header" href="#46-高级编辑"><a href="zshguide04.html#l99">4.6: 高级编辑</a></a></h3>
+<p><a href="zshguide04.html#l100">4.6.1: 多行编辑</a></p>
+<p><a href="zshguide04.html#l101">4.6.2: 内建命令 vared 和函数 zed</a></p>
+<p><a href="zshguide04.html#l102">4.6.3: 缓冲区堆栈</a></p>
+<h3 id="47-扩展-zle"><a class="header" href="#47-扩展-zle"><a href="zshguide04.html#l103">4.7: 扩展 zle</a></a></h3>
+<p><a href="zshguide04.html#l104">4.7.1: 小部件（Widgets）</a></p>
+<p><a href="zshguide04.html#l105">4.7.2: 执行其他小部件</a></p>
+<p><a href="zshguide04.html#l106">4.7.3: 一些特殊的内建小部件及其用途</a></p>
+<p><a href="zshguide04.html#l107">4.7.4: 特殊参数：普通文本</a></p>
+<p><a href="zshguide04.html#l108">4.7.5: 其他特殊参数</a></p>
+<p><a href="zshguide04.html#l109">4.7.6: 读取按键和使用 minibuffer</a></p>
+<p><a href="zshguide04.html#l110">4.7.7: 示例</a></p>
+<h2 id="第五章替换"><a class="header" href="#第五章替换"><a href="zshguide05.html#l111">第五章：替换</a></a></h2>
+<h3 id="51-引用"><a class="header" href="#51-引用"><a href="zshguide05.html#l112">5.1: 引用</a></a></h3>
+<p><a href="zshguide05.html#l113">5.1.1: 反斜杠</a></p>
+<p><a href="zshguide05.html#l114">5.1.2: 单引号</a></p>
+<p><a href="zshguide05.html#l115">5.1.3: POSIX 引号</a></p>
+<p><a href="zshguide05.html#l116">5.1.4: 双引号</a></p>
+<p><a href="zshguide05.html#l117">5.1.5: 反引号</a></p>
+<h3 id="52-修饰符及其修饰对象"><a class="header" href="#52-修饰符及其修饰对象"><a href="zshguide05.html#l118">5.2: 修饰符及其修饰对象</a></a></h3>
+<h3 id="53-进程替换"><a class="header" href="#53-进程替换"><a href="zshguide05.html#l119">5.3: 进程替换</a></a></h3>
+<h3 id="54-参数替换"><a class="header" href="#54-参数替换"><a href="zshguide05.html#l120">5.4: 参数替换</a></a></h3>
+<p><a href="zshguide05.html#l121">5.4.1: 使用数组</a></p>
+<p><a href="zshguide05.html#l122">5.4.2: 使用关联数组</a></p>
+<p><a href="zshguide05.html#l123">5.4.3: 替换的替换、首尾处理等</a></p>
+<p><a href="zshguide05.html#l124">5.4.4: 选项标志：分割和连接</a></p>
+<p><a href="zshguide05.html#l125">5.4.5: 选项标志：<code>GLOB_SUBST</code> 和 <code>RC_EXPAND_PARAM</code></a></p>
+<p><a href="zshguide05.html#l126">5.4.6: 更多参数标志</a></p>
+<p><a href="zshguide05.html#l127">5.4.7: 一些参数替换技巧</a></p>
+<p><a href="zshguide05.html#l128">5.4.8: 嵌套参数替换</a></p>
+<h3 id="55-再次讨论替换"><a class="header" href="#55-再次讨论替换"><a href="zshguide05.html#l129">5.5: 再次讨论替换</a></a></h3>
+<h3 id="56-算术展开"><a class="header" href="#56-算术展开"><a href="zshguide05.html#l130">5.6: 算术展开</a></a></h3>
+<p><a href="zshguide05.html#l131">5.6.1: 输入和输出基数</a></p>
+<p><a href="zshguide05.html#l132">5.6.2: 参数类型</a></p>
+<h3 id="57-花括号展开和数组"><a class="header" href="#57-花括号展开和数组"><a href="zshguide05.html#l133">5.7: 花括号展开和数组</a></a></h3>
+<h3 id="58-文件名展开"><a class="header" href="#58-文件名展开"><a href="zshguide05.html#l134">5.8: 文件名展开</a></a></h3>
+<h3 id="59-文件名生成和模式匹配"><a class="header" href="#59-文件名生成和模式匹配"><a href="zshguide05.html#l135">5.9: 文件名生成和模式匹配</a></a></h3>
+<p><a href="zshguide05.html#l136">5.9.1: 比较模式和正则表达式</a></p>
+<p><a href="zshguide05.html#l137">5.9.2: 标准特性</a></p>
+<p><a href="zshguide05.html#l138">5.9.3: 通常可用的扩展</a></p>
+<p><a href="zshguide05.html#l139">5.9.4: 需要 <code>EXTENDED_GLOB</code> 的扩展</a></p>
+<p><a href="zshguide05.html#l140">5.9.5: 递归 globbing</a></p>
+<p><a href="zshguide05.html#l141">5.9.6: Glob 限定符</a></p>
+<p><a href="zshguide05.html#l142">5.9.7: Globbing 标志：改变匹配行为</a></p>
+<p><a href="zshguide05.html#l143">5.9.8: 函数 <code>zmv</code></a></p>
+<h2 id="第六章补全旧与新"><a class="header" href="#第六章补全旧与新"><a href="zshguide06.html#l144">第六章：补全，旧与新</a></a></h2>
+<h3 id="61-补全和展开"><a class="header" href="#61-补全和展开"><a href="zshguide06.html#l145">6.1: 补全和展开</a></a></h3>
+<h3 id="62-使用-shell-选项配置补全"><a class="header" href="#62-使用-shell-选项配置补全"><a href="zshguide06.html#l146">6.2: 使用 shell 选项配置补全</a></a></h3>
+<p><a href="zshguide06.html#l147">6.2.1: 模糊补全</a></p>
+<p><a href="zshguide06.html#l148">6.2.2: <code>ALWAYS_LAST_PROMPT</code></a></p>
+<p><a href="zshguide06.html#l149">6.2.3: 菜单补全和菜单选择</a></p>
+<p><a href="zshguide06.html#l150">6.2.4: 改变补全行为的其他方式</a></p>
+<p><a href="zshguide06.html#l151">6.2.5: 改变补全的显示方式</a></p>
+<h3 id="63-新补全入门"><a class="header" href="#63-新补全入门"><a href="zshguide06.html#l152">6.3: 新补全入门</a></a></h3>
+<h3 id="64-shell-如何找到正确的补全"><a class="header" href="#64-shell-如何找到正确的补全"><a href="zshguide06.html#l153">6.4: shell 如何找到正确的补全</a></a></h3>
+<p><a href="zshguide06.html#l154">6.4.1: 上下文（Contexts）</a></p>
+<p><a href="zshguide06.html#l155">6.4.2: 标签（Tags）</a></p>
+<h3 id="65-使用样式配置补全"><a class="header" href="#65-使用样式配置补全"><a href="zshguide06.html#l156">6.5: 使用样式配置补全</a></a></h3>
+<p><a href="zshguide06.html#l157">6.5.1: 指定补全器及其选项</a></p>
+<p><a href="zshguide06.html#l158">6.5.2: 改变列表格式：分组等</a></p>
+<p><a href="zshguide06.html#l159">6.5.3: 影响特定补全的样式</a></p>
+<h3 id="66-命令小部件"><a class="header" href="#66-命令小部件"><a href="zshguide06.html#l160">6.6: 命令小部件</a></a></h3>
+<p><a href="zshguide06.html#l161">6.6.1: <code>_complete_help</code></a></p>
+<p><a href="zshguide06.html#l162">6.6.2: <code>_correct_word</code>、<code>_correct_filename</code>、<code>_expand_word</code></a></p>
+<p><a href="zshguide06.html#l163">6.6.3: <code>_history_complete_word</code></a></p>
+<p><a href="zshguide06.html#l164">6.6.4: <code>_most_recent_file</code></a></p>
+<p><a href="zshguide06.html#l165">6.6.5: <code>_next_tags</code></a></p>
+<p><a href="zshguide06.html#l166">6.6.6: <code>_bash_completions</code></a></p>
+<p><a href="zshguide06.html#l167">6.6.7: <code>_read_comp</code></a></p>
+<p><a href="zshguide06.html#l168">6.6.8: <code>_generic</code></a></p>
+<p><a href="zshguide06.html#l169">6.6.9: <code>predict-on</code>、<code>incremental-complete-word</code></a></p>
+<h3 id="67-匹配控制和控制插入位置"><a class="header" href="#67-匹配控制和控制插入位置"><a href="zshguide06.html#l170">6.7: 匹配控制和控制插入位置</a></a></h3>
+<p><a href="zshguide06.html#l171">6.7.1: 不区分大小写匹配</a></p>
+<p><a href="zshguide06.html#l172">6.7.2: 匹配选项名称</a></p>
+<p><a href="zshguide06.html#l173">6.7.3: 部分单词补全</a></p>
+<p><a href="zshguide06.html#l174">6.7.4: 子字符串补全</a></p>
+<p><a href="zshguide06.html#l175">6.7.5: 带大写字母的部分单词</a></p>
+<p><a href="zshguide06.html#l176">6.7.6: 最后说明</a></p>
+<h3 id="68-教程"><a class="header" href="#68-教程"><a href="zshguide06.html#l177">6.8: 教程</a></a></h3>
+<p><a href="zshguide06.html#l178">6.8.1: 调度器</a></p>
+<p><a href="zshguide06.html#l179">6.8.2: 子命令补全：<code>_arguments</code></a></p>
+<p><a href="zshguide06.html#l180">6.8.3: 补全特定参数类型</a></p>
+<p><a href="zshguide06.html#l181">6.8.4: 其余部分</a></p>
+<h3 id="69-编写新的补全函数和小部件"><a class="header" href="#69-编写新的补全函数和小部件"><a href="zshguide06.html#l182">6.9: 编写新的补全函数和小部件</a></a></h3>
+<p><a href="zshguide06.html#l183">6.9.1: 加载补全函数：<code>compdef</code></a></p>
+<p><a href="zshguide06.html#l184">6.9.2: 添加一组补全：<code>compadd</code></a></p>
+<p><a href="zshguide06.html#l185">6.9.3: 用于生成文件名等的函数</a></p>
+<p><a href="zshguide06.html#l186">6.9.4: <code>zsh/parameter</code> 模块</a></p>
+<p><a href="zshguide06.html#l187">6.9.5: 特殊补全参数和 <code>compset</code></a></p>
+<p><a href="zshguide06.html#l188">6.9.6: 更高级的补全：使用标签和样式机制</a></p>
+<p><a href="zshguide06.html#l189">6.9.7: 让他人为你完成工作：处理参数等</a></p>
+<p><a href="zshguide06.html#l190">6.9.8: 更多补全实用函数</a></p>
+<h3 id="610-最后"><a class="header" href="#610-最后"><a href="zshguide06.html#l191">6.10: 最后</a></a></h3>
+<h2 id="第七章模块及其他零碎-未完成"><a class="header" href="#第七章模块及其他零碎-未完成"><a href="zshguide07.html#l192">第七章：模块及其他零碎 <em>未完成</em></a></a></h2>
+<h3 id="71-模块控制zmodload"><a class="header" href="#71-模块控制zmodload"><a href="zshguide07.html#l193">7.1: 模块控制：<code>zmodload</code></a></a></h3>
+<p><a href="zshguide07.html#l194">7.1.1: 定义参数的模块</a></p>
+<p><a href="zshguide07.html#l195">7.1.2: 底层系统交互</a></p>
+<p><a href="zshguide07.html#l196">7.1.3: ZFTP</a></p>
+<h3 id="72-贡献部分"><a class="header" href="#72-贡献部分"><a href="zshguide07.html#l197">7.2: 贡献部分</a></a></h3>
+<p><a href="zshguide07.html#l198">7.2.1: 提示符主题</a></p>
+<h3 id="73-41-版本的新功能"><a class="header" href="#73-41-版本的新功能"><a href="zshguide07.html#l199">7.3: 4.1 版本的新功能</a></a></h3>
+<h2 id="附录-1获取-zsh-和更多信息-未完成"><a class="header" href="#附录-1获取-zsh-和更多信息-未完成"><a href="zshguide08.html#l200">附录 1：获取 zsh 和更多信息 <em>未完成</em></a></a></h2>
+<hr />
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="zshguide01.cn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="zshguide01.cn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

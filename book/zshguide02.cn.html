@@ -1,0 +1,767 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter2</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <hr />
+<ul>
+<li><a href="zshguide.html">目录</a></li>
+<li><a href="zshguide01.html">上一章</a></li>
+<li><a href="zshguide03.html">下一章</a></li>
+</ul>
+<hr />
+<p>[]{#init}[]{#l6}</p>
+<h1 id="第二章启动文件中要放些什么"><a class="header" href="#第二章启动文件中要放些什么">第二章：启动文件中要放些什么</a></h1>
+<p>你可能想对 shell 的行为做出各种各样的改变。所有的 shell 都有“启动”文件，其中包含在 shell 启动时立即执行的命令。像许多其他 shell 一样，zsh 允许每个用户拥有自己的启动文件。在本章中，我将讨论你可能想放在那里的一些东西。这将作为对 shell 功能的介绍；读完本章，你应该对许多稍后将更详细讨论的事情以及它们为什么有趣有一个初步的了解。有时你会发现比你想知道的更多的东西，比如 zsh 与你不会使用的其他 shell 有何不同。在这里解释这些差异可以省去我以后撒谎说 shell 是如何工作然后再纠正的麻烦：大多数人只想知道 shell 通常是如何工作的，并注意到还有其他方法可以做到这一点。</p>
+<p>[]{#l7}</p>
+<h2 id="21-shell-类型交互式和登录-shell"><a class="header" href="#21-shell-类型交互式和登录-shell">2.1: Shell 类型：交互式和登录 shell</a></h2>
+<p>首先，你需要知道<strong>交互式</strong>和<strong>登录</strong> shell 是什么意思。基本上，shell 只是用来接收一个命令列表并运行它们；它并不真正关心这些命令是在文件中，还是在终端中输入的。在第二种情况下，当你在提示符下输入并等待每个命令运行时，shell 是<strong>交互式</strong>的；在另一种情况下，当 shell 从文件中读取命令时，它因此是<strong>非交互式</strong>的。以这种第二种方式使用的命令列表——通常通过输入类似 <code>zsh filename</code> 的东西，尽管有快捷方式——被称为<strong>脚本</strong>，就好像 shell 在读取它时像在演戏一样（而 shell 在演戏方面可以是真正的戏精）。当你从键盘启动一个脚本时，实际上有两个 zsh 在运行：你正在输入的交互式 zsh，它正在等待另一个非交互式 zsh 运行完脚本。第二个 zsh 中发生的几乎所有事情都不会影响第一个；它们是 zsh 的不同副本。</p>
+<p>请记住，当我给出让你输入的示例时，我通常会像它们在脚本中出现的那样显示它们，前面没有提示符。如果你输入它们，你在屏幕上实际看到的内容前面会有更多的东西。</p>
+<p>当你第一次登录到计算机时，你得到的 shell 是交互式的，但它也是一个登录 shell。如果你输入 <code>zsh</code>，它会启动一个新的交互式 shell：因为你没有给它一个包含命令的文件名，它假设你会以交互方式输入它们。现在你同时有两个交互式 shell，一个在等待另一个：这听起来不那么有用，但有时你会暂时对 shell 的设置进行一些根本性的改变，最简单的方法是启动另一个 shell，做你想做的事，然后退出回到原来的、未改变的 shell——所以这并不像听起来那么愚蠢。</p>
+<p>然而，第二个 shell 不会是登录 shell。zsh 是如何知道区别的呢？嗯，在你输入密码后让你登录的程序（可预见地称为 <strong>login</strong>），实际上在 shell 的名称前加了一个 <code>-</code>，zsh 会识别它。使 shell 成为登录 shell 的另一种方法是自己用 <code>-l</code> 选项运行它；输入 <code>zsh -l</code> 将启动一个也认为自己是登录 shell 的 zsh，稍后我将解释如何在 shell 内部打开选项，你也可以对登录选项这样做。否则，你自己启动的任何 zsh 都不会是登录 shell。如果你正在使用 X-Windows，并且有一个像 xterm 这样的终端模拟器运行 shell，那可能不是一个登录 shell。然而，实际上可以通过给 xterm <code>-ls</code> 选项来让它启动一个登录 shell，所以如果你输入 <code>xterm -ls &amp;</code>，你会得到一个运行登录 shell 的窗口（<code>&amp;</code> 意味着第一个窗口中的 shell 不会等待它完成）。</p>
+<p>登录 shell 和任何其他交互式 shell 的第一个主要区别是与启动文件有关的，下面会描述。另一个是当你完成时你做什么。对于登录 shell，你可以输入 <code>logout</code> 来退出 shell；对于其他 shell，你输入 <code>exit</code>。然而，<code>exit</code> 对所有 shell 都有效，无论是交互式、非交互式、登录 shell 还是其他，所以很多人只用它。事实上，唯一的区别是，如果你在其他任何地方使用 <code>logout</code>，它会告诉你 <code>not login shell</code> 并且无法退出。命令 <code>bye</code> 与 <code>exit</code> 相同，只是更短且不那么标准。所以我的建议是只用 <code>exit</code>。</p>
+<p>正如有人最近向我指出的，登录 shell 不必是交互式的。你总是可以用两种方式启动一个 shell，使其成为登录 shell；使其成为交互式 shell 或非交互式 shell 的方式是独立的。事实上，一些窗口系统的启动脚本会运行一个非交互式的登录 shell，以便在执行启动窗口会话的命令之前，从适当的登录脚本中合并定义。</p>
+<p>[]{#l8}</p>
+<h3 id="211-什么是登录-shell简单测试"><a class="header" href="#211-什么是登录-shell简单测试">2.1.1: 什么是登录 shell？简单测试</a></h3>
+<p>判断你正在看的 shell 是否是交互式通常很容易：如果有提示符，它就是交互式的。正如你可能已经了解到的，判断它是否是登录 shell 更复杂，因为你并不总是知道 shell 是如何启动的，或者选项是否被更改了。如果你想知道，你可以输入以下内容（如果你喜欢，可以一次一行，见下文），</p>
+<pre><code>  if [[ -o login ]]; then
+    print yes
+  else
+    print no
+  fi
+</code></pre>
+<p>这将根据它是否是登录 shell 打印 <code>yes</code> 或 <code>no</code>；语法将在我们进行中解释。有更短的方法可以做到这一点，但这说明了测试事物最常见的 shell 语法，这是你在启动文件中可能经常想做的事情。你要测试的内容放在 <code>[[ ... ]]</code> 内部；在这种情况下，<code>-o</code> 告诉 shell 测试一个选项，这里是 <code>login</code>。下一行说明如果测试成功该做什么；<code>else</code> 之后的行说明如果测试失败该做什么。这个语法与 ksh 几乎相同；在本指南中，我不会给出你可以执行的测试的详尽细节，因为它们有很多，但只展示一些最有用的。一如既往，请参阅手册——在这种情况下，是 <code>zshmisc</code> 手册页中的 <code>Conditional Expressions</code>。</p>
+<p>虽然你通常知道一个 shell 何时是交互式的，但实际上你也可以用完全相同的方式测试它：只需使用 <code>[[ -o interactive ]]</code>。这是你在 shell 中无法更改的一个选项；如果你关闭了从键盘读取，shell 应该从哪里读取呢？但你至少可以测试它。</p>
+<p>给 shell 编程初学者的旁注：也许分号看起来有点奇怪；那是因为 <code>then</code> 实际上是一个单独的命令。分号只是代替了把它放在新的一行；两者是可互换的。事实上，我本可以写成，</p>
+<pre><code>  if [[ -o login ]]; then; print yes; else; print no; fi
+</code></pre>
+<p>这做的完全是同一件事。我甚至可以省略 <code>then</code> 和 <code>else</code> 之后的分号，因为 shell 知道在它们各自之后必须有一个命令——尽管 <code>then</code> <em>之前</em> 的分号或换行符通常很重要，因为 shell <code>并不知道</code> 接下来必须有一个命令，并且可能会将 <code>then</code> 与 <code>if</code> 之后的命令的参数混淆：它可能看起来很奇怪，但 <code>[[</code> <em>...</em> <code>]]</code> 实际上是一个命令。所以你会在 shell 程序中看到各种划分行的方式。你可能还想知道 <code>print</code> 是前面提到的内建命令之一；换句话说，那整个程序块都是由 shell 自己执行的。如果你使用的是较新版本的 shell，你会注意到 zsh 会告诉你它在等待什么，即一个 <code>then</code> 或一个 <code>else</code> 子句——更多信息请参见下面对 <code>$PS2</code> 的解释。最后，我在 <code>print</code> 命令前放的空格只是为了让它看起来更漂亮；在命令和参数之前、之后或之间可以出现任意数量的空格，只要普通单词之间至少有一个（分号被识别为特殊的，所以你不需要在它之前加一个，尽管你加一个也无妨）。</p>
+<p>给 sh 用户的第二条旁注：你可能记得 sh 中的测试使用一对单括号，<code>if [ ... ]; then ...</code>，或者等效地作为一个名为 <strong>test</strong> 的命令，<code>if test ...; then ...</code>。Korn shell 被故意做得不同，zsh 也遵循了这一点。原因是 <code>[[</code> 被特殊处理，这允许 shell 做一些额外的检查并允许更自然的语法。例如，你可能知道在 sh 中测试一个可能为空的参数是危险的：<code>[ $var = foo ]</code> 如果 <code>$var</code> 为空就会失败，因为在这种情况下，这个词被省略了，shell 永远不知道它应该在那里；而使用 <code>[[</code> <em>...</em> <code>]]</code>，这是完全安全的，因为 shell 知道在 <code>=</code> 之前有一个词，即使它是空的。此外，你可以使用 <code>&amp;&amp;</code> 和 <code>||</code> 来表示逻辑上的 <code>与</code> 和 <code>或</code>，这与通常的 UNIX/C 约定一致；在 sh 中，它们会被视为启动一个新命令，而不是测试的一部分，你必须使用不太清晰的 <code>-a</code> 和 <code>-o</code>。实际上，zsh 为了向后兼容也提供了旧形式的测试，但如果你不使用它，事情会顺利得多。</p>
+<p>[]{#l9}</p>
+<h2 id="22-所有的启动文件"><a class="header" href="#22-所有的启动文件">2.2: 所有的启动文件</a></h2>
+<p>现在这里是启动文件列表以及它们何时运行。你会看到它们分为两类：在 <code>/etc</code> 目录中的，由系统管理员放置并为所有用户运行；以及在你主目录中的，zsh 像许多 shell 一样，允许你缩写为 <code>~</code>。后者文件可能在别处；输入 <code>print $ZDOTDIR</code>，如果你得到除空行或告知参数未设置的错误消息之外的任何内容，它会告诉你一个除 <code>~</code> 之外的目录，你的启动文件就在那里。如果 <code>$ZDOTDIR</code>（另一个参数）尚未设置，你不会无缘无故地去设置它。</p>
+<p><strong><code>/etc/zshenv</code></strong>
+:   总是为每个 zsh 运行。</p>
+<p><strong><code>~/.zshenv</code></strong>
+:   通常为每个 zsh 运行（见下文）。</p>
+<p><strong><code>/etc/zprofile</code></strong>
+:   为登录 shell 运行。</p>
+<p><strong><code>~/.zprofile</code></strong>
+:   为登录 shell 运行。</p>
+<p><strong><code>/etc/zshrc</code></strong>
+:   为交互式 shell 运行。</p>
+<p><strong><code>~/.zshrc</code></strong>
+:   为交互式 shell 运行。</p>
+<p><strong><code>/etc/zlogin</code></strong>
+:   为登录 shell 运行。</p>
+<p><strong><code>~/.zlogin</code></strong>
+:   为登录 shell 运行。</p>
+<p>现在你知道什么是登录 shell 和交互式 shell，这应该很简单了。你可能想知道为什么既有 <code>~/.zprofile</code> 又有 <code>~/.zlogin</code>，因为它们都是为登录 shell 准备的：答案是显而易见的，一个在 <code>~/.zshrc</code> 之前运行，一个在之后运行。这是历史原因；Bourne 类型的 shell 运行 <code>/etc/profile</code>，csh 类型的 shell 运行 <code>~/.login</code>，而 zsh 试图用自己的启动文件来涵盖这两种情况。</p>
+<p>复杂性由 <code>见下文</code> 暗示。文件 <code>/etc/zshenv</code>，如其所述，总是在任何 zsh 启动时运行。然而，如果设置了 <code>NO_RCS</code> 选项（或者等效地，<code>RCS</code> 选项未设置：我稍后会谈到选项，因为它们在启动文件中很重要），其他文件都不会运行。设置此选项最常见的方法是在命令行上使用一个标志：如果你以 <code>zsh -f</code> 启动 shell，该选项就会被设置，所以只有 <code>/etc/zshenv</code> 会运行，其他的都会被跳过。通常，脚本这样做是为了尝试获得一个没有多余装饰的基本 shell，我将在下面描述；但如果在 <code>/etc/zshenv</code> 中设置了某些东西，就没有办法避免它。这就引出了 Zsh 管理第一定律：在 <code>/etc/zshenv</code> 文件中放尽可能少的东西，因为每个启动的 zsh 都必须读取它。特别是，如果脚本假设只设置了基本选项，而 <code>/etc/zshenv</code> 已经改变了它们，它很可能无法工作。所以，至少，你可能应该在 <code>/etc/zshenv</code> 中的任何选项设置周围加上</p>
+<pre><code>  if [[ ! -o norcs ]]; then
+    ... &lt;如果 NO_RCS 未设置时要运行的命令，
+         例如设置选项&gt; ...
+  fi
+</code></pre>
+<p>你的用户将永远感激你。用于交互式 shell 的设置，例如提示符，除非你<em>真的</em>坚持所有用户在每个 shell 中都将它们作为默认设置，否则不应该放在 <code>/etc/zshenv</code> 中。想要绕过 <code>/etc/zshenv</code> 中选项被更改问题的脚本编写者应该在脚本顶部放上 <code>emulate zsh</code>。</p>
+<p>有两个文件在结束时运行：<code>~/.zlogout</code> 和 <code>/etc/zlogout</code>，按此顺序。顾名思义，它们是 <code>zlogin</code> 文件的对应物，因此只为登录 shell 运行——尽管你可以通过设置 <code>login</code> 选项来欺骗 shell。请注意，无论你使用 <code>exit</code>、<code>bye</code> 还是 <code>logout</code> 离开 shell，都不会影响这些文件是否运行：当我说 <code>exit</code> 和 <code>logout</code> 之间唯一的区别是错误消息时，我没有说谎（这次）。如果你想在任何其他类型的 shell 结束时运行一个文件，你可以用另一种方式做到：</p>
+<pre><code>  TRAPEXIT() {
+    # 在这里运行命令，例如，如果你
+    # 总是想运行 .zlogout：
+    if [[ ! -o login ]]; then
+      # 不要在登录 shell 中这样做
+      # 因为它无论如何都会发生
+      . ~/.zlogout
+    fi
+  }
+</code></pre>
+<p>如果你把它放在 <code>.zshrc</code> 中，它将强制 <code>.zlogout</code> 在所有交互式 shell 结束时运行。稍后会提到陷阱（trap），但这有点一次性；它实际上只是一个在 shell 结束时运行命令的技巧。然而，我不会谈论注销文件，因为没有什么标准的东西可以放在里面；有些人用 <code>clear</code> 命令清除屏幕以删除敏感信息。除此之外，你可能需要在退出时整理一些文件。</p>
+<p>[]{#l10}</p>
+<h2 id="23-选项"><a class="header" href="#23-选项">2.3: 选项</a></h2>
+<p>是时候谈谈选项了，因为我已经提过好几次了。每个选项描述一种特定的 shell 行为；它们都是布尔值，即可以打开或关闭，没有其他状态。它们有短名称，在文档和本指南中，它们用大写字母书写，并用下划线分隔各个部分（除了在实际代码中，我将以短形式书写它们）。然而，这两者都不是必需的。实际上，<code>NO_RCS</code>、<code>norcs</code> 和 <code>__N_o_R_c_S__</code> 意味着相同的事情，并且都被 shell 接受。</p>
+<p>第二件事是，前面带有 <code>no</code> 的选项只是意味着没有该选项的相反情况。我也可以将测试 <code>[[ ! -o norcs ]]</code> 写成 <code>[[ -o rcs ]]</code>；<code>!</code> 意味着 <code>非</code>，就像在 C 语言中一样。你只能有一个 <code>no</code>；<code>nonorcs</code> 是没有意义的。不幸的是，有一个选项 <code>NOMATCH</code>，它的基本名称中就包含 <code>no</code>，所以在这种情况下，相反的确实是 <code>NO_NOMATCH</code>；当然，<code>NOTIFY</code> 本身也是一个完整的名称。</p>
+<p>设置和取消设置选项的常用方法是使用 <strong>setopt</strong> 和 <strong>unsetopt</strong> 命令，它们接受一串选项名称。一些选项也有标志，比如 <code>NO_RCS</code> 的 <code>-f</code>，这些命令也接受，但使用全名更清晰，额外的时间和空间可以忽略不计。命令 <code>set -o</code> 等同于 <code>setopt</code>；这来自 ksh。请注意，没有 <code>-o</code> 的 <code>set</code> 做的是别的事情——它设置位置参数，这是 zsh 向脚本和函数传递参数的方式。</p>
+<p>几乎每个人都会在他们的启动文件中设置一些选项。由于你希望它们至少在每个交互式 shell 中都存在，所以选择是将它们放在 <code>~/.zshrc</code> 或 <code>~/.zshenv</code> 中。选择实际上取决于你如何使用非交互式 shell。它们可以在意想不到的地方启动。例如，如果你使用 Emacs 并在其中运行命令，例如 <strong>grep</strong>，那将启动一个非交互式 shell，并且可能需要一些选项。我的经验法则是将尽可能多的选项放入 <code>~/.zshrc</code>，如果我发现我需要它们，再将它们转移到 <code>~/.zshenv</code>。一些纯粹主义者完全反对在 <code>~/.zshenv</code> 中设置选项，因为它会影响脚本；但是，正如我已经暗示的，无论如何你都必须更加努力地确保脚本不受这类事情的影响。在下文中，我只是假设它们将放在 <code>~/.zshrc</code> 中。</p>
+<p>[]{#l11}</p>
+<h2 id="24-参数"><a class="header" href="#24-参数">2.4: 参数</a></h2>
+<p>为了编写启动文件，你还需要了解的另一件事是参数，也称为变量。它们大多像其他编程语言中的变量。简单的参数可以这样存储（一个<strong>赋值</strong>）：</p>
+<pre><code>  foo='这是一个参数。'
+</code></pre>
+<p>注意两件事：首先，<code>=</code> 周围没有空格。如果前面有空格，zsh 会认为 <code>foo</code> 是要执行的命令的名称；如果后面有空格，它会给参数 <code>foo</code> 赋一个空字符串。其次，注意使用引号来防止字符串内的空格产生同样的效果。单引号，如此处所示，是引号的核武器选项：直到另一个单引号之前的所有内容都被视为一个简单的字符串——换行符、等号、不可打印字符，所有这些，在这个例子中都会被赋给变量；例如，</p>
+<pre><code>  foo='这是一个参数。
+  这仍然是同一个参数。'
+</code></pre>
+<p>所以，在你了解双引号的额外效果之前，它们是最好的选择。有时你不需要它们，例如，</p>
+<pre><code>  foo=oneword
+</code></pre>
+<p>因为 <code>oneword</code> 中没有任何东西会迷惑 shell；但你仍然可以在那里加上引号。</p>
+<p>Csh 用户应该注意，你不用 <code>set</code> 来设置参数。这很重要，因为有一个 <code>set</code> 命令，但它的工作方式不同——如果你尝试 <code>set var="this wont't work"</code>，你不会得到错误，但你也不会设置参数。输入 <code>print $1</code> 看看你到底设置了什么。</p>
+<p>要取回存储在参数中的内容，你在命令行某处使用名称，并在前面加上一个 <code>$</code>——这被称为<strong>展开</strong>，或者更准确地说，因为还有其他类型的展开，称为<strong>参数展开</strong>。例如，在上面的第一个赋值之后。</p>
+<pre><code>  print -- '$foo is "'$foo'"'
+</code></pre>
+<p>得到</p>
+<pre><code>  $foo is "这是一个参数。"
+</code></pre>
+<p>所以你可以看到我说的单引号的效果是什么意思。注意不对称性——赋值参数时没有 <code>$</code>，但在前面有一个 <code>$</code> 以将其展开到命令行中。你可能会发现有时用 <code>替换</code> 这个词代替 <code>展开</code>；我将尽量坚持使用手册中的术语。</p>
+<p>在我们讨论这个的时候，还有两件事。首先，为什么我在 <code>print</code> 之后放了 <code>--</code>？那是因为 <strong>print</strong>，像许多 UNIX 命令一样，可以在它后面接受以 <code>-</code> 开头的选项。<code>--</code> 表示没有更多选项了；所以如果你想打印的东西以 <code>-</code> 开头，它仍然会打印出来。实际上，在这种情况下你可以看到它没有，所以你是安全的；但这是一个好习惯，我希望我养成了。在 zsh 中，总是有例外；例如，如果你在 <code>--</code> 之前使用 <code>-R</code> 选项来打印，它只识别 BSD 风格的选项，这意味着它不理解 <code>--</code>。的确，zsh 程序员在标准方面可能相当松懈，并且经常使用旧的、但现在非标准的单个 <code>-</code> 来表示没有更多选项。目前，即使在 <code>-R</code> 之后，这也有效。</p>
+<p>下一点是，我没有在单引号和 <code>$foo</code> 之间放空格，它仍然被展开了——展开发生在参数未被引用的任何地方；它不必是独立的，只要与任何可能使其看起来像不同参数的东西分开即可。这是使 shell 脚本看起来如此野蛮的事情之一。</p>
+<p>除了定义你自己的参数，还有一些是 shell 自己设置的，还有一些是当你设置它们时具有特殊效果的。不过，以上所有内容仍然适用。在本指南的其余部分，我将用前面加上 <code>$</code> 来表示参数，以提醒你它们是什么，但你应该记住，当你设置它们时，或者实际上，任何时候你引用参数的名称而不是其值时，<code>$</code> 是没有的。</p>
+<p>[]{#l12}</p>
+<h3 id="241-数组"><a class="header" href="#241-数组">2.4.1: 数组</a></h3>
+<p>有一种特殊类型的参数叫做<strong>数组</strong>，zsh 从 ksh 和 csh 中都继承了它。这是一个有点不稳定的结合，因为这两个 shell 对它们的一些操作是不兼容的，而 zsh 两者都有，所以如果你在其中任何一个中使用过数组，你需要小心。<code>KSH_ARRAYS</code> 选项可以让你设置它们，使其行为更像 ksh，但很多 zsh 用户编写的函数和脚本都假设它没有被设置，所以这可能很危险。</p>
+<p>与普通参数（称为<strong>标量</strong>）不同，数组中有多个词。在上面的例子中，我们让参数 <code>$foo</code> 得到一个带空格的字符串，但空格并不重要。如果我们这样做</p>
+<pre><code>  foo=(这是一个参数。)
+</code></pre>
+<p>（注意没有引号），它会创建一个数组。同样，<code>=</code> 和 <code>(</code> 之间不能有空格，尽管在括号内，空格分隔单词就像在命令行上一样。如果你尝试打印它，区别并不明显——它看起来完全一样——但现在试试这个：</p>
+<pre><code>  print -- ${foo[4]}
+</code></pre>
+<p>你会得到 <code>参数。</code>。数组分别存储单词，你可以通过在方括号中放入数组元素的编号来分别检索它们。还要注意花括号 <code>{...}</code>——zsh 并不总是要求它们，但当事情变得复杂时，它们使事情更清晰，而且把它们放进去永远不会错：当你想打印出完整的参数时，你可以说 <code>${foo}</code>，它会被视为与 <code>$foo</code> 完全相同。花括号只是将展开与周围可能迷惑 shell 的任何其他东西隔离开来。在像 <code>${foo}s</code> 这样的表达式中，它也很有用，可以防止 <code>s</code> 成为参数名的一部分；最后，当设置了 <code>KSH_ARRAYS</code> 时，花括号是强制性的，但不幸的是，在这种情况下，数组的索引从 0 开始。</p>
+<p>你可以在定义数组时使用引号；和以前一样，这可以防止 shell 认为空格是在数组的不同元素之间。试试：</p>
+<pre><code>  foo=('第一个元素' '第二个元素')
+  print -- ${foo[2]}
+</code></pre>
+<p>当 shell 需要将一系列不同的东西放在一起时，数组很有用，所以我们会遇到一些你可能想放在启动文件中的数组。ksh 的用户会注意到 zsh 中的情况有点不同，但现在我只假设你正在使用正常的 zsh 方式做事。</p>
+<p>[]{#l13}</p>
+<h2 id="25-启动文件中要放些什么"><a class="header" href="#25-启动文件中要放些什么">2.5: 启动文件中要放些什么</a></h2>
+<p>据上次统计，有超过 130 个选项和几十个对 shell 来说是特殊的参数，其中许多都涉及我直到很久以后才会谈论的事情。但作为让你开始的指南，以及对未来内容的预示，这里有一些你可能想在 <code>~/.zshrc</code> 中考虑设置的选项和参数。</p>
+<p>[]{#l14}</p>
+<h3 id="251-兼容性选项sh_word_split-及其他"><a class="header" href="#251-兼容性选项sh_word_split-及其他">2.5.1: 兼容性选项：<code>SH_WORD_SPLIT</code> 及其他</a></h3>
+<p>我已经提到 zsh 的工作方式与它最接近的标准亲戚 ksh 不同，并且其中一些差异可能会让新用户感到困惑，例如数组的使用。像 <code>KSH_ARRAYS</code> 这样的选项的存在是为了让你能够让事情以 ksh 的方式工作。这些选项大多相当挑剔，但有一个让很多人都中招了。上面，我说过在</p>
+<pre><code>  foo='这是一个参数。'
+</code></pre>
+<p>之后，<code>$foo</code> 会被视为一个词。然而，在包括 sh、ksh 和 bash 在内的传统 Bourne-like shell 中，shell 会在它找到的任何空格处分割 <code>$foo</code>。所以如果你运行一个命令</p>
+<pre><code>  command $foo
+</code></pre>
+<p>那么在 zsh 中，命令得到一个单一的参数 <code>这是一个参数。</code>，但在其他 shell 中，它得到第一个参数 <code>这</code>，第二个参数 <code>是</code>，依此类推。如果你喜欢这样，或者已经习惯了以至于改变会感到困惑，你应该在你的 <code>~/.zshrc</code> 中设置 <code>SH_WORD_SPLIT</code> 选项。大多数有经验的 zsh 用户在他们想要分词时使用数组，因为正如我解释的，你可以控制什么被分割，什么不被分割；这就是为什么 <code>SH_WORD_SPLIT</code> 默认不被设置的原因。其他 shell 的用户只是习惯于把东西放在双引号里，</p>
+<pre><code>  command "$foo"
+</code></pre>
+<p>与单引号不同，双引号允许 <code>$</code> 保持特殊，并且有一个副作用，即引号内的任何东西都将保持为一个单词（尽管也有一个例外：参数 <code>$@</code>）。</p>
+<p>还有很多其他选项做类似的事情，以让标准 shell 的用户感到满意。其中许多只是关闭功能，因为其他 shell 没有它们，因此可能会发生意想不到的事情，或者只是调整一个稍微不同或通常不重要的功能。目前这样的选项包括 <code>NO_BANG_HIST</code>、<code>BSD_ECHO</code>（仅限 sh）、<code>IGNORE_BRACES</code>、<code>INTERACTIVE_COMMENTS</code>、<code>KSH_OPTION_PRINT</code>、<code>NO_MULTIOS</code>、<code>POSIX_BUILTINS</code>、<code>PROMPT_BANG</code>、<code>SINGLE_LINE_ZLE</code>（我按照它们作为 <code>setopt</code> 的参数出现的方式写的，以使选项符合其他 shell 的期望，所以有些前面有 <code>NO_</code>）。大多数人可能不会改变这些，除非他们注意到某些东西没有按他们期望的方式工作。</p>
+<p>其他一些有更显著的效果。这里有一些如果你从另一个 Bourne-like shell 转换过来最可能让你挠头的选项。</p>
+<p><strong><code>BARE_GLOB_QUAL</code>, <code>GLOB_SUBST</code>, <code>SH_FILE_EXPANSION</code>, <code>SH_GLOB</code>, <code>KSH_GLOB</code></strong>\</p>
+<p>这些都与模式匹配的工作方式有关。你可能已经知道模式 <code>*.c</code> 将被扩展为当前目录中所有以 <code>.c</code> 结尾的文件。像这样的简单用法在所有 shell 中都是相同的，文件名扩展的方式通常因历史原因被称为 <code>globbing</code>（显然它代表 <code>global replacement</code>），因此这些选项中的一些以此命名。</p>
+<p>然而，zsh 和 ksh 在更复杂的模式上有所不同。例如，要匹配文件 <code>foo.c</code> 或文件 <code>bar.c</code>，在 ksh 中你会说 <code>@(foo|bar).c</code>。通常的 zsh 做法是 <code>(foo|bar).c</code>。要打开 ksh 的做法，设置 <code>KSH_GLOB</code> 选项；要关闭 zsh 的做法，设置 <code>SH_GLOB</code> 和 <code>NO_BARE_GLOB_QUAL</code> 选项。最后一个关闭了<strong>限定符</strong>，这是一种非常强大的按类型（例如，目录或可执行文件）而不是按名称选择文件的方式，我将在<a href="zshguide05.html#subst">第五章</a>中讨论。</p>
+<p>另外两个需要多一点解释。试试这个：</p>
+<pre><code>  foo='*'
+  print $foo
+</code></pre>
+<p>在 zsh 中，你通常会得到一个 <code>*</code> 被打印出来，而在 ksh 中，<code>*</code> 会被扩展为目录中的所有文件，就像你输入了 <code>print *</code> 一样。这有点像 <code>SH_WORD_SPLIT</code>，因为 ksh 假装 <code>$foo</code> 的值出现在命令行上，就像你输入它一样，而 zsh 使用你赋给 <code>foo</code> 的值，而不允许它再被改变。要让这个词在 zsh 中也被扩展，你可以设置 <code>GLOB_SUBST</code> 选项。与 <code>SH_WORD_SPLIT</code> 一样，如果你不希望值被改变，绕过 ksh 行为的方法是使用双引号：<code>"$foo"</code>。</p>
+<p>你不太可能需要担心 <code>SH_FILE_EXPANSION</code>。它决定了 shell 何时将像 <code>~/.zshrc</code> 这样的东西扩展为完整路径，例如 <code>/home/user2/pws/.zshrc</code>。在 zsh 的情况下，这通常在很晚的时候完成，在大多数其他形式的扩展（如参数扩展）之后。这意味着如果你设置了 <code>GLOB_SUBST</code> 并执行</p>
+<pre><code>  foo='~/.zshrc'
+  print $foo
+</code></pre>
+<p>你通常会看到以 <code>/</code> 开头的完整路径。然而，如果你<em>也</em>设置了 <code>SH_FILE_EXPANSION</code>，<code>~</code> 会在更早的时候被测试，在 <code>$foo</code> 被替换之前，那时还没有一个，所以 <code>~/.zshrc</code> 会被打印出来。这（两个选项都设置）是 ksh 的工作方式。这也意味着当我说 ksh 对待 <code>$foo</code> 完全就像它的值被输入一样时，我撒了谎，因为如果你输入 <code>print ~/.zshrc</code>，<code>~</code> 确实会被扩展。所以你看撒谎是多么方便。</p>
+<p><strong><code>NOMATCH</code>, <code>BAD_PATTERN</code></strong>\</p>
+<p>这些也与产生文件名的模式有关，但在这种情况下，它们决定了当模式因某种原因不匹配文件时会发生什么。有两个可能的原因：要么没有文件碰巧匹配，要么你没有使用一个正确的模式。在这两种情况下，zsh 与 ksh 不同，会打印一条错误消息。例如，</p>
+<pre><code>  % print nosuchfile*
+  zsh: no matches found: nosuchfile*
+  % print [-
+  zsh: bad pattern: [-
+</code></pre>
+<p>（记住 <code>%</code> 行是你输入的内容，前面有一个来自 shell 的提示符。）你可以看到有两个不同的错误消息：你可以通过设置 <code>NO_NOMATCH</code> 来停止第一个，通过设置 <code>NO_BAD_PATTERN</code> 来停止第二个。在这两种情况下，这都会让 shell 在没有匹配文件时打印出你最初输入的内容，而不进行任何扩展。</p>
+<p><strong><code>BG_NICE</code>, <code>NOTIFY</code></strong>\</p>
+<p>所有 UNIX shell 都允许你通过在行尾放一个 <code>&amp;</code> 来启动一个<em>后台</em>作业；然后 shell 不会等待作业完成，所以你可以输入其他东西。在 zsh 中，这样的作业通常以较低的优先级运行（在 UNIX 术语中是 <code>较高的 nice 值</code>），这样它们就不会像前台作业（所有其他的，没有 <code>&amp;</code> 的）那样占用那么多的处理器时间。这样做是为了像编辑或使用 shell 这样的作业不会变慢，这可能会非常烦人。你可以通过设置 <code>NO_BG_NICE</code> 来关闭这个功能。</p>
+<p>当一个后台作业完成时，zsh 通常会立即通过打印一条消息来通知你，这会中断你正在做的任何事情。你可以通过设置 <code>NO_NOTIFY</code> 来阻止这种情况。实际上，这也是大多数版本的 ksh 中的一个选项，但在 zsh 中它稍微不那么烦人，因为如果它发生在你正在向 shell 输入其他东西时，shell 会重新打印你所在的那一行，直到你输入的位置。例如：</p>
+<pre><code>  % sleep 3 &amp;
+  [1] 40366
+  % print The quick brown
+  [1]  + 40366 done       sleep 3
+  % print The quick brown
+</code></pre>
+<p><code>sleep</code> 命令只是在你告诉它的秒数内什么也不做，但在这里它是在后台做的（zsh 打印了一条消息告诉你）。在你输入了三秒钟后，作业退出了，并且在设置了 <code>NOTIFY</code> 的情况下，它打印了另一条消息：<code>done</code> 是关键，因为它告诉你作业已经完成。但 zsh 足够聪明，知道显示被弄乱了，所以它重新打印了你正在编辑的行，你可以继续。然而，如果你已经在前台运行另一个程序，那个程序不会知道 zsh 打印了消息，所以显示仍然会被弄乱。</p>
+<p><strong><code>HUP</code></strong>\</p>
+<p>信号是说服一个作业做它不想做的事情的方式，比如死亡；当你输入 <code>^C</code> 时，它会向作业发送一个信号（在这种情况下称为 <code>SIGINT</code>）。在 zsh 中，如果你在 shell 退出时有一个后台作业在运行，shell 会假设你想杀死那个作业；在这种情况下，它会被发送一个特定的信号，称为 <code>SIGHUP</code>，代表 <code>hangup</code>（挂断，如电话，而不是伍迪·艾伦那种），是 UNIX 中 <code>该回家了</code> 的等价物。如果你经常启动即使在 shell 退出后也应该继续运行的作业，那么你可以设置 <code>NO_HUP</code> 选项，后台作业将被保留。</p>
+<p><strong><code>KSH_ARRAYS</code></strong>\</p>
+<p>我已经提到过这个，但这里是细节。假设你定义了一个数组 <code>arr</code>，例如用</p>
+<pre><code>  arr=(foo bar)
+</code></pre>
+<p>尽管 ksh 中的语法，zsh 也允许，是</p>
+<pre><code>  set -A arr foo bar
+</code></pre>
+<p>在 zsh 中，<code>$arr</code> 会给出整个数组；在 ksh 中，它只产生第一个元素。在 zsh 中，<code>${arr[1]}</code> 指的是数组的第一个元素，即 <code>foo</code>，而在 ksh 中，第一个元素被称为 <code>${arr[0]}</code>，所以 <code>${arr[1]}</code> 会给你 <code>bar</code>。最后，在 zsh 中，你可以用 <code>$arr[1]</code> 来引用一个元素，而 ksh 坚持使用花括号。通过设置 <code>KSH_ARRAYS</code>，zsh 将切换到 ksh 的方式。这是你在编写函数和脚本时需要特别小心的选项之一。</p>
+<p><strong><code>FUNCTION_ARG_ZERO</code></strong>\</p>
+<p>Shell 函数是指定一组由 shell 运行的命令的有用方法。这里有一个简单的例子：</p>
+<pre><code>  % fn() { print My name is $0; }
+  % fn
+  My name is fn
+</code></pre>
+<p>注意这个特殊的语法：<code>()</code> 出现在函数名之后，表示你正在定义一个函数，然后一组命令出现在 <code>{ ... }</code> 之间。当你输入函数名时，这些命令就会被执行。如果你了解 C 编程语言，这个语法会很熟悉，但请注意 <code>()</code> 有点误导：你可能会认为你会把函数的参数放在那里，但你不能，它必须总是简单地显示为 <code>()</code>。如果你不了解 C，也没关系；C 的任何细节都不真正适用，这只是一个表面的相似之处。</p>
+<p>在这种情况下，zsh 打印了特殊参数 <code>$0</code>（<code>参数零</code>），如你所见，它变成了函数名。现在，函数外的 <code>$0</code> 意味着 shell 的名称，或者对于非交互式 shell 来说是脚本的名称，所以如果你输入 <code>print $0</code>，它可能会说 <code>zsh</code>。在大多数版本的 ksh 中，这是 <code>$0</code> 的唯一用途；它在函数中不会改变，<code>fn</code> 会打印 <code>ksh</code>。要获得这种行为，你可以设置 <code>NO_FUNCTION_ARG_ZERO</code>。可能没有理由你想这样做，但 zsh 函数经常测试自己的名称，所以这是它们可能无法工作的一个原因。</p>
+<p>在定义函数时还有另一个区别，与 <code>FUNCTION_ARG_ZERO</code> 无关：在 zsh 中，你可以在 <code>fn</code> 定义结束前省略最后的 <code>;</code>，因为它知道 <code>}</code> 必须结束最后一个命令以及函数；但 ksh 在这里不那么宽容。很多语法通可能会告诉你为什么这是件好事，但幸运的是我不能。</p>
+<p><strong><code>KSH_AUTOLOAD</code></strong>\</p>
+<p>在 ksh 和 zsh 中都内置了一种加载函数的简单方法。与其把它们都放在一个大的启动文件中，你可以在那个文件中放一行，</p>
+<pre><code>  autoload fn
+</code></pre>
+<p>然后函数 <code>fn</code> 只有在你通过输入它的名字作为命令来运行时才会被加载。shell 需要知道函数存储在哪里。这是通过一个名为 <code>$fpath</code> 的特殊参数来完成的，它是一个目录列表的数组；它会搜索所有目录中一个名为 <code>fn</code> 的文件，并将其用作函数定义。如果你想试试这个，你可以输入 <code>autoload fn; fpath=(. $fpath)</code> 并在当前目录中写一个名为 <code>fn</code> 的文件。</p>
+<p>不幸的是，ksh 和 zsh 在那个文件中应该包含什么内容上有点分歧。通常的 zsh 做法是只把函数的主体放在那里。所以如果文件 <code>fn</code> 是可自动加载的并且包含，</p>
+<pre><code>  # 这是一个简单的函数
+  print My name is $0
+</code></pre>
+<p>那么输入 <code>fn</code> 将与上面的函数 <code>fn</code> 有完全相同的效果，打印 <code>My name is fn</code>。Zsh 用户倾向于喜欢这样，因为函数的写法与脚本相同；如果你输入 <code>zsh fn</code>，用一个新的 zsh 副本将文件作为脚本调用，它也会以同样的方式工作。第一行是注释；它被忽略，在 zsh 中甚至在函数运行时也不会被自动加载，所以添加解释性内容不仅更清晰，而且也不会占用更多内存。当然，它会占用更多的磁盘空间，但如今即使是家用 PC 也配备了那种允许你在易读性上稍作放纵的磁盘大小。</p>
+<p>然而，ksh 的做法不同，这里文件 <code>fn</code> 需要包含</p>
+<pre><code>  fn() {
+    # 这是一个简单的函数
+    print My name is $0
+  }
+</code></pre>
+<p>换句话说，正是你定义函数时会输入的内容。这种形式的优点是，你可以在文件中放入其他东西，这些东西会立即运行然后被忘记，比如定义 <code>fn</code> 可能需要使用但不需要每次运行 <code>fn</code> 时都重新定义的东西。强制 zsh 在这里以 ksh 方式工作的选项叫做 <code>KSH_AUTOLOAD</code>。（如果你想尝试第二个例子，你需要输入 <code>unfunction fn; autoload fn</code> 来从内存中移除函数并再次标记它以便自动加载。）</p>
+<p>实际上，zsh 更聪明一点。如果 <code>KSH_AUTOLOAD</code> 选项没有设置，但文件只包含一个 ksh 形式的函数定义，而没有其他内容（就像上面最后一个例子一样），那么 zsh 会假设它需要立即运行刚刚加载的函数。另一种可能性是，你想定义一个除了定义一个同名函数之外什么都不做的函数，这被认为是不太可能的——如果你真的想这样做，你需要通过在同一个文件中放入一个无操作命令来欺骗 zsh，比如在最后一行放一个 <code>:</code>。</p>
+<p>最后一个复杂情况——抱歉，但这个确实会发生——是，有时在 zsh 中你不仅想定义要调用的函数，还想定义一些帮助它的函数。那么你需要这样做：</p>
+<pre><code>  fn() {
+    # 这是以文件名命名的函数
+  }
+  helper() {
+    # 天知道这是干嘛的
+  }
+  fn "$@"
+  # 这实际上是第一次调用函数，
+  # 带有任何传递的参数（关于 "$@"，请参见
+  # 下一章 `函数` 部分的 `函数参数` 小节）。
+</code></pre>
+<p>在设置了 <code>KSH_AUTOLOAD</code> 的情况下，最后那行非注释行是不必要的。然而，zsh 附带的函数假设 <code>KSH_AUTOLOAD</code> 没有设置，所以除非你需要，否则不应该打开它。你可以像往常一样把 <code>fn</code> 变成整个主体，并在其中定义 <code>helper</code>；问题是每次执行 <code>fn</code> 时 <code>helper</code> 都会被重新定义，这是低效的。避免这个问题的一个更好的方法是将 helper 定义为一个完全独立的、本身也是自动加载的函数：在 zsh 和 ksh 中，一个函数是在另一个函数内部还是外部定义都没有区别，不像（比如说）Pascal 或 Scheme。</p>
+<p><strong><code>LOCAL_OPTIONS</code>, <code>LOCAL_TRAPS</code></strong>\</p>
+<p>这两个选项也与函数有关，在这里 ksh 的做法通常更可取，所以很多人在他们的很多函数中至少设置了 <code>LOCAL_OPTIONS</code>。zsh 的最初版本没有这些，这就是为什么你需要手动打开它们。</p>
+<p>如果在函数中设置了 <code>LOCAL_OPTIONS</code>（或者在函数之前已经设置，并且在函数内部没有取消设置），那么在函数内部更改的任何选项在函数结束时都会恢复原样。所以</p>
+<pre><code>  fn() {
+    setopt localoptions kshglob
+    ...
+  }
+</code></pre>
+<p>允许你使用一个带有 ksh globbing 语法的函数，但会确保 <code>KSH_GLOB</code> 选项在函数退出时恢复到之前的状态。即使函数被 <code>^C</code> 中断，这也有效。请注意，<code>LOCAL_OPTIONS</code> 本身也会恢复到原来的状态。</p>
+<p><code>LOCAL_TRAPS</code> 选项，首次出现在 3.1.6 版本中，原因类似，但指的是（猜猜看）<strong>陷阱</strong>，这是一种阻止发送到 shell 的信号的方法，例如通过输入 <code>^C</code> 来取消某事（<code>SIGINT</code>，<code>signal interrupt</code> 的缩写），或 <code>^Z</code> 来暂时挂起它（<code>SIGTSTP</code>，<code>signal terminal stop</code>），或我们已经见过的 <code>SIGHUP</code> 等等。要在 shell 收到 <code>^C</code> 时做一些你自己的事情，你可以这样做</p>
+<pre><code>  trap 'print I caught a SIGINT' INT
+</code></pre>
+<p>当 <code>^C</code> 到达时，引号中的命令集将被运行（你甚至可以不运行任何东西就尝试它）。如果字符串是空的（只是 <code>''</code> 里面什么都没有），信号将被忽略；输入 <code>^C</code> 没有效果。要把它恢复正常，命令是 <code>trap - INT</code>。</p>
+<p>陷阱在函数中最有用，在那里你可能暂时（比如说）不希望在按下 <code>^C</code> 时停止，或者你可能想在从函数返回之前清理一些东西。所以现在你可以猜到 <code>LOCAL_TRAPS</code> 是做什么的了；用</p>
+<pre><code>  fn() {
+    setopt localoptions localtraps
+    trap '' INT
+    ...
+  }
+</code></pre>
+<p>shell 将忽略 <code>^C</code> 直到函数结束，但然后会恢复之前的陷阱，或者如果之前没有就完全移除它。陷阱在<a href="zshguide03.html#syntax">第三章</a>中有更详细的描述。</p>
+<p>有一个非常方便的简写来使选项和陷阱局部化，以及将其他选项设置为它们的标准值：在函数开头放上 <code>emulate -L zsh</code>。这将选项值设置回 zsh 启动时的值，但同时设置了 <code>LOCAL_OPTIONS</code> 和 <code>LOCAL_TRAPS</code>，所以你现在确切地知道在函数的其余部分事情将如何工作，无论外部世界设置了什么选项。实际上，这只改变影响正常编程的选项；你可以用 <code>emulate -RL zsh</code> 将每个有意义设置的选项都设置为其标准值（例如，此时更改像 <code>login</code> 这样的选项是没有意义的）。此外，你可以通过执行 <code>emulate -L ksh</code>，带或不带 <code>-R</code>，让 shell 尽可能地像 ksh 一样行事。</p>
+<p><code>emulate</code> 的 <code>-L</code> 选项实际上只出现在 3.0.6 和 3.1.6 版本中。在此之前你需要</p>
+<pre><code>  emulate zsh
+  setopt localoptions
+</code></pre>
+<p>因为 <code>localtraps</code> 不存在，而且在 3.0.6 中也确实不存在。</p>
+<p><strong><code>PROMPT_PERCENT</code>, <code>PROMPT_SUBST</code></strong>\</p>
+<p>如前所述，设置提示符将在稍后讨论，但目前有两种方法可以将信息放入提示符，例如决定新命令行开头的常规提示符的参数 <code>$PS1</code>。一种是使用<em>百分比转义</em>，即一个 <code>%</code> 后跟另一个字符，两者之间可能有一个数字。例如，默认的 zsh 提示符是 <code>%m%# </code>。第一个百分比转义变成主机名，第二个通常变成一个 <code>%</code>，但对于超级用户则是 <code>#</code>。然而，ksh 没有这些，所以你可以通过设置 <code>NO_PROMPT_PERCENT</code> 来关闭它们。</p>
+<p>另一方面，通常的 ksh 做法是在提示符中放入参数以进行替换。要让 zsh 这样做，你必须设置 <code>PROMPT_SUBST</code>。然后赋值</p>
+<pre><code>  PS1='${PWD}% '
+</code></pre>
+<p>是另一种将当前目录的名称（<code>$PWD</code> 大概是以 <code>pwd</code> 命令 <code>print working directory</code> 命名的）放入提示符的方法。注意单引号，这样这会在提示符显示时发生，而不是在赋值时发生。如果它们不存在，或者是双引号，那么 <code>$PWD</code> 会在赋值时扩展为目录，可能是你的主目录，并且不会改变以反映你实际所在的目录。当然，你也需要引号来表示空格，否则在执行赋值时它就会被吞掉。</p>
+<p>由于参数中可能包含的信息比固定数量的预定义百分比转义要多得多，你可能无论如何都想设置 <code>PROMPT_SUBST</code>。此外，你可以将命令的输出放入提示符，因为对它们进行了其他形式的扩展，而不仅仅是参数的扩展；实际上，带有 <code>PROMPT_SUBST</code> 的提示符每次显示时都几乎像双引号内的字符串一样被扩展。</p>
+<p><strong><code>RM_STAR_SILENT</code></strong>\</p>
+<p>每个人在某个时候都会删除比他们想删除的更多的文件（而<em>那</em>是一个严重的轻描淡写）；我最喜欢的是：</p>
+<pre><code>  rm *&gt;o
+</code></pre>
+<p>那个 <code>&gt;</code> 应该是一个 <code>.</code>，但我仍然按着 shift 键。这会删除所有文件，将输出（没有任何输出）回显到一个名为 <code>o</code> 的文件中。令人高兴的是，空文件 <code>o</code> 没有被删除。（不要在家里尝试这个。）</p>
+<p>Zsh 内置了一个保护机制，以防止你不小心删除目录中的所有文件。如果 zsh 发现命令是 <code>rm</code>，并且命令行上有一个 <code>*</code>（可能还有其他东西），那么它会问你是否真的想删除所有这些文件。你可以通过设置 <code>RM_STAR_SILENT</code> 来关闭这个功能。过度依赖这个选项是个坏主意；它只是最后一道防线。</p>
+<p><strong><code>SH_OPTION_LETTERS</code></strong>\</p>
+<p>许多选项也有单字母来代表它们；你可以通过这种方式设置一个选项，例如，<code>set -f</code>，它设置了 <code>NO_RCS</code>。然而，即使 sh、ksh 和 zsh 共享选项，并非所有选项都有相同的字母。这个选项允许单字母选项更像 sh 和 ksh 中的那些。如果你想知道，可以在手册中查找它们，但我已经建议你无论如何都使用选项的全名。</p>
+<p><strong><code>SH_WORD_SPLIT</code></strong>\</p>
+<p>我已经谈过这个了，见上文，但在这里提到是为了让你不要忘记它，因为它是一个重要的区别。</p>
+<p><strong>以 ksh 的身份启动 zsh</strong>\</p>
+<p>最后关于兼容性的话题，你可能想知道，除了 <code>emulate</code> 之外，还有另一种方法可以强制 zsh 尽可能地像 sh 或 ksh 一样行事。这就是通过以 ksh 的名称实际调用 zsh。你不需要重命名 zsh，你可以从 zsh 这个名字创建一个到 ksh 这个名字的链接，这就足以让它信服了。</p>
+<p>当你在 zsh 内部这样做时，有一个更简单的方法。参数 <code>$ARGV0</code> 是特殊的；它将作为由 shell 运行的命令的第一个参数传递的值。通常这是命令的名称，但它不必是，因为命令只有在它已经被运行之后才发现它是什么。你可以用它来欺骗一个程序，让它认为自己的名字不同。所以</p>
+<pre><code>  ARGV0=ksh zsh
+</code></pre>
+<p>将启动一个试图使自己像 ksh 的 zsh 副本。请注意，除非你已经在 zsh 中，否则这不起作用，因为 <code>$ARGV0</code> 不会是特殊的。</p>
+<p>我没有提到在命令名前面放一个参数赋值，但这只是在命令期间赋值该参数（在这种情况下严格来说是一个环境变量）；在该命令（类 ksh 的 zsh）结束后，<code>$ARGV0</code> 的值将不会被设置，你可以用 <code>print</code> 轻松测试。既然我在这里，我应该提一下它的其他一些特性。首先，该参数会自动导出到环境中，这意味着它可用于 zsh 启动的其他程序（包括，在这种情况下，新的 zsh）——请参阅下面关于环境变量的部分。其次，这不会像你可能期望的那样工作：</p>
+<pre><code>  FOO=bar print $FOO
+</code></pre>
+<p>因为扩展的顺序：命令行及其参数在执行前被扩展，给出 <code>$FOO</code> 之前的任何值，可能没有，然后 FOO=bar 被放入环境，然后命令被执行，但不使用 <code>$FOO</code> 的新值。</p>
+<p>[]{#l15}</p>
+<h3 id="252-csh-爱好者的选项"><a class="header" href="#252-csh-爱好者的选项">2.5.2: csh 爱好者的选项</a></h3>
+<p>除了旧的 ksh 用户，还有一些选项可以让旧的 csh 和 tcsh 用户感到更自在。正如你已经注意到的，语法非常不同，所以你永远不会完全感到自在，最好还是记住这个事实。但这里有一个简短的列表。最后一个，<code>CSH_NULL_GLOB</code>，实际上非常有用。</p>
+<p><strong><code>CSH_JUNKIE_HISTORY</code></strong>\</p>
+<p>Zsh 有旧的 csh 机制，可以使用 <code>!</code> 来引用前一个命令行上的单词；现在编辑器更强大了，它用得少了，但对于从前一行中提取短片段来说，它仍然是一个方便的简写。这个机制有时被称为<strong>bang-history</strong>，因为忙碌的人有时喜欢把 <code>!</code> 说成 <code>bang</code>。这个选项影响单个 <code>!</code> 的工作方式。例如，</p>
+<pre><code>  % print foo bar
+  % print open closed
+  % print !-2:1 !:2
+</code></pre>
+<p>在最后一行，<code>!-2</code> 意味着两个条目之前，即 <code>print foo bar</code> 这一行。<code>:1</code> 选择了命令后的第一个单词，即 <code>foo</code>。在第二个表达式中，<code>!</code> 后面没有给出数字。通常 zsh 将其解释为应该使用刚刚选择的同一项，在这种情况下是 -2。设置了 <code>CSH_JUNKIE_HISTORY</code> 后，它会引用最后一个命令。请注意，如果你没有给出那个 -2，它无论如何都会引用最后一个命令，尽管引用最后一个命令的显式方式是 <code>!!</code>——如果没有 <code>:</code> 部分跟随，你必须使用它。总而言之，zsh 通常会给你 <code>print foo bar</code>；使用 <code>CSH_JUNKIE_HISTORY</code> 你会得到 <code>print foo closed</code>。</p>
+<p>还有另一个控制这个的选项，<code>BANG_HIST</code>。如果你取消设置它，这个机制将完全不起作用。还有一个参数，<code>$histchars</code>。第一个字符是主要的历史扩展字符，通常当然是 <code>!</code>；第二个用于快速替换（通常是 <code>^</code>——下面描述了它的用法）；第三个是引入注释的字符，通常是 <code>#</code>。绝对不建议更改第三个字符。几乎没有真正的理由去改变任何一个。</p>
+<p><strong><code>CSH_JUNKIE_LOOPS</code></strong>\</p>
+<p>正常的 zsh 循环看起来像这样，</p>
+<pre><code>  while true; do
+    print Never-ending story
+  done
+</code></pre>
+<p>它只是不断地打印消息（如果你喜欢，可以在提示符下一行一行地输入，然后按 <code>^C</code> 停止它）。设置了 <code>CSH_JUNKIE_LOOPS</code> 后，你可以这样做</p>
+<pre><code>  while true
+    print Never-ending story
+  end
+</code></pre>
+<p>当然，这会使你的 zsh 代码与大多数其他人的不同，所以对大多数用户来说，最好学习正确的语法。</p>
+<p><strong><code>CSH_NULL_GLOB</code></strong>\</p>
+<p>这是像 <code>NO_NOMATCH</code> 这样的一系列选项中的另一个，已经提到过。在这种情况下，如果你有一个由一组模式组成的命令行，其中至少有一个必须匹配至少一个文件，否则会产生错误；任何不匹配的都会从命令行中删除。默认情况是所有模式都必须匹配。这组选项中还有最后一个成员，<code>NULL_GLOB</code>：所有不匹配的模式都从命令行中删除，不会产生错误。总结一下，假设你输入命令 <code>print file1* file2*</code>，并且目录中只有文件 <code>file1.c</code>。</p>
+<ol>
+<li>默认情况下，必须有文件匹配两个模式，所以会报告一个错误。</li>
+<li>设置了 <code>NO_NOMATCH</code> 后，任何不匹配的模式都会被保留，所以会打印 <code>file1.c file2*</code>。</li>
+<li>设置了 <code>CSH_NULL_GLOB</code> 后，<code>file1*</code> 匹配了，所以 <code>file2*</code> 被静默删除；报告 <code>file1.c</code>。如果那个文件不存在，就会报告一个错误。</li>
+<li>设置了 <code>NULL_GLOB</code> 后，任何不匹配的模式都会被删除，所以同样会打印 <code>file1.c</code>，但在这种情况下，如果那个文件不存在，会打印一个空行，没有错误。</li>
+</ol>
+<p><code>CSH_NULL_GLOB</code> 是一个很好的设置，因为它可以通过让你保持在正轨上，而不会有太多不必要的错误消息，所以这次它不仅仅是为 csh 爱好者准备的。</p>
+<p><strong><code>CSH_JUNKIE_QUOTES</code></strong>\</p>
+<p>这里只是为了完整性。Csh 和它的朋友们不允许像 zsh 那样的多行引用；如果你在一行结束前没有完成一对引号，csh 会抱怨。这个选项让 zsh 也这样做。但是多行引用在 zsh 脚本和函数中非常有用且非常常见；这只适用于那些因为使用 csh 而思想真正被搞乱的人。</p>
+<p>[]{#l16}</p>
+<h3 id="253-历史机制历史的类型"><a class="header" href="#253-历史机制历史的类型">2.5.3: 历史机制：历史的类型</a></h3>
+<p><code>历史机制</code> 这个名字指的是 zsh 会保留你输入过的命令的 <code>历史</code>。有三种方法可以取回这些命令；所有这些都使用同一组命令行，但获取它们的机制却大不相同。出于某种原因，历史列表中的项目（一次输入并执行的完整一行输入）被称为 <code>事件</code>。</p>
+<p><strong>直接编辑历史</strong>\</p>
+<p>首先，你可以使用编辑器；通常按向上箭头会带你到上一行，向下箭头会带你回来。这通常是最简单的方法，因为你可以确切地看到你在做什么。我将在<a href="zshguide04.html#zle">第四章</a>中详细介绍编辑器；首先要知道的是它的基本命令要么像 emacs，要么像 vi，所以如果你知道其中一个，你就可以马上开始编辑行。shell 会尝试从环境变量 <code>$VISUAL</code> 或 <code>$EDITOR</code> 中猜测是使用 emacs 还是 vi，按此顺序；这些传统上保存着你需要编辑文本的程序所偏好的编辑器的名称。在过去，<code>$VISUAL</code> 是一个全屏编辑器，而 <code>$EDITOR</code> 是一个行编辑器，比如 <code>ed</code> of blessed memory，但现在这种区别已经非常模糊了。如果其中任何一个包含字符串 <code>vi</code>，行编辑器将以 vi 模式启动，否则将以 emacs 模式启动。如果你在错误的模式下，在 <code>~/.zshrc</code> 中使用 <code>bindkey -e</code> 会带你到 emacs 模式，<code>bindkey -v</code> 会带你到 vi 模式。对于 vi 用户，要记住的是你从插入模式开始，所以输入 <code>ESC</code> 才能输入 vi 命令。</p>
+<p><strong><code>Bang</code>-历史</strong>\</p>
+<p>其次，你可以使用 csh 风格的 <code>bang-history</code> 机制（除非你设置了 <code>NO_BANG_HIST</code> 选项）；<code>bang</code> 是感叹号，<code>!</code>，也称为 <code>pling</code> 或 <code>shriek</code>（或阶乘，但那是另一个故事）。因此 <code>!!</code> 检索最后一个命令行并执行它；<code>!-2</code> 检索倒数第二个。你可以选择单词：<code>!!:1</code> 选取最后一个命令的命令后的第一个单词（如果你上面注意听了，你会注意到在这种情况下你只需要一个 <code>!</code>）；冒号后的 <code>0</code> 会选取命令词本身；<code>*</code> 选取命令后的所有参数；<code>$</code> 选取最后一个单词。你甚至可以有范围：<code>!!:1-3</code> 选取那三个单词，像 <code>!!:3-$</code> 这样的也行。</p>
+<p>在单词选择器之后，你可以有第二组冒号，然后是一些称为<strong>修饰符</strong>的特殊命令——记住这些非常有用，因为它们可以应用于参数和文件模式，所以这里有更多细节。<code>:t</code>（尾部）修饰符选取文件名的最后一部分，即最后一个斜杠之后的所有内容；相反，<code>:h</code>（头部）选取之前的所有内容。所以对于一个历史条目，</p>
+<pre><code>  % print /usr/bin/cat
+  /usr/bin/cat
+  % print !!:t
+  print cat
+  cat
+</code></pre>
+<p>注意两件事：首先，bang-history 机制总是打印它将要执行的内容。其次，你不需要单词选择器；shell 可以判断出 <code>:t</code> 是一个修饰符，并假设你想将它应用于整个前一个命令。（这里要小心，因为实际上 <code>:t</code> 会将表达式简化为<em>任何</em>单词中最后一个斜杠之后的所有内容，这有点出乎意料。）</p>
+<p>对于参数：</p>
+<pre><code>  % foo=/usr/bin/cat
+  % print ${foo:h}
+  /usr/bin
+</code></pre>
+<p>（你通常可以省略 <code>{</code> 和 <code>}</code>，但有了它们会更清晰、更安全）。最后是文件——如果你为 sh-like 行为设置了 <code>NO_BARE_GLOB_QUAL</code>，这将不起作用：</p>
+<pre><code>  % print /usr/bin/cat(:t)
+  cat
+</code></pre>
+<p>在这里你需要括号来告诉 shell <code>:t</code> 不仅仅是文件名的一部分。</p>
+<p>要获得完整列表，请参阅 <code>zshexpn</code> 手册，或手册印刷版或 Info 版中的 <code>Modifiers</code> 部分，但这里还有一些最有用的。<code>:r</code> 删除文件的后缀，将 <code>file.c</code> 变成 <code>file</code>；<code>:l</code> 和 <code>:u</code> 使单词全部小写或全部大写；<code>:s/foo/bar/</code> 将单词中第一次出现的 <code>foo</code> 替换为 <code>bar</code>；<code>:gs/foo/bar</code> 替换所有出现的（<code>g</code> 代表全局）；<code>:&amp;</code> 重复上一次这样的替换，即使你在前一行做的；<code>:g&amp;</code> 也有效。所以</p>
+<pre><code>  % print this is this line
+  this is this line
+  % !!:s/this/that/
+  print that is this line
+  that is this line
+  % print this is no longer this line
+  this is no longer this line
+  % !!:g&amp;
+  print that is no longer that line
+  that is no longer that line
+</code></pre>
+<p>最后，有一个快捷方式：<code>^old^new^</code> 完全等同于 <code>!!:s/old/new/</code>；你甚至可以在它后面放另一个修饰符。<code>^</code> 实际上是上面提到的 <code>$histchars</code> 的第二个字符。如果后面没有其他东西，你可以省略最后一个 <code>^</code>。顺便说一下，你可以把修饰符放在一起，但每个都需要带上冒号：<code>:t:r</code> 应用于 <code>dir/file.c</code> 会产生 <code>file</code>，重复应用 <code>:h</code> 会得到越来越短的路径。</p>
+<p>在我们离开 bang-history 之前，请注意 <code>HIST_VERIFY</code> 选项。如果设置了该选项，那么在替换之后，该行会再次出现并带有更改，而不是立即被打印和执行。由于你只需键入 <code>&lt;RET&gt;</code> 即可执行它，这是一个有用的技巧，可以避免你执行错误的东西，这在复杂的 bang-history 行中很容易发生；我自己就设置了这个。</p>
+<p>最后一个提示：shell 的扩展和补全，我稍后会热情洋溢地详细介绍，允许你在输入完整的引用后立即按 <code>TAB</code> 来扩展 bang-history 引用，你通常可以按 control 和斜杠（在某些键盘上，你只能用 <code>^Xu</code>）来将其恢复原状，如果你不喜欢结果的话——这是编辑器 <code>撤销</code> 功能的一部分。</p>
+<p><strong>Ksh 风格的历史命令</strong>\</p>
+<p>第三种历史形式使用 <code>fc</code> 内建命令。这是最麻烦的：你必须告诉命令要执行哪些完整的行，并且可能会有机会先编辑它们（但使用外部编辑器，而不是在 shell 中）。你可能不会那样使用它，但有三件事实际上是由 <code>fc</code> 控制的，你可能会用到：首先，<code>r</code> 命令重复最后一个命令（忽略 <code>r</code>），这有点像 <code>!!</code>。其次，名为 <code>history</code> 的命令实际上也是 <code>fc</code> 的伪装。它会给你一个最近命令的列表。它们旁边有数字；你可以用这些数字和 bang-history 一起使用，而不是像我最初解释的那样用负数向后计数，优点是它们不会随着你输入更多命令而改变。你可以给 <code>history</code> 一个数字范围，第一个数字是开始列出的地方，第二个是停止的地方：一个特别的例子是 <code>history 1</code>，它列出所有命令（即使它仍然记住的第一个命令高于 1；它只是默默地省略所有那些）。<code>fc</code> 的第三个用途是读写你的历史，这样你就可以在会话之间保留它。</p>
+<p>[]{#l17}</p>
+<h3 id="254-设置历史"><a class="header" href="#254-设置历史">2.5.4: 设置历史</a></h3>
+<p>实际上，shell 能够在不被告知的情况下读写历史。然而，你需要告诉它在哪里保存历史，为此你必须将参数 <code>$HISTFILE</code> 设置为你想要使用的文件名（一个常见的选择是 <code>~/.history</code>）。接下来，你需要将参数 <code>$SAVEHIST</code> 设置为你想要保存的历史记录的行数。当这两个都设置好后，shell 将在交互式会话开始时从 <code>$HISTFILE</code> 中读取 <code>$HISTSIZE</code> 行，并在会话结束时保存你执行的最后 <code>$SAVEHIST</code> 行。要让它在中间读写，你要么需要设置下面描述的选项之一（<code>INC_APPEND_HISTORY</code> 和 <code>SHARE_HISTORY</code>），要么使用 <code>fc</code> 命令：<code>fc -R</code> 和 <code>fc -W</code> 分别读取和写入历史，而 <code>fc -A</code> 将其附加到文件中（尽管如果它比 <code>$SAVEHIST</code> 长，会进行修剪）；<code>fc -WI</code> 和 <code>fc -AI</code> 类似，但 <code>I</code> 意味着只写出自上次写入历史以来的事件。</p>
+<p>还有一个第三个参数 <code>$HISTSIZE</code>，它决定了 shell 在一个会话中将保留的行数；除了我不会谈论的特殊原因，你应该将 <code>$SAVEHIST</code> 设置为不大于 <code>$HISTSIZE</code>，尽管它可以更少。<code>$HISTSIZE</code> 的默认值是 30，对于今天的计算机的内存和磁盘空间来说有点吝啬；zsh 用户通常使用高达 1000。所以在 <code>.zshrc</code> 中设置的一组简单参数是</p>
+<pre><code>  HISTSIZE=1000
+  SAVEHIST=1000
+  HISTFILE=~/.history
+</code></pre>
+<p>这就足以让事情正常工作了。请注意，你<em>必须</em>设置 <code>$SAVEHIST</code> 和 <code>$HISTFILE</code> 才能使历史行的自动读写工作。</p>
+<p>[]{#l18}</p>
+<h3 id="255-历史选项"><a class="header" href="#255-历史选项">2.5.5: 历史选项</a></h3>
+<p>还有许多影响历史的选项；这些在 3.1.6 版本中大幅增加，该版本首次提供了 <code>INC_APPEND_HISTORY</code>、<code>SHARE_HISTORY</code>、<code>HIST_EXPIRE_DUPS_FIRST</code>、<code>HIST_IGNORE_ALL_DUPS</code>、<code>HIST_SAVE_NO_DUPS</code> 和 <code>HIST_NO_FUNCTIONS</code>。我已经描述了 <code>BANG_HIST</code>、<code>CSH_JUNKIE_HISTORY</code> 和 <code>HIST_VERIFY</code>，我不会再谈论它们。</p>
+<p><strong><code>APPEND_HISTORY</code>, <code>INC_APPEND_HISTORY</code>, <code>SHARE_HISTORY</code></strong>\</p>
+<p>通常，当 zsh 写入历史文件时，它只是覆盖那里的所有内容。<code>APPEND_HISTORY</code> 允许它将新的历史附加到旧的上面。shell 会努力不写出应该已经存在的行；如果你在不同的窗口中同时运行很多 zsh，这可能会变得复杂。这个选项对大多数人来说都很好用。<code>INC_APPEND_HISTORY</code> 意味着不是在 shell 退出时这样做，而是每行在执行时都以这种方式添加到历史中；这意味着，例如，如果你在主 shell 中启动一个 zsh，它的历史将看起来像主 shell 的历史，这非常有用。这也意味着同时运行的不同 shell 的命令排序更加合乎逻辑——基本上就是它们被执行的顺序——所以对于 3.1.6 及更高版本，推荐使用此选项。</p>
+<p><code>SHARE_HISTORY</code> 更进一步：每添加一行，都会检查历史文件，看是否有其他 shell 写出的内容，如果有，则也包含在当前 shell 的历史中。这意味着在不同窗口中运行但在同一主机上（或更普遍地具有相同主目录）的 zsh 共享相同的历史。请注意，zsh 试图不让你因为弹出意外的历史条目而感到困惑：如果你使用 <code>!</code> 风格的历史，来自其他会话的命令在历史列表中不会出现，直到你明确输入 <code>history</code> 命令来显示它们，这样你就可以确定你实际重新执行的是哪个命令。Korn shell 的行为总是好像设置了 <code>SHARE_HISTORY</code>，大概是因为它不内部存储历史。</p>
+<p><strong><code>EXTENDED_HISTORY</code></strong>\</p>
+<p>这使得历史条目的格式更加复杂：除了命令本身，它还保存了命令开始的时间以及它运行了多长时间。<code>history</code> 命令有三个使用这个的选项：<code>history -d</code> 打印命令的开始时间；<code>history -f</code> 打印那个以及日期；<code>history -D</code>（你可以与 <code>-f</code> 或 <code>-d</code> 结合使用）打印命令的已用时间。日期格式可以用 <code>-E</code> 改为欧洲格式（<em>日</em>.<em>月</em>.<em>年</em>）和 <code>-i</code> 改为国际格式（<em>年</em>-<em>月</em>-<em>日</em>）。你<em>不</em>想设置这个的主要原因会是磁盘空间不足，或者因为你想让你的历史文件被另一个 shell 读取。</p>
+<p><strong><code>HIST_IGNORE_DUPS</code>, <code>HIST_IGNORE_ALL_DUPS</code>, <code>HIST_EXPIRE_DUPS_FIRST</code>, <code>HIST_SAVE_NO_DUPS</code>, <code>HIST_FIND_NO_DUPS</code></strong>\</p>
+<p>这些选项提供了处理历史中经常出现的重复行的方法。最简单的是 <code>HIST_IGNORE_DUPS</code>，它告诉 shell 如果一行与前一行相同，就不要存储它，从而将大量重复的命令压缩成一个；这是一个非常好的选项。当重复行不相邻时，它不起作用，所以例如交替的命令对总是会被存储。接下来的两个选项可以在这里提供帮助：<code>HIST_IGNORE_ALL_DUPS</code> 只是删除历史列表中仍然存在的行的副本，保留新添加的那个，而 <code>HIST_EXPIRE_DUPS_FIRST</code> 更微妙：当历史填满时，它会优先删除重复项，但在此之前什么也不做。<code>HIST_SAVE_NO_DUPS</code> 意味着无论当前会话设置了什么选项，shell 都不会多次保存重复的行；而 <code>HIST_FIND_NO_DUPS</code> 意味着即使重复的行已被保存，使用编辑器命令向后搜索时也不会多次显示它们。</p>
+<p><strong><code>HIST_ALLOW_CLOBBER</code>, <code>HIST_REDUCE_BLANKS</code></strong>\</p>
+<p>这些允许历史机制在行被输入时对其进行更改。第一个影响输出重定向，即你使用符号 <code>&gt;</code> 将一个或一组命令的输出重定向到一个命名文件，或使用 <code>&gt;&gt;</code> 将输出附加到该文件。如果你设置了 <code>NO_CLOBBER</code> 选项，那么</p>
+<pre><code>  touch newfile
+  echo hello &gt;newfile
+</code></pre>
+<p>会失败，因为 <code>touch</code> 命令创建了 <code>newfile</code>，而 <code>NO_CLOBBER</code> 不会让你在下一行覆盖（clobber）它。使用 <code>HIST_ALLOW_CLOBBER</code>，第二行在历史中显示为</p>
+<pre><code>  echo hello &gt;|newfile
+</code></pre>
+<p>其中 <code>&gt;|</code> 覆盖了 <code>NO_CLOBBER</code>。所以要绕过 <code>NO_CLOBBER</code>，你只需回到前一行并执行它，而无需编辑。</p>
+<p>第二个选项，<code>HIST_REDUCE_BLANKS</code>，会在行被输入到历史中时整理它，方法是删除任何对 shell 没有意义的多余空格。这也可能意味着即使在未整理的形式下它不是前一行的副本，该行也会成为副本。它足够聪明，不会删除重要的空格，即被引用的空格。</p>
+<p><strong><code>HIST_IGNORE_SPACE</code>, <code>HIST_NO_STORE</code>, <code>HIST_NO_FUNCTIONS</code></strong>\</p>
+<p>这三个选项允许你说某些行根本不应该进入历史。<code>HIST_IGNORE_SPACE</code> 意味着以空格开头的行不进入历史；其想法是，你在输入任何想在之后立即忘记的行之前，故意输入一个对 shell 没有其他意义的空格。在 zsh 4.0.1 中，这是这样实现的：你总是可以回忆起紧邻的前一行进行编辑，即使它有空格；但是当下一行被执行并输入到历史中时，以空格开头的行就被忘记了。</p>
+<p><code>HIST_NO_STORE</code> 告诉 shell 不要存储 <code>history</code> 或 <code>fc</code> 命令，而 <code>HIST_NO_FUNCTIONS</code> 告诉它不要存储函数定义，因为这些虽然通常不频繁，但可能长得令人厌烦。函数定义是任何以 <code>function funcname {...</code> 或 <code>funcname () { ...</code> 开头的东西。</p>
+<p><strong><code>NO_HIST_BEEP</code></strong>\</p>
+<p>最后，<code>HIST_BEEP</code> 用于编辑器：如果你试图向上或向下滚动超出历史列表的末尾，shell 会发出哔哔声。它默认是打开的，所以使用 <code>NO_HIST_BEEP</code> 来关闭它。</p>
+<p>[]{#l19}</p>
+<h3 id="256-提示符"><a class="header" href="#256-提示符">2.5.6: 提示符</a></h3>
+<p>大多数人在 <code>.zshrc</code> 中都有一些定义，用于更改你在每行开头看到的提示符。我已经提到了 <code>PROMPT_PERCENT</code>（默认设置）和 <code>PROMPT_SUBST</code>（默认未设置）；我在这里假设你没有更改这些设置，并指出<strong>提示符转义</strong>的一些可能性，即以 <code>%</code> 开头的序列。如果你变得非常老练，你可能需要打开 <code>PROMPT_SUBST</code>。</p>
+<p>主提示符在一个名为 <code>$PS1</code> 或 <code>$PROMPT</code> 或 <code>$prompt</code> 的参数中；有所有这些名称的原因是历史性的——它们来自不同的 shell——所以我只用最短的。还有一个 <code>$RPS1</code>，它在屏幕右侧打印一个提示符。它的要点是，如果你输入的行太长以至于碰到它，它会自动消失，所以它可以帮助最好地利用空间来显示像目录这样的长东西。</p>
+<p><code>$PS2</code> 在 shell 等待更多输入时显示，即它知道你到目前为止输入的内容不是一个完整的行：它可能包含一个引用表达式的开始，但没有结束，或者某个尚未完成的语法结构的开始。通常你会让它与 <code>$PS1</code> 不同，但在所有五个提示符中都理解所有相同的转义。</p>
+<p><code>$PS3</code> 在由 shell 的 <code>select</code> 机制启动的循环中显示，当 shell 希望你输入一个选择时：请参阅 <code>zshmisc</code> 手册页，因为我不会对此说太多。</p>
+<p><code>$PS4</code> 在调试时很有用：有一个 <code>XTRACE</code> 选项，它使 shell 打印出将要执行的行，前面加上 <code>$PS4</code>。直到 3.1.6 版本，它才开始像其他提示符一样被替换，尽管这被证明非常有用——请参阅下面列表中的 <code>脚本或函数中的位置</code>。</p>
+<p>这里有一些你可能想包含在提示符中的东西。请注意，你可以在更改提示符之前通过使用 <code>print -P</code> 来尝试这个：这将像在提示符中一样扩展字符串。你可能需要将字符串放在单引号中。</p>
+<p><strong>时间</strong>\</p>
+<p>Zsh 允许你用很多不同的方式通过百分比转义将时间放入提示符。最简单的是 <code>%t</code> 和 <code>%T</code>，分别是 12 小时和 24 小时格式的时间，以及 <code>%*</code>，与 <code>%T</code> 相同但带有秒；你也可以用 <code>%w</code> 得到像 <code>Wed 22</code> 这样的日期，用 <code>%W</code> 得到 <code>9/22/99</code>（美国格式），或者用 <code>%D</code> 得到 <code>99-09-22</code>（国际格式）。然而，还有另一种使用 <code>%D</code> 的方法可以获得更多的可能性：一个跟在后面的花括号中的字符串，<code>%D{...}</code>，可以包含一个完全不同的百分比转义集，所有这些都指代时间和日期的元素。在大多数系统上，<code>strftime</code> 函数的文档会告诉你这些是什么。zsh 有一些自己的，在 <code>zshmisc</code> 手册页的 <code>PROMPT EXPANSION</code> 部分给出。例如，我使用 <code>%D{%L:%M}</code>，它以小时和分钟给出时间，小时对于 1 到 9 是一个单数；在我这种不老练的眼睛看来，它更亲切。</p>
+<p>你可以通过使用 <code>%(*numX*.*true*.*false*)</code> 语法来获得更多乐趣，其中 <em>X</em> 是 <code>t</code> 或 <code>T</code> 之一。对于 <code>t</code>，如果分钟数与 <em>num</em>（默认为零）相同，则 <em>true</em> 将用作提示符此部分的文本，否则使用 <em>false</em>。<code>T</code> 对小时做同样的事情。因此</p>
+<pre><code>  PS1='%(t.Ding!.%D{%L:%M})%# '
+</code></pre>
+<p>在整点时打印消息 <code>Ding!</code>，否则打印更常规的时间。<code>%#</code> 是标准序列，如果你是超级用户（root），则打印一个 <code>#</code>，对于其他所有人则打印一个 <code>%</code>，这出现在很多人的提示符中。同样，你可以使用 <code>%(30t.Dong!.)</code>...` 来在半点时显示消息。</p>
+<p><strong>当前目录</strong>\</p>
+<p>序列 <code>%~</code> 打印出目录，任何主目录或命名目录（见下文）都会被缩短为以 <code>~</code> 开头的形式；序列 <code>%/</code> 不做那种缩短，所以通常 <code>%~</code> 更好。目录可能很长，有各种方法可以处理它。首先，如果你正在使用窗口系统，你可以把目录放在标题栏里，而不是窗口内的任何地方。其次，你可以使用 <code>$RPS1</code>，当你输入靠近它时它会消失。第三，你可以通过在 <code>%</code> 后面给一个数字来从 <code>%~</code> 或 <code>%/</code> 中挑选出片段：例如，<code>%1~</code> 只挑选出当前目录路径的最后一段。</p>
+<p>第四种方法给你最大的控制权。提示符或提示符的一部分，不仅仅是显示目录的部分，都可以被截断到你选择的任何长度。要从左边截断路径，使用类似 <code>%10&lt;*...*&lt;%~</code> 的东西。它的工作原理是这样的：<code>%&lt;&lt;</code> 是截断的基本形式。<code>%</code> 后面的 10 表示后面的任何东西都限制在 10 个字符以内，而字符 <code>*...*</code> 将在提示符否则会比那更长时显示（你可以留空）。这适用于后面的任何东西，所以现在 <code>%~</code> 不能超过 10 个字符，否则它将被截断（到 7 个字符，一旦 <code>...</code> 被打印出来）。你可以用 <code>%&lt;&lt;</code> 关闭截断，即 <code>%</code> 后面没有数字；然后截断适用于它被打开和关闭之间的整个区域（这与旧版本的 zsh 不同，旧版本只适用于单个 <code>%</code> 结构）。</p>
+<p><strong>你在等什么？</strong>\</p>
+<p>提示符 <code>$PS2</code> 在 shell 等待你完成输入时出现，知道 shell 在等什么很有用。序列 <code>%_</code> 显示了这个。它是默认 <code>$PS2</code> 的一部分，即 <code>%_&gt; </code>。因此，如果你输入 <code>if true; then</code> 和 <code>&lt;RET&gt;</code>，提示符会说 <code>then&gt; </code>。你也可以在跟踪提示符 <code>$PS4</code> 中使用它，以显示关于在脚本或函数中正在执行的相同信息，尽管由于那里通常有足够的信息（如下所述），它不是默认的一部分。在这种情况下，<code>%</code> 后面的数字将限制显示的深度，所以用 <code>%1_</code> 只会提到最近的事情。</p>
+<p><strong>脚本或函数中的位置</strong>\</p>
+<p>默认的 <code>$PS4</code> 包含 <code>%N</code> 和 <code>%i</code>，它们告诉你最近启动的函数、脚本或源文件的名称，以及正在执行的行号；它们在其他提示符中不是很有用。然而，<code>$PS1</code> 中的 <code>%i</code> 会告诉你当前的交互式行号，zsh 会跟踪它，但通常不显示；参数 <code>$LINENO</code> 包含相同的信息。</p>
+<p>关于 <code>%i</code> 的另一点要记住的是，显示的行号适用于首次读入的函数版本，而不是它在 <code>functions</code> 命令中显示的样子，后者是整理过的。然而，如果你使用自动加载的函数，包含该函数的文件通常是你想要修改的，所以在调试时这应该不是问题。</p>
+<p>记住，<code>$PS4</code> 的显示只有在设置了 <code>XTRACE</code> 选项时才会发生；由于选项可能是函数局部的，并且总是脚本局部的，你通常需要在你正在调试的任何东西的顶部放一个显式的 <code>setopt xtrace</code>。或者，你可以使用 <code>typeset -ft</code> <em>funcname</em> 来为该函数打开跟踪（这是我刚刚发现的东西）；使用 <code>typeset +ft</code> <em>funcname</em> 来再次关闭它。</p>
+<p><strong>其他零碎</strong>\</p>
+<p><code>zshmisc</code> 手册页中描述了许多其他的百分比转义，大多都很直接。例如，<code>%h</code> 显示你的历史条目号，如果你正在使用 bang-history 会很有用；<code>%m</code> 显示你当前的主机名，直到任何点为止；<code>%n</code> 显示用户名。</p>
+<p>还有两个我自己碰巧使用的特性。首先，知道上一个命令是否失败有时很方便。每个命令都会返回一个状态，这是一个数字：零表示成功，其他一些数字表示某种类型的失败。你可以从参数 <code>$?</code> 或 <code>$status</code> 中得到这个（同样，它们指的是同一件事）。它在提示符中也可用作 <code>%?</code>，还有一个我为时间描述过的所谓的 <code>三元</code> 表达式，它根据测试选择不同的字符串。这里的测试，很合理地，是 <code>%(?...</code>。把这两个放在一起，你可以得到一个只在退出状态非零时显示的消息；我为了更清楚，在数字周围加了一组额外的括号，其中 <code>)</code> 需要变成 <code>%)</code> 以防止它标记组的结束：</p>
+<pre><code>  PS1='%(?..(%?%))%# '
+</code></pre>
+<p>知道你是否在子 shell 中有时也很方便，也就是说，如果你通过输入 <code>zsh</code> 在主 shell 中启动了另一个 shell。你可以通过使用另一个三元表达式来做到这一点：</p>
+<pre><code>  PS1='%(2L.+.)%# '
+</code></pre>
+<p>这会检查参数 <code>SHLVL</code>，每次启动新的 zsh 时它都会递增，所以如果已经有一个在运行（它会将 <code>SHLVL</code> 设置为 1），现在它将是 2；如果 <code>SHLVL</code> 至少是 2，提示符前会打印一个额外的 <code>+</code>，否则什么也不打印。如果你正在使用窗口系统，你可能需要将 2 变成 3，因为你第一次登录时可能已经有一个 zsh 在运行，所以窗口中的 shell 的 <code>SHLVL</code> 已经设置为 2。这在很大程度上取决于你的窗口系统是如何设置的；找出更多信息留给读者作为练习。</p>
+<p><strong>颜色</strong>\</p>
+<p>许多终端现在可以显示颜色，能够将这些颜色放入提示符以将它们与周围的文本区分开来非常有用。我经常发现一个程序刚刚在我的终端上倾倒了一大堆输出，而且不清楚它从哪里开始。能够找到之前的提示符有很大帮助。</p>
+<p>颜色，就像粗体或下划线文本一样，使用不移动光标的转义序列。将任何此类转义序列插入提示符的黄金法则是用 <code>%{</code> 在开头和 <code>%}</code> 在结尾包围它们。否则，shell 会对行的长度感到困惑。这会影响行编辑器需要重画行时发生的情况，并且还会改变右提示符 <code>$RPS1</code> 的位置，如果你使用它的话。你不需要对特殊序列 <code>%B</code> 和 <code>%b</code> 这样做，它们分别开始和停止粗体文本，因为 shell 已经知道如何处理那些；只有你碰巧知道不移动光标但 shell 不知道的随机字符才会导致问题。</p>
+<p>在颜色的情况下，标准发行版提供了一个 shell 函数 <code>colors</code> 来帮助你。加载并运行时，它定义了关联数组参数 <code>$fg</code> 和 <code>$bg</code>，你用它们来提取给定颜色的转义序列，例如 <code>${fg[red]}${bg[yellow]}</code> 产生红色文本在黄色背景上的序列。所以例如，</p>
+<pre><code>  PS1="%{${bg[white]}${fg[red]}%}%(?..(%?%))\ 
+  %{${fg[yellow]}${bg[black]}%}%# "
+</code></pre>
+<p>如果前一个程序以状态 1 退出，则产生一个红底白字的 <code>(1)</code>，但如果它以状态 0 退出，则什么也不产生，后面跟着一个黄底黑字的 <code>%</code> 或 <code>#</code>（如果你是超级用户）。注意这里使用双引号来强制参数立即展开——转义序列是固定的，所以它们不需要每次显示提示符时都从参数中重新提取。</p>
+<p>即使你的终端确实支持颜色，也不能保证所有可能性都有效，尽管基本的 ANSI 颜色方案是相当标准的。理解的颜色有：青色、白色、黄色、品红色、黑色、蓝色、红色、灰色、绿色。你也可以使用 <code>default</code>，它将终端恢复到开始时的状态。此外，你可以将基本颜色与参数 <code>$bg_bold</code> 和 <code>$fg_bold</code> 一起使用以获得颜色的粗体变体，以及 <code>$bg_no_bold</code> 和 <code>$fg_no_bold</code> 来明确切换回非粗体。</p>
+<p><strong>主题</strong>\</p>
+<p>还有一组作为函数提供的主题，用于将你的提示符设置为各种预定义的可能性。这些利用了如上所述设置的颜色。请参阅 <code>zshcontrib</code> 手册页了解如何做到这一点（搜索 <code>prompt themes</code>）。</p>
+<p>[]{#l20}</p>
+<h3 id="257-命名目录"><a class="header" href="#257-命名目录">2.5.7: 命名目录</a></h3>
+<p>如前所述，文件名开头的 <code>~/</code> 会扩展为你的主目录。更一般地，<code>~</code><em>user</em><code>/</code> 允许你引用任何其他用户的主目录。此外，zsh 允许你定义自己的使用此语法的命名目录。基本思想很简单，因为任何参数都可以是一个命名目录：</p>
+<pre><code>  dir=/tmp/mydir
+  print ~dir
+</code></pre>
+<p>打印 <code>/tmp/mydir</code>。到目前为止，这与使用参数 <code>$dir</code> 没有任何不同。区别在于如果你在提示符中使用 <code>%~</code> 结构，如上所述。然后当你切换到那个目录时，你不会看到消息 <code>/tmp/mydir</code>，而是会看到缩写 <code>~dir</code>。</p>
+<p>在你至少一次自己使用 <code>~dir</code> 强制 shell 注册目录名称之前，shell 不会注册它。你可以在你的 <code>.zshrc</code> 中执行以下操作：</p>
+<pre><code>  dir=/tmp/mydir
+  bin=~/myprogs/bin
+  : ~dir ~bin
+</code></pre>
+<p>其中 <code>:</code> 是一个什么都不做的命令——但它的参数会像往常一样被检查参数等，以便 shell 可以将 <code>dir</code> 和 <code>bin</code> 放入其命名目录列表中。这样做的一个更简单的方法是设置 <code>AUTO_NAME_DIRS</code> 选项；然后任何创建的引用目录的参数都会自动变成一个名称。目录必须有绝对路径，即其扩展值，在将开头的任何 <code>~</code> 转换为完整路径后，必须以 <code>/</code> 开头。参数 <code>$PWD</code>，显示当前目录，被保护不被变成 <code>~PWD</code>，因为那不会告诉你任何信息。</p>
+<p>[]{#l21}</p>
+<h3 id="258-高级用户的加速选项"><a class="header" href="#258-高级用户的加速选项">2.5.8: 高级用户的“加速”选项</a></h3>
+<p>这里还有一些你可能想在你的 <code>.zshrc</code> 中设置的随机选项。</p>
+<p><strong><code>NO_BEEP</code></strong>\</p>
+<p>通常 zsh 在不喜欢某些东西时会发出哔哔声。这可能会非常烦人；<code>setopt nobeep</code> 会关闭它。我非正式地称之为 <code>OPEN_PLAN_OFFICE_NO_VIGILANTE_ATTACKS</code> 选项。</p>
+<p><strong><code>AUTO_CD</code></strong>\</p>
+<p>如果设置了此选项，并且你输入了没有参数且不是命令的东西，zsh 会检查它是否实际上是一个目录。如果是，shell 将切换到该目录。所以 <code>./bin</code> 本身等同于 <code>cd ./bin</code>，只要目录 <code>./bin</code> 确实存在。这在 <code>..</code> 的形式中特别有用，它会切换到父目录。</p>
+<p><strong><code>CD_ABLE_VARS</code></strong>\</p>
+<p>这是在切换目录时节省输入的另一种方法，尽管只有一个字符。如果你尝试切换到一个不存在的目录，zsh 会尝试找到一个同名的参数并使用它。你也可以在参数后面有一个 <code>/</code> 和其他东西。所以 <code>cd </code>foo/dir<code>，如果没有目录 `foo` 但有一个参数 `$foo`，就等同于 `cd `$foo/dir</code>。</p>
+<p><strong><code>EXTENDED_GLOB</code></strong>\</p>
+<p>在 zsh 中，用于匹配文件名和其他东西的模式可以非常复杂，但要充分利用它们，你需要使用这个选项，否则某些功能不会被启用，这样习惯于更简单模式（可能只是 <code>*</code>、<code>?</code> 和 <code>[...]</code>）的人就不会被奇怪的现象所迷惑。我将更多地谈论 zsh 的模式特性，但这只是提醒你，如果你正在用 <code>~</code>、<code>#</code>、<code>^</code> 或 globbing 标志做任何聪明的事情，你需要这个选项——并且也提醒你，如果你设置了该选项，那些字符可能会有奇怪的效果。</p>
+<p><strong><code>MULTIOS</code></strong>\</p>
+<p>我上面提到过，要让 zsh 表现得像 ksh，你需要设置 <code>NO_MULTIOS</code>，但我没有说 <code>MULTIOS</code> 选项是做什么的。它对输出和输入有两个不同的效果。</p>
+<p>首先，对于输出。在这里，它是 <code>tee</code> 程序的替代品。我提到过一次，但没有详细描述，你可以使用 <code>&gt;filename</code> 来告诉 shell 将输出发送到一个给定名称的文件中，而不是发送到终端。设置了 <code>MULTIOS</code> 后，你可以在命令行上有多个这样的重定向：</p>
+<pre><code>  echo foo &gt;file1 &gt;file2
+</code></pre>
+<p>在这里，<code>foo</code> 将被写入<strong>两个</strong>命名文件；zsh 复制输出。管道机制，我将在<a href="zshguide03.html#syntax">第三章</a>中更好地描述，是一种重定向到另一个程序而不是文件的机制：<code>MULTIOS</code> 也影响这个：</p>
+<pre><code>  echo foo &gt;file1 | sed 's/foo/bar/'
+</code></pre>
+<p>在这里，<code>foo</code> 再次被写入 <code>file1</code>，但也被发送到 <code>sed</code>（<code>stream editor</code>）程序的管道中，该程序将 <code>foo</code> 替换为 <code>bar</code> 并（因为这部分没有输出重定向）将其打印到终端。</p>
+<p>请注意，上面的第二个例子曾多次被报告为错误，通常形式如下：</p>
+<pre><code> some_command 2&gt;&amp;1 &gt;/dev/null | sed 's/foo/bar/'
+</code></pre>
+<p>这里的意图大概是将标准错误发送到标准输出（<code>2&gt;&amp;1</code>，一个非常常用的 shell 象形文字），并且不将标准输出发送到任何地方（<code>&gt;/dev/null</code>）。（如果你没有遇到过 <code>标准错误</code> 的概念，它只是另一个输出通道，除非你重定向它，否则它会去与正常输出相同的地方；例如，它用于向终端发送错误消息，即使你的输出正在去别处。）在这个例子中，<code>MULTIOS</code> 功能也强制原始标准输出进入管道。如果我们放入一个 <code>some_command</code> 的版本，你可以看到这种情况发生：</p>
+<pre><code> { echo foo error &gt;&amp;2; echo foo not error;  } 2&gt;&amp;1 &gt;/dev/null |
+  sed 's/foo/bar/'
+</code></pre>
+<p>在这里，你可以将 <code>{...}</code> 内的东西视为一个黑匣子，它将消息 <code>foo error</code> 发送到标准错误，将 <code>foo not error</code> 发送到标准输出。然而，使用 <code>MULTIOS</code>，结果是</p>
+<pre><code> error bar
+  not error bar
+</code></pre>
+<p>因为两者都已发送到管道中。没有 <code>MULTIOS</code>，你会得到预期的结果，</p>
+<pre><code> error bar
+</code></pre>
+<p>就像任何其他 Bourne 风格的 shell 会产生的那样。</p>
+<p>在输入方面，<code>MULTIOS</code> 安排了一系列文件按顺序读取。这次它有点像使用 <code>cat</code> 程序，它会合并它后面列出的所有文件。换句话说，</p>
+<pre><code>  cat file1 file2 | myprog
+</code></pre>
+<p>（其中 <code>myprog</code> 是某个读取所有作为输入发送给它的文件的程序）可以被替换为</p>
+<pre><code>  myprog &lt;file1 &lt;file2
+</code></pre>
+<p>这做的是同样的事情。再一次，管道算作一个重定向，并且管道首先被读取，在任何 <code>&lt;</code> 后面列出的文件之前：</p>
+<pre><code>  echo then this &gt;testfile
+  echo this first | cat &lt;testfile
+</code></pre>
+<p><strong><code>CORRECT</code>, <code>CORRECT_ALL</code></strong>\</p>
+<p>如果你设置了 <code>CORRECT</code>，shell 会检查你输入的所有命令，如果它们不存在，但有一个名称相似的命令，它会问你是否是指那个。你可以输入 <code>n</code> 表示不，不纠正，直接继续；<code>y</code> 表示是，纠正它然后继续；<code>a</code> 表示中止，什么也不做；<code>e</code> 表示编辑，返回编辑器再次编辑同一行。新补全系统的用户应该注意，这与你在那里得到的纠正不同：这只是对命令的简单纠正。</p>
+<p><code>CORRECT_ALL</code> 适用于行上的所有单词。它稍微不那么有用，因为目前 shell 必须假设它们应该是文件名，并且如果它们不存在，会尝试纠正它们，但当然命令的许多参数不是文件名。如果特定命令产生太多对其参数的纠正尝试，你可以通过在命令名前面放上 <code>nocorrect</code> 来关闭它。别名是做到这一点的一个非常好的方法，如下所述。</p>
+<p>[]{#l22}</p>
+<h3 id="259-别名"><a class="header" href="#259-别名">2.5.9: 别名</a></h3>
+<p>别名像命令一样使用，但它会扩展成一些其他文本，而这些文本本身又被用作命令。例如，</p>
+<pre><code>  alias foo='print I said foo'
+  foo
+</code></pre>
+<p>打印（猜猜看）<code>I said foo</code>。注意定义的语法——你需要 <code>=</code>，并且你需要确保整个别名被 shell 视为一个单词；你可以给同一个 <code>alias</code> 命令一个完整的别名列表。你可能会想到一些你想在启动文件中定义的别名；<code>.zshrc</code> 可能是正确的地方。如果你设置了 <code>CORRECT_ALL</code>，避免 <code>mkdir</code> 命令对其参数进行拼写检查的方法是——这是无用的，因为它们<em>必须</em>不存在才能使命令工作——定义：</p>
+<pre><code>  alias mkdir='nocorrect mkdir'
+</code></pre>
+<p>这显示了别名的一个有用特性：别名可以包含与自身同名的东西。当它在扩展文本（右侧）中遇到时，shell 知道不要再次扩展别名，而是这次将其视为一个真正的命令。请注意，函数<em>没有</em>这个属性：函数比别名更强大，在某些情况下，它们调用自己是很有用的。让函数一遍又一遍地调用自己直到 shell 抱怨是一个常见的错误。我将在<a href="zshguide03.html#syntax">第三章</a>中描述解决这个问题的方法。</p>
+<p>函数比别名更强大的另一种方式是，函数可以接受参数而别名不能——换句话说，没有办法在别名内部引用命令行上跟随它的内容，不像函数，也不像 csh 中的别名（因为那没有函数，这就是为什么）。它只是被盲目地扩展，命令行的其余部分被附加在末尾。因此，zsh 中的别名通常用于非常简单的事情，而任何更复杂的事情都用函数来编写。不过，你不能用函数来做那个 <code>nocorrect</code> 的技巧，因为函数被调用得太晚了：别名是立即扩展的，所以 <code>nocorrect</code> 被及时发现以发挥作用。你几乎可以把它们看作是纯粹的打字缩写。</p>
+<p>普通别名只在命令位置工作，即在命令行的开头（更严格地说，当 zsh 期望一个命令时）。还有其他叫做 <code>全局别名</code> 的东西，你通过 <code>alias</code> 的 <code>-g</code> 选项来定义，它们会在命令行的任何位置被扩展。你应该在定义这些之前认真考虑，因为它们可能会产生巨大的影响。但是请注意，引用一个单词，甚至一个字符，都会阻止别名为其扩展。</p>
+<p>我只倾向于在交互式 shell 中使用别名，所以我从 <code>.zshrc</code> 中定义它们，但如果你更广泛地使用别名，你可能想使用 <code>.zshenv</code>。事实上，为了保持我的 <code>.zshrc</code> 整洁，我把所有的别名都保存在一个名为 <code>.aliasrc</code> 的单独文件中，在 <code>.zshrc</code> 中我有：</p>
+<pre><code>  if [[ -r ~/.aliasrc ]]; then
+    . ~/.aliasrc
+  fi
+</code></pre>
+<p>它检查是否存在一个可读的文件 <code>~/.aliasrc</code>，如果存在，它会以与正常启动文件完全相同的方式运行它。你可以用 <code>source</code> 代替 <code>.</code>，如果它对你更有意义的话；然而，<code>.</code> 是传统的 Bourne 和 Korn shell 名称。</p>
+<p>[]{#l23}</p>
+<h3 id="2510-环境变量"><a class="header" href="#2510-环境变量">2.5.10: 环境变量</a></h3>
+<p>通常，一个程序的说明书会告诉你定义某些环境变量，通常是一组大写字母，可能还有数字和奇怪的下划线。这些可以在不需要你使用额外参数的情况下向程序传递信息。在 zsh 中，环境变量显示为普通的 shell 参数，尽管它们的定义方式略有不同：严格来说，环境是 shell 外部的一个特殊区域，zsh 必须被告知在那里放一个副本，同时自己也保留一个。通常的语法是</p>
+<pre><code>  export VARNAME='value'
+</code></pre>
+<p>换句话说，就像一个普通的赋值，但在前面有 <code>export</code>。注意环境变量的名称前没有 <code>$</code>；所有 <code>export</code> 和类似的语句都以同样的方式工作。放置这些最简单的地方是 <code>.zshenv</code>——因此它的名字。环境变量将被传递给从 shell 运行的任何程序，所以将它们定义在 <code>.zlogin</code> 或 <code>.zprofile</code> 中可能就足够了：然而，任何为你非交互式启动的 shell 都不会运行那些，而且如果你使用一个由 zsh 以外的 shell 启动的窗口系统，或者根本不运行 shell 启动文件，还可能存在其他问题——我不得不调整我的来让它这样做。所以 <code>.zshenv</code> 是最安全的地方；定义环境变量并不需要很长时间。其他人无疑会给你完全矛盾的观点，但人就是这样。</p>
+<p>请注意，你不能导出数组。如果你导出一个参数，然后给它赋一个数组，环境中不会出现任何东西；你可以使用外部命令 <code>printenv VARNAME</code>（同样没有 <code>$</code>，因为命令需要知道名称，而不是值）来检查。数组还有一个更微妙的问题。<code>export</code> 内建命令只是内建命令 <strong>typeset</strong> 的一个特例，它定义一个变量而不标记它以便导出到环境。你可能会认为你可以这样做</p>
+<pre><code>  typeset array=(这不起作用)
+</code></pre>
+<p>但你不能——特殊的数组语法只有在赋值不跟在命令后面时才被理解，而不是在像这里这样的普通参数中，所以你必须把数组赋值放在下一行。这是一个非常容易犯的错误。<code>typeset</code> 的更多用法将在<a href="zshguide03.html#syntax">第三章</a>中描述；它们包括在函数中创建局部参数，以及为参数定义特殊属性（其中 <code>export</code> 属性只是一个）。</p>
+<p>[]{#l24}</p>
+<h3 id="2511-路径"><a class="header" href="#2511-路径">2.5.11: 路径</a></h3>
+<p>能够找到外部程序，即任何不属于 shell 的部分，任何除了内建命令、函数或别名之外的命令，都很有帮助。<code>$path</code> 数组用于此目的。实际上，系统需要的是环境变量 <code>$PATH</code>，它包含一个目录列表，用于在其中搜索程序，目录之间用冒号分隔。这些目录是数组 <code>$path</code> 的各个组成部分。所以如果 <code>$path</code> 包含</p>
+<pre><code>  path=(/bin /usr/bin /usr/local/bin .)
+</code></pre>
+<p>那么 <code>$PATH</code> 将自动包含</p>
+<pre><code>  PATH=/bin:/usr/bin:/usr/local/bin:.
+</code></pre>
+<p>的效果，而无需你设置它。这个想法很简单，虽然系统需要 <code>$PATH</code> 因为它不理解数组，但在 shell 内部使用数组要灵活得多，因此几乎可以忘记 <code>$PATH</code> 的形式。</p>
+<p>对路径的更改与上面描述的环境变量的更改类似，所以所有这些都适用。然而，在 <code>.zshenv</code> 中设置 <code>$path</code> 有一点困难，尽管上面给出的这样做的理由仍然适用。通常，路径会为你设置好，要么由系统，要么由系统管理员在某个全局启动文件中设置，如果你更改路径，你只想在它上面添加。但如果你的 <code>.zshenv</code> 包含</p>
+<pre><code>  path=(~/bin ~/progs/bin $path)
+</code></pre>
+<p>——这是在 <code>$path</code> 前面添加东西的正确方法——那么每次调用 <code>.zshenv</code> 时，<code>~/bin</code> 和 <code>~/progs/bin</code> 都会被塞到前面，所以如果你启动另一个 zsh，你就会有两套在那里。</p>
+<p>当然，你可以添加测试来看看某个东西是否已经存在。Zsh 方便地允许你测试数组中元素的存在。通过在数组索引前加上 <code>(r)</code>（表示反向），它会尝试找到一个匹配的元素并返回它，否则返回一个空字符串。这里有一种方法可以做到这一点（但先不要添加这个，请看下一段）：</p>
+<pre><code>  for dir in ~/bin ~/progs/bin; do
+    if [[ -z ${path[(r)$dir]} ]]; then
+      path=($dir $path)
+    fi 
+  done
+</code></pre>
+<p>那个 <code>for</code>... <code>do</code> ... <code>done</code> 是另一个特殊的 shell 结构。它会依次取 <code>in</code> 后面的每个东西，并将其赋给 <code>in</code> 前面命名的参数——<code>$dir</code>，但因为这是一种赋值形式，所以 <code>$</code> 被省略了——所以第一次循环时它的效果是 <code>dir=~/bin</code>，下一次是 <code>dir=~/progs/bin</code>。然后它执行循环中的内容。测试 <code>-z</code> 检查后面的东西是否为空：在这种情况下，如果目录 <code>$dir</code> 尚未在 <code>$path</code> 中，它将为空，所以它会继续在前面添加它。请注意，目录的添加顺序与它们出现的顺序相反。</p>
+<p>然而，实际上，zsh 为你省去了所有这些麻烦。咒语 <code>typeset -U path</code>，其中 <code>-U</code> 代表唯一，告诉 shell 如果 <code>$path</code> 中已经有了某个东西，就不应该再添加它。准确地说，它只保留最左边的出现，所以如果你在末尾添加了某个东西，它会消失，如果你在开头添加了某个东西，旧的那个会消失。因此，以下内容在 <code>.zshenv</code> 中工作得很好：</p>
+<pre><code>  typeset -U path
+  path=(~/bin ~/progs/bin $path)
+</code></pre>
+<p>你可以把那个 <code>for</code> 的东西当作 shell 编程的一课。你可以通过输入 <code>typeset +U</code> 来列出所有开启了唯一性的变量，用 <code>+</code> 代替 <code>-</code>，因为在后一种情况下，shell 也会显示参数的值，而这不是你这里需要的。<code>-U</code> 标志也适用于冒号分隔的数组，比如 <code>$PATH</code>。</p>
+<p>[]{#l25}</p>
+<h3 id="2512-邮件"><a class="header" href="#2512-邮件">2.5.12: 邮件</a></h3>
+<p>Zsh 会为你检查新邮件。如果你只需要时不时地被提醒一下你的普通文件夹里有新东西，你只需要将参数 <code>$MAIL</code> 设置为那个位置：它通常是 <code>/usr/spool/mail</code>、<code>/var/spool/mail</code> 或 <code>/var/mail</code> 之一。</p>
+<p>数组 <code>$mailpath</code> 提供了更多的可能性。像 <code>$path</code> 一样，它有一个大写的同事 <code>$MAILPATH</code>，这是一个冒号分隔的数组。这次系统不需要那个，所以它主要在那里以便你可以将它导出到另一个版本的 zsh；导出数组是行不通的。现在可能已经痛苦地清楚了，如果你在 <code>.zshenv</code> 或</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="zshguide01.cn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="zshguide03.cn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="zshguide01.cn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="zshguide03.cn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
