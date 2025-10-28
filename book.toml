@@ -2,3 +2,6 @@
 authors = ["HeavenTao"]
 language = "en"
 src = "src"
+
+[output.html.variables]
+font-size-text = "18px"  # 正文字体大小
