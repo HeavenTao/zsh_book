@@ -28,7 +28,7 @@ tmux 的主要用途是：
 
 这是 tmux 在 *xterm(1)* 中显示 shell 的屏幕截图：
 
-<p align="center"><img src="../images/tmux_default.png" width=368 height=235></p>
+<p align="center"><img src="./images/tmux_default.png" width=368 height=235></p>
 
 ### 关于本文档
 
@@ -42,7 +42,7 @@ tmux 可以从大多数主要平台的包管理系统安装。有关如何安装
 
 以下是查找有关 tmux 的文档和帮助的几个地方：
 
-- <img src="../images/man_tmux.png" align="right" width=376 height=243>[手册页](https://man.openbsd.org/tmux) 提供了关于 tmux 的详细参考文档，以及每个命令、标志和选项的描述。一旦安装了 tmux，它在第 1 节中也可用：
+- <img src="./images/man_tmux.png" align="right" width=376 height=243>[手册页](https://man.openbsd.org/tmux) 提供了关于 tmux 的详细参考文档，以及每个命令、标志和选项的描述。一旦安装了 tmux，它在第 1 节中也可用：
 
   ~~~~
   $ man 1 tmux
@@ -64,14 +64,14 @@ tmux 将其所有状态保存在一个名为 tmux 服务器的主进程中。该
 
 #### 会话、窗口和窗格
 
-<p><img src="../images/tmux_with_panes.png" align="right" width=376 height=243>
+<p><img src="./images/tmux_with_panes.png" align="right" width=376 height=243>
 tmux 内部的每个终端都属于一个窗格，这是一个显示 tmux 内部终端内容的矩形区域。因为 tmux 内部的每个终端只显示在一个窗格中，所以窗格一词可以指整个窗格、终端以及其中运行的程序。右侧的屏幕截图显示了带有窗格的 tmux。</p>
 
 每个窗格出现在一个窗口中。窗口由一个或多个窗格组成，这些窗格共同覆盖其整个区域 - 因此可以同时看到多个窗格。窗口通常占据 tmux 附加的整个终端，但它可以更大或更小。窗口中所有窗格的大小和位置称为窗口布局。
 
 每个窗口都有一个名称 - 默认情况下，tmux 会选择一个名称，但用户可以更改它。窗口名称不必唯一，窗口通常由会话和窗口索引而不是名称来标识。
 
-<p><img src="../images/tmux_pane_diagram.png" align="right" width=418 height=285>
+<p><img src="./images/tmux_pane_diagram.png" align="right" width=418 height=285>
 每个窗格通过一条线与周围的窗格分隔开，这称为窗格边框。每个窗口中有一个窗格称为活动窗格，这是任何输入文本发送到的地方，也是用于针对窗口的命令的默认窗格。活动窗格的边框标记为绿色，或者如果只有两个窗格，则边框的顶部、底部、左侧或右侧的一半是绿色。</p>
 
 多个窗口被分组成会话。如果一个窗口是会话的一部分，则称其链接到该会话。窗口可以同时链接到多个会话，尽管大多数情况下它们只在一个会话中。会话中的每个窗口都有一个数字，称为窗口索引 - 同一个窗口在不同会话中可能链接到不同的索引。会话的窗口列表是按索引顺序链接到该会话的所有窗口。
@@ -157,7 +157,7 @@ $ tmux new -nmytopwindow top
 
 * 在右侧，窗格标题（用引号括起来）（默认为运行 tmux 的主机名）以及时间和日期。
 
-<p align="center"><img src="../images/tmux_status_line_diagram.png" width=613 height=204></p>
+<p align="center"><img src="./images/tmux_status_line_diagram.png" width=613 height=204></p>
 
 随着新窗口的打开，窗口列表会增长 - 如果窗口太多而无法适应终端的宽度，则会在左侧或右侧或两者都添加 `<` 或 `>` 以显示有隐藏的窗口。
 
@@ -177,7 +177,7 @@ $ tmux new -nmytopwindow top
 
 每个默认的 tmux 键绑定都有一个简短的描述，帮助记住该键的作用。通过按下 `C-b ?` 可以看到所有键及其相应描述文本的列表。
 
-<img src="../images/tmux_list_keys.png" align="right" width=376 height=243>
+<img src="./images/tmux_list_keys.png" align="right" width=376 height=243>
 
 `C-b ?` 进入视图模式以显示文本。处于视图模式的窗格有自己的键绑定，不需要前缀键。这些大致遵循 *emacs(1)*。最重要的是 `Up`、`Down`、`C-Up`、`C-Down` 用于上下滚动，以及 `q` 用于退出模式。可见区域顶部行号和总行数显示在右上角。
 
@@ -213,7 +213,7 @@ $ tmux new-session -d -nmysession
 
 #### 命令提示符
 
-<img src="../images/tmux_command_prompt.png" align="right" width=376 height=243>
+<img src="./images/tmux_command_prompt.png" align="right" width=376 height=243>
 
 tmux 有一个交互式命令提示符。可以通过按下 `C-b :` 打开，它会替代状态行显示，如屏幕截图所示。
 
@@ -280,7 +280,7 @@ mysession: 1 windows (created Sat Feb 22 11:44:51 2020)
 
 #### 创建新窗口
 
-<img src="../images/tmux_new_windows.png" align="right" width=376 height=243>
+<img src="./images/tmux_new_windows.png" align="right" width=376 height=243>
 
 在附加的会话中，可以通过 `C-b c` 键绑定创建一个新窗口，该键绑定运行 `new-window` 命令。新窗口在第一个可用索引处创建 - 因此第二个窗口将具有索引 1。新窗口成为会话的当前窗口。
 
@@ -310,7 +310,7 @@ mysession: 1 windows (created Sat Feb 22 11:44:51 2020)
 
 #### 分割窗口
 
-<img src="../images/tmux_split_h.png" align="right" width=376 height=243>
+<img src="./images/tmux_split_h.png" align="right" width=376 height=243>
 
 通过分割窗口创建窗格。这是通过 `split-window` 命令完成的，默认情况下绑定到两个键：
 
@@ -320,7 +320,7 @@ mysession: 1 windows (created Sat Feb 22 11:44:51 2020)
 
 每次将窗格分割成两个时，可以使用相同的键绑定再次分割这些窗格，直到窗格变得太小。
 
-<img src="../images/tmux_split_v.png" align="right" width=376 height=243>
+<img src="./images/tmux_split_v.png" align="right" width=376 height=243>
 
 `split-window` 有几个有用的标志：
 
@@ -356,7 +356,7 @@ mysession: 1 windows (created Sat Feb 22 11:44:51 2020)
 
 * `C-b Up`、`C-b Down`、`C-b Left` 和 `C-b Right` 分别更改为活动窗格上方、下方、左侧或右侧的窗格。这些键在窗口中循环，因此在底部的窗格上按下 `C-b Down` 将更改为顶部的窗格。
 
-<img src="../images/tmux_display_panes.png" align="right" width=368 height=235>
+<img src="./images/tmux_display_panes.png" align="right" width=368 height=235>
 
 * `C-b q` 在窗格上短暂显示窗格编号和大小。在它们消失之前按下其中一个数字键会将活动窗格更改为所选窗格，因此 `C-b q 1` 将更改为窗格编号 1。
 
@@ -368,14 +368,14 @@ mysession: 1 windows (created Sat Feb 22 11:44:51 2020)
 
 #### 选择会话、窗口和窗格
 
-<p><img src="../images/tmux_choose_tree1.png" align="right" width=376 height=243>
+<p><img src="./images/tmux_choose_tree1.png" align="right" width=376 height=243>
 tmux 包含一种模式，可以从树中选择会话、窗口或窗格，这称为树模式。它可以用于浏览会话、窗口和窗格；更改附加的会话、当前窗口或活动窗格；杀死会话、窗口和窗格；或通过标记它们一次应用命令到多个。</p>
 
 有两种键绑定可以进入树模式：`C-b s` 仅显示会话并选择附加的会话；`C-b w` 以会话展开的方式开始，显示窗口并选择附加会话中的当前窗口。
 
 树模式将窗口分为两个部分：上半部分是会话、窗口和窗格的树，下半部分是每个窗格中光标周围区域的预览。对于会话，预览显示尽可能多的窗口中的活动窗格；对于窗口，显示尽可能多的窗格；对于窗格，仅显示所选窗格。
 
-<img src="../images/tmux_choose_tree2.png" align="right" width=376 height=243>
+<img src="./images/tmux_choose_tree2.png" align="right" width=376 height=243>
 
 控制树模式的键不需要前缀。可以使用 `Up` 和 `Down` 键导航列表。`Enter` 更改选定的项目（它成为附加的会话、当前窗口或活动窗格）并退出模式。`Right` 展开项目（如果可能）- 会话展开以显示其窗口，窗口展开以显示其窗格。`Left` 折叠项目以隐藏任何窗口或窗格。`O` 更改项目的顺序，`q` 退出树模式。
 
@@ -411,7 +411,7 @@ tmux 包含一种模式，可以从树中选择会话、窗口或窗格，这称
 
 #### 分离其他客户端
 
-<img src="../images/tmux_choose_client.png" align="right" width=376 height=243>
+<img src="./images/tmux_choose_client.png" align="right" width=376 height=243>
 
 通过按下 `C-b D`（即 `C-b S-d`）可以获得客户端列表。这类似于树模式，称为客户端模式。
 
@@ -439,7 +439,7 @@ tmux 包含一种模式，可以从树中选择会话、窗口或窗格，这称
 
 #### 重命名会话和窗口
 
-<img src="../images/tmux_rename_session.png" align="right" width=368 height=235>
+<img src="./images/tmux_rename_session.png" align="right" width=368 height=235>
 
 `C-b $` 会提示输入附加会话的新名称。这使用 `rename-session` 命令。同样，`C-b ,` 会提示输入当前窗口的新名称，使用 `rename-window` 命令。
 
@@ -449,7 +449,7 @@ tmux 允许使用 `swap-pane` 和 `swap-window` 命令交换窗格和窗口。
 
 为了方便交换，可以标记单个窗格。所有会话中有一个标记的窗格。`C-b m` 键绑定切换当前会话中当前窗口的活动窗格是否为标记的窗格。`C-b M` 完全清除标记的窗格，这样就没有窗格被标记。标记的窗格通过其边框的绿色背景显示，包含标记窗格的窗口在状态行中有一个 `M` 标志。
 
-<img src="../images/tmux_marked_pane.png" align="right" width=368 height=235>
+<img src="./images/tmux_marked_pane.png" align="right" width=368 height=235>
 
 一旦窗格被标记，可以使用 `swap-pane` 命令将其与当前窗口的活动窗格交换，或者使用 `swap-window` 命令将包含标记窗格的窗口与当前窗口交换。例如，使用命令提示符：
 
@@ -480,7 +480,7 @@ tmux 允许使用 `swap-pane` 和 `swap-window` 命令交换窗格和窗口。
 
 #### 窗口布局
 
-<img src="../images/tmux_tiled.png" align="right" width=368 height=235>
+<img src="./images/tmux_tiled.png" align="right" width=368 height=235>
 
 窗口中的窗格可以自动排列成几种命名布局之一，这些布局可以通过 `C-b Space` 键绑定在之间轮换，或直接通过 `C-b M-1`、`C-b M-2` 等选择。
 
@@ -498,7 +498,7 @@ tiled|`C-b M-5`|按相同行数和列数平铺
 
 tmux 有自己的复制和粘贴系统。复制的文本片段称为粘贴缓冲区。使用复制模式（通过 `C-b [` 进入）复制文本，最近复制的文本通过 `C-b ]` 粘贴到活动窗格中。
 
-<img src="../images/tmux_copy_mode.png" align="right" width=368 height=235>
+<img src="./images/tmux_copy_mode.png" align="right" width=368 height=235>
 
 粘贴缓冲区可以命名，但默认情况下它们由 tmux 分配名称，如 `buffer0` 或 `buffer1`。这样的缓冲区称为自动缓冲区，最多保留 50 个 - 一旦有 50 个缓冲区，添加新缓冲区时会删除最旧的。如果缓冲区被命名，则称为命名缓冲区；命名缓冲区无论有多少都不会被删除。
 
@@ -523,7 +523,7 @@ tmux 有自己的复制和粘贴系统。复制的文本片段称为粘贴缓冲
 
 *vi(1)* 和 *emacs(1)* 的完整键列表在 [手册页](https://man.openbsd.org/tmux#WINDOWS_AND_PANES) 中可用。以下是一些精选内容：
 
-<img src="../images/tmux_buffer_mode.png" align="right" width=368 height=235>
+<img src="./images/tmux_buffer_mode.png" align="right" width=368 height=235>
 
 复制一些文本后，可以使用 `C-b ]` 粘贴最近的文本，或通过使用缓冲区模式（通过 `C-b =` 进入）粘贴较旧的缓冲区。缓冲区模式类似于客户端模式和树模式，提供缓冲区列表及其内容的预览。除了树模式和客户端模式中使用的导航和标记键外，缓冲区模式还支持以下键：
 
@@ -563,7 +563,7 @@ tmux 有自己的复制和粘贴系统。复制的文本片段称为粘贴缓冲
 
 #### 查找窗口和窗格
 
-<img src="../images/tmux_find_window.png" align="right" width=368 height=235>
+<img src="./images/tmux_find_window.png" align="right" width=368 height=235>
 
 `C-b f` 会提示输入一些文本，然后进入树模式，并使用过滤器显示仅包含该文本在可见内容或窗格标题或窗口名称中出现的窗格。如果找到窗格，则树中仅显示这些窗格，并在预览上方显示文本 `filter: active`。如果未找到窗格，则树中显示所有窗格，并在预览上方显示文本 `filter: no matches`。
 
@@ -579,7 +579,7 @@ tmux 对鼠标有丰富的支持。它可以用于更改活动窗格或窗口、
 
 启用鼠标后：
 
-<img src="../images/tmux_pane_menu.png" align="right" width=376 height=243>
+<img src="./images/tmux_pane_menu.png" align="right" width=376 height=243>
 
 * 在窗格上按下左键将使该窗格成为活动窗格。
 

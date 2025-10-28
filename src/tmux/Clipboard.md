@@ -140,7 +140,7 @@ st 支持 OSC 52，但 0.8.3 之前的版本对可复制文本的数量有限制
 
 iTerm2 支持 OSC 52，但必须在首选项中启用此选项：
 
-<img src="../images/iterm2_clipboard.png" align="center" width=378 height=201>
+<img src="./images/iterm2_clipboard.png" align="center" width=378 height=201>
 
 #### 快速摘要
 

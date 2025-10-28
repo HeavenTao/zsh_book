@@ -60,7 +60,7 @@ $ pkill -USR1 tmux
 
 * 静默：当没有从程序接收到输出时。通过 `monitor-silence` 选项设置必须没有输出的秒数时间段。零时间段禁用此警报。
 
-<img src="../images/tmux_alert_flags.png" align="right" width=368 height=235>
+<img src="./images/tmux_alert_flags.png" align="right" width=368 height=235>
 
 窗格中的警报对包含该窗格窗口的每个会话执行两个操作。
 
@@ -76,7 +76,7 @@ $ pkill -USR1 tmux
 :kill-session -C
 ~~~~
 
-<img src="../images/tmux_alert_message.png" align="right" width=368 height=235>
+<img src="./images/tmux_alert_message.png" align="right" width=368 height=235>
 
 `C-b M-n` 和 `C-b M-p` 键绑定使用 `-a` 标志移动到下一个或上一个带有警报的窗口，分别对应 `next-window` 和 `previous-window` 命令。
 
@@ -157,7 +157,7 @@ XXX
 
 像 `split-window` 一样，`respawn-pane` 和 `respawn-window` 有 `-c` 标志来设置工作目录。
 
-<img src="../images/tmux_remain_on_exit.png" align="right" width=368 height=235>
+<img src="./images/tmux_remain_on_exit.png" align="right" width=368 height=235>
 
 `respawn-pane` 和 `respawn-window` 与 `remain-on-exit` 选项一起使用很有用。当此选项开启时，当运行在其中的程序退出时，窗格不会自动杀死。相反，会显示一条消息，窗格保持原样。这称为死窗格，可以使用 `respawn-pane` 或 `respawn-window` 启动相同或不同的程序。
 
@@ -628,7 +628,7 @@ $
 
 `send-keys` 命令可用于向窗格发送按键，就像它们已被按下一样。它接受多个参数。tmux 检查每个参数是否是键的名称，如果是，则发送该键的适当转义序列；如果参数不匹配键，则按原样发送。例如：
 
-<img src="../images/tmux_send_keys.png" align="right" width=368 height=235>
+<img src="./images/tmux_send_keys.png" align="right" width=368 height=235>
 
 ~~~~
 send hello Enter
@@ -687,7 +687,7 @@ tmux 允许创建没有运行命令的窗格。有两种方法
 
    像这样创建的窗格完全为空。
 
-<img src="../images/tmux_empty_pane.png" align="right" width=376 height=243>
+<img src="./images/tmux_empty_pane.png" align="right" width=376 height=243>
 
 2) 通过使用 `-I` 标志并在 `stdin` 上提供输入：
 

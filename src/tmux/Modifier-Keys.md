@@ -167,7 +167,7 @@ tmux 从 tmux 3.2 开始支持此功能。
    [mintty](https://mintty.github.io/) 和 [iTerm2](https://www.iterm2.com/)
    目前支持此功能。iTerm2 需要在配置文件中设置此选项：
 
-   <img src="../images/iterm2_csi_u.png" align="center" width=292 height=132>
+   <img src="./images/iterm2_csi_u.png" align="center" width=292 height=132>
 
 2) 必须告诉 tmux 打开它：
 
