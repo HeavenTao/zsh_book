@@ -1,0 +1,48 @@
+## 使用
+
+*   [入门指南](./Getting-Started)
+*   [示例systemd设置](./Example-systemd-Setup)
+*   [重要软件](./Important-Software)
+*   [工作区](./Workspaces)
+*   [浮动窗口](./Floating-Windows)
+*   [标签页](./Tabs)
+*   [概览](./Overview)
+*   [屏幕录制](./Screencasting)
+*   [Layer‐Shell组件](./Layer%E2%80%90Shell-Components)
+*   [IPC, `niri msg`](./IPC)
+*   [应用程序特定问题](./Application-Issues)
+*   [Nvidia](./Nvidia)
+*   [Xwayland](./Xwayland)
+*   [手势](./Gestures)
+*   [全屏和最大化](./Fullscreen-and-Maximize)
+*   [打包niri](./Packaging-niri)
+*   [集成niri](./Integrating-niri)
+*   [无障碍](./Accessibility)
+*   [名称和标志](./Name-and-Logo)
+*   [FAQ](./FAQ)
+
+## 配置
+
+*   [介绍](./Configuration:-Introduction)
+*   [输入](./Configuration:-Input)
+*   [输出](./Configuration:-Outputs)
+*   [键绑定](./Configuration:-Key-Bindings)
+*   [开关事件](./Configuration:-Switch-Events)
+*   [布局](./Configuration:-Layout)
+*   [命名工作区](./Configuration:-Named-Workspaces)
+*   [杂项](./Configuration:-Miscellaneous)
+*   [窗口规则](./Configuration:-Window-Rules)
+*   [层规则](./Configuration:-Layer-Rules)
+*   [动画](./Configuration:-Animations)
+*   [手势](./Configuration:-Gestures)
+*   [调试选项](./Configuration:-Debug-Options)
+*   [包含](./Configuration:-Include)
+
+## 开发
+
+*   [设计原则](./Development:-Design-Principles)
+*   [开发niri](./Development:-Developing-niri)
+*   [文档化niri](./Development:-Documenting-niri)
+*   [分数布局](./Development:-Fractional-Layout)
+*   [重绘循环](./Development:-Redraw-Loop)
+*   [动画时序](./Development:-Animation-Timing)
